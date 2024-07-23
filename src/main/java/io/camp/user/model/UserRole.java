@@ -1,5 +1,8 @@
 package io.camp.user.model;
 
+import lombok.Getter;
+
+@Getter
 public enum UserRole {
     USER("ROLE_USER","일반 사용자"), ADMIN("ROLE_ADMIN","관리자");
 
