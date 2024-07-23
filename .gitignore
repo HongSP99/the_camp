@@ -38,8 +38,8 @@ out/
 
 ### camping project ignore ###
 .idea/
-# application.properties
-# src/main/resources/application.properties
+application.properties
+src/main/resources/application.properties
 !**/src/main/generated
 /node_modules/
 .DS_Store
