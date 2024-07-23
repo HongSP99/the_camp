@@ -1,6 +1,8 @@
 package io.camp.user.config;
 
 
+import io.camp.user.jwt.JwtAuthenticationFilter;
+import io.camp.user.jwt.JwtTokenUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,6 +25,7 @@ import org.springframework.security.web.authentication.logout.LogoutFilter;
 public class SecurityConfig {
 
     private final CorsConfig corsConfig;
+    private final JwtTokenUtil jwtTokenUtil;
     private final AuthenticationConfiguration authenticationConfiguration;
 
     @Bean
@@ -40,8 +43,8 @@ public class SecurityConfig {
                         .anyRequest().permitAll()
                 );
         http
-                .addFilter(corsConfig.corsFilter());
-
+                .addFilter(corsConfig.corsFilter())
+                .addFilterAt(new JwtAuthenticationFilter(authenticationManager(authenticationConfiguration), jwtTokenUtil), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
