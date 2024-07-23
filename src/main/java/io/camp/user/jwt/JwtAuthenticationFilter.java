@@ -46,7 +46,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException, ServletException {
         JwtUserDetails jwtUserDetails = (JwtUserDetails) authentication.getPrincipal();
         String username = jwtUserDetails.getUsername();
-        String role = jwtUserDetails.getRole();
+        String role = jwtUserDetails.getRole().getKey();
 
         //토큰 생성
         String access = jwtTokenUtil.createToken("access", username, role, 600000L);

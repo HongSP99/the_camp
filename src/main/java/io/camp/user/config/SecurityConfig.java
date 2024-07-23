@@ -2,6 +2,7 @@ package io.camp.user.config;
 
 
 import io.camp.user.jwt.JwtAuthenticationFilter;
+import io.camp.user.jwt.JwtOncePerRequestFilter;
 import io.camp.user.jwt.JwtTokenUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -40,10 +41,15 @@ public class SecurityConfig {
 
         http
                 .authorizeHttpRequests(request -> request
+                        .requestMatchers("/", "/join", "/login", "/test").permitAll()
+                        .requestMatchers("/api/user/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .anyRequest().permitAll()
+
                 );
         http
                 .addFilter(corsConfig.corsFilter())
+                .addFilterBefore(new JwtOncePerRequestFilter(jwtTokenUtil), JwtAuthenticationFilter.class)
                 .addFilterAt(new JwtAuthenticationFilter(authenticationManager(authenticationConfiguration), jwtTokenUtil), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }

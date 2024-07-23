@@ -1,5 +1,6 @@
 package io.camp.user.jwt;
 
+import io.camp.user.model.UserRole;
 import io.jsonwebtoken.Jwts;
 import jakarta.servlet.http.Cookie;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,12 +19,23 @@ public class JwtTokenUtil {
         secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), Jwts.SIG.HS256.key().build().getAlgorithm());
     }
 
+    public String getCategory(String token) {
+        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("category", String.class);
+    }
+
     public String getEmail(String token) {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("email", String.class);
     }
 
-    public String getRole(String token) {
-        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("role", String.class);
+    public UserRole getRole(String token) {
+        String role = Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("role", String.class);
+        if (role.equals(UserRole.ADMIN.getKey())) {
+            return UserRole.ADMIN;
+        } else if (role.equals(UserRole.USER.getKey())) {
+            return UserRole.USER;
+        } else {
+            return null;
+        }
     }
 
     public Boolean isExpired(String token) {

@@ -1,13 +1,13 @@
 package io.camp.user.jwt;
 
 import io.camp.user.model.User;
+import io.camp.user.model.UserRole;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Stream;
 
 public class JwtUserDetails implements UserDetails {
 
@@ -17,8 +17,8 @@ public class JwtUserDetails implements UserDetails {
         this.user = user;
     }
 
-    public String getRole() {
-        return user.getRole().getKey();
+    public UserRole getRole() {
+        return user.getRole();
     }
 
     @Override
