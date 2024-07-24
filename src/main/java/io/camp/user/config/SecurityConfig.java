@@ -2,8 +2,11 @@ package io.camp.user.config;
 
 
 import io.camp.user.jwt.JwtAuthenticationFilter;
+import io.camp.user.jwt.JwtLogoutFilter;
 import io.camp.user.jwt.JwtOncePerRequestFilter;
 import io.camp.user.jwt.JwtTokenUtil;
+import io.camp.user.repository.RefreshRepository;
+import io.jsonwebtoken.Jwt;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,6 +31,7 @@ public class SecurityConfig {
     private final CorsConfig corsConfig;
     private final JwtTokenUtil jwtTokenUtil;
     private final AuthenticationConfiguration authenticationConfiguration;
+    private final RefreshRepository refreshRepository;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -44,13 +48,15 @@ public class SecurityConfig {
                         .requestMatchers("/", "/join", "/login", "/test").permitAll()
                         .requestMatchers("/api/user/**").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/reissue").permitAll()
                         .anyRequest().permitAll()
 
                 );
         http
                 .addFilter(corsConfig.corsFilter())
                 .addFilterBefore(new JwtOncePerRequestFilter(jwtTokenUtil), JwtAuthenticationFilter.class)
-                .addFilterAt(new JwtAuthenticationFilter(authenticationManager(authenticationConfiguration), jwtTokenUtil), UsernamePasswordAuthenticationFilter.class);
+                .addFilterAt(new JwtAuthenticationFilter(authenticationManager(authenticationConfiguration), jwtTokenUtil, refreshRepository), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtLogoutFilter(jwtTokenUtil, refreshRepository), LogoutFilter.class);
         return http.build();
     }
 
