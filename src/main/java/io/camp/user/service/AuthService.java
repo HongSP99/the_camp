@@ -1,5 +1,6 @@
 package io.camp.user.service;
 
+import io.camp.user.jwt.JwtTokenUtil;
 import io.camp.user.model.User;
 import io.camp.user.model.UserRole;
 import io.camp.user.model.dto.JoinDto;
@@ -8,6 +9,7 @@ import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +29,7 @@ public class AuthService {
         }
         return authRepository.findByEmail(email);
     }
+
 
     public void testTokenLoginUser() {
         User user = getVerifiyLoginCurrentUser();
@@ -51,7 +54,6 @@ public class AuthService {
 //        user.setPhoneNumber("000-1234-5678");
 //        user.setGender("성별");
 //        authRepository.save(user);
-//        userInit();
 //    }
 //
 //    public void userInit() {
@@ -102,4 +104,6 @@ public class AuthService {
         user.setGender(joinDto.getGender());
         authRepository.save(user);
     }
+
+
 }
