@@ -117,7 +117,4 @@ public class Campsite {
     private String createdtime;
 
     private String modifiedtime;
-
-    @OneToMany(mappedBy = "campsite")
-    List<Reservation> reservations = new ArrayList<>();
 }
