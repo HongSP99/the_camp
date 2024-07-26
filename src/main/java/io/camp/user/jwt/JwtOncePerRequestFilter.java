@@ -30,7 +30,6 @@ public class JwtOncePerRequestFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
-
         try {
             jwtTokenUtil.isExpired(accessToken);
         } catch (ExpiredJwtException e) {
@@ -44,6 +43,7 @@ public class JwtOncePerRequestFilter extends OncePerRequestFilter {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
+
 
         String category = jwtTokenUtil.getCategory(accessToken);
 

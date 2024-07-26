@@ -1,5 +1,6 @@
 package io.camp.user.service;
 
+import io.camp.exception.user.UserAnonymousException;
 import io.camp.user.model.User;
 import io.camp.user.model.UserRole;
 import io.camp.user.model.dto.JoinDto;
@@ -23,7 +24,7 @@ public class AuthService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
         if (email.equals("anonymousUser")) {
-            throw new RuntimeException("유요한 사용자가 아닙니다.");
+            throw new UserAnonymousException("유요한 사용자가 아닙니다.");
         }
         return authRepository.findByEmail(email);
     }
