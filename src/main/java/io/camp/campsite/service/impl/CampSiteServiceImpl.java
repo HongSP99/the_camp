@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import io.camp.campsite.model.entity.CampSite;
 import io.camp.campsite.repository.CampSiteRepository;
 import io.camp.campsite.service.CampSiteService;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONArray;
@@ -18,6 +19,7 @@ public class CampSiteServiceImpl implements CampSiteService {
     private final CampSiteRepository campSiteRepository;
 
     @Override
+    @Transactional
     public void insertCampsiteFromJson(JSONArray campsiteArray) {
         Gson gson = new Gson();
         campsiteArray.forEach(item -> {
