@@ -2,7 +2,7 @@ package io.camp.payment.controller;
 
 
 import io.camp.payment.model.dto.KakaoDto;
-import io.camp.user.model.User;
+import io.camp.payment.service.PaymentService;
 import io.camp.user.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -14,19 +14,14 @@ import java.net.URL;
 
 @RestController
 @RequiredArgsConstructor
-public class KakaoController {
+public class PaymentController {
 
     private final AuthService authService;
-
-    @GetMapping("/test/get")
-    public String getKakao() {
-        return "get get 해요";
-    }
+    private final PaymentService paymentService;
 
     @PostMapping("/payment/complete")
     public String testPayment(@RequestBody KakaoDto kakaoDto) {
         //User user = authService.getVerifiyLoginCurrentUser();
-
         try {
             URL url = new URL("https://api.portone.io/payments/" + kakaoDto.getPaymentId());
             HttpURLConnection conn = (HttpURLConnection)url.openConnection();
@@ -38,16 +33,12 @@ public class KakaoController {
             conn.setDoOutput(true);
 
             BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            StringBuilder sb = new StringBuilder();
-            String line = null;
-
-            while((line = br.readLine()) != null) {
-                System.out.println(line);
-                sb.append(line);
-            }
+            StringBuilder sb = new StringBuilder(br.readLine());
+            String json = sb.toString();
+            paymentService.paymentSave(kakaoDto, json);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;
+        return "";
     }
 }

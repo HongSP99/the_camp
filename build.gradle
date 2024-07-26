@@ -39,6 +39,7 @@ dependencies {
 	implementation 'org.modelmapper:modelmapper:2.4.4'
 	implementation 'org.hibernate.orm:hibernate-core:6.0.0.Final'
 	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-hibernate5-jakarta:2.14.0'
+	implementation group: 'org.json', name: 'json', version: '20240303'
 }
 
 tasks.named('test') {
