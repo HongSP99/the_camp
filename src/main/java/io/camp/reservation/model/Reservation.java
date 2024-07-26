@@ -1,18 +1,11 @@
 package io.camp.reservation.model;
 
 import io.camp.audit.BaseEntity;
-import io.camp.campsite.model.entity.CampSite;
+import io.camp.campsite.model.entity.Campsite;
+import io.camp.payment.model.Payment;
 import io.camp.user.model.User;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -48,18 +41,21 @@ public class Reservation extends BaseEntity {
     private ReservationState reservationState = ReservationState.RESERVATION_DONE;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", referencedColumnName = "seq", columnDefinition = "BIGINT", nullable = false)
+    @JoinColumn(name = "user_seq", referencedColumnName = "seq", columnDefinition = "BIGINT", nullable = false)
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "campsite_id", referencedColumnName = "campsite_id", columnDefinition = "BIGINT", nullable = false)
-    private CampSite campsite;
+    @JoinColumn(name = "campsite_seq", referencedColumnName = "seq", columnDefinition = "BIGINT", nullable = false)
+    private Campsite campsite;
+
+    @OneToOne(mappedBy = "reservation")
+    private Payment payment;
 
     public void setUser(User user){
         this.user = user;
     }
 
-    public void setCampsite(CampSite campsite){
+    public void setCampsite(Campsite campsite){
         this.campsite = campsite;
     }
 }

@@ -1,5 +1,6 @@
 package io.camp.payment.model;
 
+import io.camp.reservation.model.Reservation;
 import io.camp.user.model.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -79,6 +80,14 @@ public class Payment {
     private String customerName;
     private String customerId;
     private String customerEmail;
+
+    @ManyToOne
+    @JoinColumn(name = "user_seq")
+    private User user;
+
+    @OneToOne
+    @JoinColumn(name = "reservation_seq")
+    private Reservation reservation;
 
     public void setPaymentInstanceVariable(String type, String input) {
         switch (type) {

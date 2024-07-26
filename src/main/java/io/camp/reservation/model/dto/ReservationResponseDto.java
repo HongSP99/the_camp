@@ -1,8 +1,8 @@
 package io.camp.reservation.model.dto;
 
-import io.camp.campsite.model.entity.CampSite;
+import io.camp.campsite.model.entity.Campsite;
 import io.camp.reservation.model.ReservationState;
-import io.camp.user.model.User;
+
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -25,7 +25,7 @@ public class ReservationResponseDto {
     @Setter(AccessLevel.NONE)
     private String campsiteName;
 
-    public void setCampsiteName(CampSite campsite){
+    public void setCampsiteName(Campsite campsite){
         this.campsiteName = campsite.getFacltNm();
     }
 }

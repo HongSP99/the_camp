@@ -2,11 +2,16 @@ package io.camp.user.model;
 
 
 import io.camp.audit.BaseEntity;
+import io.camp.payment.model.Payment;
+import io.camp.reservation.model.Reservation;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -32,4 +37,10 @@ public class User extends BaseEntity {
     private String phoneNumber;
 
     private String gender;
+
+    @OneToMany(mappedBy = "user")
+    List<Reservation> reservations = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user")
+    List<Payment> payments = new ArrayList<>();
 }

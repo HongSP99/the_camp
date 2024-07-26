@@ -1,9 +1,7 @@
 package io.camp.campsite.model.entity;
 
-import io.camp.campsite.model.dto.CampSiteDto;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import io.camp.reservation.model.Reservation;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,9 +9,8 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Builder
@@ -21,9 +18,12 @@ import java.util.Date;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class CampSite {
+public class Campsite {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long seq;
+
     private int contentId;
 
     private String facltNm;
@@ -118,6 +118,6 @@ public class CampSite {
 
     private String modifiedtime;
 
-
-
+    @OneToMany(mappedBy = "campsite")
+    List<Reservation> reservations = new ArrayList<>();
 }
