@@ -1,7 +1,7 @@
 package io.camp.reservation.model;
 
 import io.camp.audit.BaseEntity;
-import io.camp.campsite.model.Campsite;
+import io.camp.campsite.model.entity.CampSite;
 import io.camp.user.model.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -53,13 +53,13 @@ public class Reservation extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "campsite_id", referencedColumnName = "campsite_id", columnDefinition = "BIGINT", nullable = false)
-    private Campsite campsite;
+    private CampSite campsite;
 
     public void setUser(User user){
         this.user = user;
     }
 
-    public void setCampsite(Campsite campsite){
+    public void setCampsite(CampSite campsite){
         this.campsite = campsite;
     }
 }

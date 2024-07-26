@@ -1,6 +1,5 @@
 package io.camp.reservation.model.dto;
 
-import io.camp.campsite.model.Campsite;
 import io.camp.user.model.User;
 import java.time.LocalDateTime;
 import lombok.Getter;
