@@ -1,13 +1,15 @@
 package io.camp.user.controller;
 
 
-import io.camp.user.model.UserRole;
+import io.camp.user.model.User;
 import io.camp.user.model.dto.JoinDto;
 import io.camp.user.model.dto.LoginDto;
 import io.camp.user.service.AuthService;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -32,4 +34,10 @@ public class AuthController {
         authService.testTokenLoginUser();
         return new ResponseEntity<>(HttpStatus.OK);
     }
+    @GetMapping("/api/user/profile")
+    public User  profile() {
+        return authService.getVerifiyLoginCurrentUser();
+    }
+
+
 }
