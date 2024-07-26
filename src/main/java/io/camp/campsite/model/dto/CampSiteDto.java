@@ -1,34 +1,24 @@
-package io.camp.campsite.model.entity;
+package io.camp.campsite.model.dto;
 
-import io.camp.campsite.model.dto.CampSiteDto;
 import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
-
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.Date;
-
-@Entity
 @Builder
-@ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class CampSite {
+public class CampSiteDto {
 
-    @Id
+
     private int contentId;
 
     private String facltNm;
 
     private String lineIntro;
 
-    @Column(columnDefinition = "TEXT")
+
     private String intro;
 
     private int allar;
@@ -37,7 +27,7 @@ public class CampSite {
 
     private String bizrno;
 
-    @Column(columnDefinition = "TEXT")
+
     private String featureNm;
 
     private String induty;
@@ -115,7 +105,5 @@ public class CampSite {
     private String createdtime;
 
     private String modifiedtime;
-
-
 
 }
