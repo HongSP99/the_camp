@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CampSiteRepository extends JpaRepository<Campsite,Long> ,CampSiteRepositoryCustom{
+
 }

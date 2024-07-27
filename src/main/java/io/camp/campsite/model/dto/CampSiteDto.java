@@ -2,13 +2,13 @@ package io.camp.campsite.model.dto;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
+@Data
 public class CampSiteDto {
 
 

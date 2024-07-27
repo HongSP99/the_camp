@@ -1,6 +1,7 @@
 package io.camp.campsite.controller;
 
 
+import io.camp.campsite.model.dto.CampSiteDto;
 import io.camp.campsite.service.CampSiteService;
 import lombok.AllArgsConstructor;
 import org.json.simple.JSONArray;
@@ -51,6 +52,12 @@ public class CampsiteController {
 
 
         return  itemArray.toString();
+    }
+
+
+    @GetMapping("/campsite/{seq}")
+    public CampSiteDto getCampsiteBySeq(@PathVariable("seq") Long seq){
+        return campSiteService.getCampsiteBySeq(seq);
     }
 
 
