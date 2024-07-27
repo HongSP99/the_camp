@@ -1,30 +1,43 @@
 package io.camp.reservation.service;
 
+import io.camp.campsite.model.entity.Campsite;
+import io.camp.campsite.repository.CampSiteRepository;
 import io.camp.reservation.mapper.ReservationMapper;
 import io.camp.reservation.model.Reservation;
+import io.camp.reservation.model.ReservationState;
 import io.camp.reservation.model.dto.ReservationPostDto;
 import io.camp.reservation.repository.ReservationRepository;
 import io.camp.user.model.User;
 import io.camp.user.service.AuthService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ReservationService {
     private final ReservationRepository reservationRepository;
     private final AuthService authService;
     private final ReservationMapper mapper;
+    private final CampSiteRepository campSiteRepository;
 
     //새로운 예약을 생성한다.
     public Reservation createReservation(ReservationPostDto requestDto){
+        log.info("유저 찾기");
         User user = authService.getVerifiyLoginCurrentUser();
-//        Campsite campsite = campsiteRepository.findById(requestDto.getCampsiteId());
-
+        log.info("유저 찾기 성공");
+        Campsite campsite = campSiteRepository.findById(requestDto.getCampsiteId())
+                .orElseThrow(() -> new IllegalArgumentException("캠핑장을 찾을 수 없습니다."));
+        log.info("campsite 찾기 성공");
+        log.info(requestDto.toString());
         Reservation reservation = mapper.reservationPostDtoToReservation(requestDto);
+        log.info("예약 생성 성공");
         reservation.setUser(user);
-//        reservation.setCampsite(Campsite);
+        reservation.setCampsite(campsite);
+
+        log.info(reservation.toString());
 
         Reservation savedReservation;
         try{
