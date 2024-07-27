@@ -1,7 +1,9 @@
 package io.camp.user.controller;
 
 import io.camp.user.service.MailService;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,11 +21,12 @@ public class MailController {
 
     // 인증 이메일 전송
     @PostMapping("/mailSend")
-    public ResponseEntity<HashMap<String, Object>> mailSend(String mail) {
+    public ResponseEntity<HashMap<String, Object>> mailSend(HttpSession session, @RequestParam String mail) {
         HashMap<String, Object> map = new HashMap<>();
 
         try {
-            number = mailService.sendMail(mail);
+            int number = mailService.sendMail(mail);
+            session.setAttribute("authNumber", number); // 세션에 인증 번호 저장
             String num = String.valueOf(number);
 
             map.put("success", Boolean.TRUE);
@@ -36,10 +39,16 @@ public class MailController {
         return ResponseEntity.ok(map);
     }
 
-    // 인증번호 일치여부 확인
     @GetMapping("/mailCheck")
-    public ResponseEntity<?> mailCheck(@RequestParam String userNumber) {
-        boolean isMatch = userNumber.equals(String.valueOf(number));
+    public ResponseEntity<?> mailCheck(HttpSession session, @RequestParam String userNumber) {
+        Integer storedNumber = (Integer) session.getAttribute("authNumber"); // 세션에서 인증 번호 가져오기
+
+        if (storedNumber == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No authentication number found.");
+        }
+
+        boolean isMatch = userNumber.equals(String.valueOf(storedNumber));
         return ResponseEntity.ok(isMatch);
     }
+
 }
