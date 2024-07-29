@@ -60,4 +60,12 @@ public class ReservationService {
 
         return findReservation;
     }
+
+    public List<ReservationDto> findReservationsByUserId(Long userSeq){
+        List<Reservation> reservations = reservationRepository.findAll();
+        return reservations.stream()
+                .filter(reservation -> reservation.getUser().getSeq().equals(userSeq))
+                .map(ReservationDto::fromEntity)
+                .collect(Collectors.toList());
+    }
 }

@@ -2,9 +2,11 @@ package io.camp.reservation.controller;
 
 import io.camp.reservation.mapper.ReservationMapper;
 import io.camp.reservation.model.Reservation;
+import io.camp.reservation.model.dto.ReservationDto;
 import io.camp.reservation.model.dto.ReservationPostDto;
 import io.camp.reservation.model.dto.ReservationResponseDto;
 import io.camp.reservation.service.ReservationService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -24,6 +26,7 @@ public class ReservationController {
     private final ReservationService reservationService;
     private final ReservationMapper mapper;
 
+    //예약 생성
     @PostMapping("/reservation")
     public ResponseEntity<Object> createReservation(@RequestBody ReservationPostDto postDto){
         //동시 예약 시도 체크
@@ -36,14 +39,21 @@ public class ReservationController {
         }
     }
 
+    //특정 예약 상세 조회
     @GetMapping("/reservation/{reservation_id}")
-    public ResponseEntity<Object> getReservation(@PathVariable("reservation_id") Long reservationId){
+    public ResponseEntity<ReservationResponseDto> getReservation(@PathVariable("reservation_id") Long reservationId){
         Reservation reservation = reservationService.findReservation(reservationId);
 
         ReservationResponseDto responseDto = mapper.reservationToReservationResponseDto(reservation);
 
-        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+        return ResponseEntity.ok(responseDto);
     }
 
+    //회원 예약 내역 조회
+    @GetMapping("/reservation/{user_seq}")
+    public ResponseEntity<List<ReservationDto>> getReservationByUserSeq(@PathVariable("user_seq") Long userSeq){
+        List<ReservationDto> reservations = reservationService.findReservationsByUserId(userSeq);
 
+        return ResponseEntity.ok(reservations);
+    }
 }
