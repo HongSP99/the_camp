@@ -39,16 +39,5 @@ public class MailController {
         return ResponseEntity.ok(map);
     }
 
-    @GetMapping("/mailCheck")
-    public ResponseEntity<?> mailCheck(HttpSession session, @RequestParam String userNumber) {
-        Integer storedNumber = (Integer) session.getAttribute("authNumber"); // 세션에서 인증 번호 가져오기
-
-        if (storedNumber == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No authentication number found.");
-        }
-
-        boolean isMatch = userNumber.equals(String.valueOf(storedNumber));
-        return ResponseEntity.ok(isMatch);
-    }
 
 }
