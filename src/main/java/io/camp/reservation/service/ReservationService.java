@@ -5,11 +5,15 @@ import io.camp.campsite.repository.CampSiteRepository;
 import io.camp.reservation.mapper.ReservationMapper;
 import io.camp.reservation.model.Reservation;
 import io.camp.reservation.model.ReservationState;
+import io.camp.reservation.model.dto.ReservationDto;
 import io.camp.reservation.model.dto.ReservationPostDto;
 import io.camp.reservation.repository.ReservationRepository;
 import io.camp.user.model.User;
 import io.camp.user.service.AuthService;
 import jakarta.transaction.Transactional;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -47,5 +51,13 @@ public class ReservationService {
         }
 
         return savedReservation;
+    }
+
+    public Reservation findReservation(long reservationId) {
+        Optional<Reservation> optionalReservation = reservationRepository.findById(reservationId);
+        Reservation findReservation = optionalReservation.orElseThrow(() ->
+                        new IllegalArgumentException("RESERVATION_NOT_FOUND"));
+
+        return findReservation;
     }
 }
