@@ -22,6 +22,7 @@ public class Payment {
     private String amountTotal;
     private String amountTaxFree;
     private String amountCancelledTaxFree;
+    private String amountVat;
     private String amountPaid;
     private String amountDiscount;
     private String amountCancelled;
@@ -89,175 +90,181 @@ public class Payment {
     @JoinColumn(name = "reservation_seq")
     private Reservation reservation;
 
-    public void setPaymentInstanceVariable(String type, String input) {
-        switch (type) {
-            case "paymentId":
+    public void setPaymentInstanceVariable(PaymentType paymentType, String input) {
+        switch (paymentType) {
+            case paymentId:
                 this.paymentId = input;
                 break;
-            case "amount":
+            case amount:
                 this.amount = input;
                 break;
-            case "amountTotal":
+            case amountTotal:
                 this.amountTotal = input;
                 break;
-            case "amountTaxFree":
+            case amountTaxFree:
                 this.amountTaxFree = input;
                 break;
-            case "amountCancelledTaxFree":
+            case amountCancelledTaxFree:
                 this.amountCancelledTaxFree = input;
                 break;
-            case "amountPaid":
+            case amountVat:
+                this.amountVat = input;
+                break;
+            case amountPaid:
                 this.amountPaid = input;
                 break;
-            case "amountDiscount":
+            case amountDiscount:
                 this.amountDiscount = input;
                 break;
-            case "amountCancelled":
+            case amountCancelled:
                 this.amountCancelled = input;
                 break;
-            case "amountSupply":
+            case amountSupply:
                 this.amountSupply = input;
                 break;
-            case "pgResponse":
+            case pgResponse:
                 this.pgResponse = input;
                 break;
-            case "method":
+            case method:
                 this.method = input;
                 break;
-            case "methodEasyPayMethod":
+            case methodEasyPayMethod:
                 this.methodEasyPayMethod = input;
                 break;
-            case "methodEasyPayMethodInstallment":
+            case methodEasyPayMethodInstallment:
                 this.methodEasyPayMethodInstallment = input;
                 break;
-            case "methodEasyPayMethodInstallmentMonth":
+            case methodEasyPayMethodInstallmentMonth:
                 this.methodEasyPayMethodInstallmentMonth = input;
                 break;
-            case "methodEasyPayMethodInstallmentIsInterestFree":
+            case methodEasyPayMethodInstallmentIsInterestFree:
                 this.methodEasyPayMethodInstallmentIsInterestFree = input;
                 break;
-            case "methodEasyPayMethodType":
+            case methodEasyPayMethodType:
                 this.methodEasyPayMethodType = input;
                 break;
-            case "methodEasyPayMethodApprovalNumber":
+            case methodEasyPayMethodApprovalNumber:
                 this.methodEasyPayMethodApprovalNumber = input;
                 break;
-            case "methodEasyPayMethodCard":
+            case methodEasyPayMethodCard:
                 this.methodEasyPayMethodCard = input;
                 break;
-            case "methodEasyPayMethodCardOwnerType":
+            case methodEasyPayMethodCardOwnerType:
                 this.methodEasyPayMethodCardOwnerType = input;
                 break;
-            case "methodEasyPayMethodCardNumber":
+            case methodEasyPayMethodCardNumber:
                 this.methodEasyPayMethodCardNumber = input;
                 break;
-            case "methodEasyPayMethodCardBin":
+            case methodEasyPayMethodCardBin:
                 this.methodEasyPayMethodCardBin = input;
                 break;
-            case "methodEasyPayMethodCardName":
+            case methodEasyPayMethodCardName:
                 this.methodEasyPayMethodCardName = input;
                 break;
-            case "methodEasyPayMethodCardPublisher":
+            case methodEasyPayMethodCardPublisher:
                 this.methodEasyPayMethodCardPublisher = input;
                 break;
-            case "methodEasyPayMethodCardType":
+            case methodEasyPayMethodCardType:
                 this.methodEasyPayMethodCardType = input;
                 break;
-            case "methodEasyPayMethodCardBrand":
+            case methodEasyPayMethodCardBrand:
                 this.methodEasyPayMethodCardBrand = input;
                 break;
-            case "methodEasyPayMethodCardIssuer":
+            case methodEasyPayMethodCardIssuer:
                 this.methodEasyPayMethodCardIssuer = input;
                 break;
-            case "methodProvider":
+            case methodProvider:
                 this.methodProvider = input;
                 break;
-            case "methodType":
+            case methodType:
                 this.methodType = input;
                 break;
-            case "pgTxId":
+            case pgTxId:
                 this.pgTxId = input;
                 break;
-            case "channel":
+            case channel:
                 this.channel = input;
                 break;
-            case "channelPgProvider":
+            case channelPgProvider:
                 this.channelPgProvider = input;
                 break;
-            case "channelName":
+            case channelName:
                 this.channelName = input;
                 break;
-            case "channelId":
+            case channelId:
                 this.channelId = input;
                 break;
-            case "channelType":
+            case channelType:
                 this.channelType = input;
                 break;
-            case "channelKey":
+            case channelKey:
+                this.channelKey = input;
                 break;
-            case "channelPgMerchantId":
+            case channelPgMerchantId:
                 this.channelPgMerchantId = input;
                 break;
-            case "storeId":
+            case storeId:
                 this.storeId = input;
                 break;
-            case "version":
+            case version:
                 this.version = input;
                 break;
-            case "transactionId":
+            case transactionId:
                 this.transactionId = input;
                 break;
-            case "promotionId":
+            case promotionId:
                 this.promotionId = input;
                 break;
-            case "statusChangedAt":
+            case statusChangedAt:
                 this.statusChangedAt = input;
                 break;
-            case "merchantId":
+            case merchantId:
                 this.merchantId = input;
                 break;
-            case "requestedAt":
+            case requestedAt:
                 this.requestedAt = input;
                 break;
-            case "paidAt":
+            case paidAt:
                 this.paidAt = input;
                 break;
-            case "currency":
+            case currency:
                 this.currency = input;
                 break;
-            case "isCulturalExpense":
+            case isCulturalExpense:
                 this.isCulturalExpense = input;
                 break;
-            case "id":
+            case id:
                 this.id = input;
                 break;
-            case "receiptUrl":
+            case receiptUrl:
                 this.receiptUrl = input;
                 break;
-            case "status":
+            case status:
                 this.status = input;
                 break;
-            case "updatedAt":
+            case updatedAt:
                 this.updatedAt = input;
                 break;
-            case "orderName":
+            case orderName:
                 this.orderName = input;
                 break;
-            case "customer":
+            case customer:
                 this.customer = input;
                 break;
-            case "customerPhoneNumber":
+            case customerPhoneNumber:
                 this.customerPhoneNumber = input;
                 break;
-            case "customerName":
+            case customerName:
                 this.customerName = input;
                 break;
-            case "customerId":
+            case customerId:
                 this.customerId = input;
                 break;
-            case "customerEmail":
+            case customerEmail:
                 this.customerEmail = input;
                 break;
+            default:
+                throw new RuntimeException("요소가 없습니다.");
         }
     }
 }

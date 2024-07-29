@@ -1,9 +1,8 @@
 package io.camp.payment.controller;
 
 
-import io.camp.payment.model.dto.KakaoDto;
+import io.camp.payment.model.dto.PaymentGetDto;
 import io.camp.payment.service.PaymentService;
-import io.camp.user.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,14 +15,13 @@ import java.net.URL;
 @RequiredArgsConstructor
 public class PaymentController {
 
-    private final AuthService authService;
+
     private final PaymentService paymentService;
 
     @PostMapping("/payment/complete")
-    public String testPayment(@RequestBody KakaoDto kakaoDto) {
-        //User user = authService.getVerifiyLoginCurrentUser();
+    public String testPayment(@RequestBody PaymentGetDto paymentGetDto) {
         try {
-            URL url = new URL("https://api.portone.io/payments/" + kakaoDto.getPaymentId());
+            URL url = new URL("https://api.portone.io/payments/" + paymentGetDto.getPaymentId());
             HttpURLConnection conn = (HttpURLConnection)url.openConnection();
 
             conn.setRequestMethod("GET");
@@ -35,7 +33,7 @@ public class PaymentController {
             BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             StringBuilder sb = new StringBuilder(br.readLine());
             String json = sb.toString();
-            paymentService.paymentSave(kakaoDto, json);
+            paymentService.paymentSave(paymentGetDto, json);
         } catch (Exception e) {
             e.printStackTrace();
         }
