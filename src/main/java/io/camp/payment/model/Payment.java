@@ -19,7 +19,7 @@ public class Payment {
     private Long seq;
     private String paymentId;
     private String amount;
-    private String amountTotal;
+    private int amountTotal;
     private String amountTaxFree;
     private String amountCancelledTaxFree;
     private String amountVat;
@@ -90,6 +90,9 @@ public class Payment {
     @JoinColumn(name = "reservation_seq")
     private Reservation reservation;
 
+    @OneToOne(mappedBy = "payment")
+    private PaymentCancellation paymentCancellation;
+
     public void setPaymentInstanceVariable(PaymentType paymentType, String input) {
         switch (paymentType) {
             case paymentId:
@@ -99,7 +102,7 @@ public class Payment {
                 this.amount = input;
                 break;
             case amountTotal:
-                this.amountTotal = input;
+                this.amountTotal = Integer.valueOf(input);
                 break;
             case amountTaxFree:
                 this.amountTaxFree = input;

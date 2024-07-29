@@ -5,6 +5,7 @@ import io.camp.exception.user.UserAnonymousException;
 import io.camp.user.model.User;
 import io.camp.user.model.UserRole;
 import io.camp.user.model.dto.JoinDto;
+import io.camp.user.model.dto.UserGetDto;
 import io.camp.user.repository.AuthRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -32,16 +33,13 @@ public class AuthService {
     }
 
 
-    public void testTokenLoginUser() {
+    public UserGetDto LoginUserData() {
         User user = getVerifiyLoginCurrentUser();
-        System.out.println("user.seq : " + user.getSeq());
-        System.out.println("user.email : " + user.getEmail());
-        System.out.println("user.password : " + user.getPassword());
-        System.out.println("user.role : " + user.getRole().getTitle() + " " + user.getRole().getKey());
-        System.out.println("user.name : " + user.getName());
-        System.out.println("user.birthday : " + user.getBirthday());
-        System.out.println("user.phoneNumber : " + user.getPhoneNumber());
-        System.out.println("user.gender : " + user.getGender());
+        UserGetDto userGetDto = new UserGetDto();
+        userGetDto.setEmail(user.getEmail());
+        userGetDto.setName(user.getName());
+        userGetDto.setPhoneNumber(user.getPhoneNumber());
+        return userGetDto;
     }
 
     @PostConstruct

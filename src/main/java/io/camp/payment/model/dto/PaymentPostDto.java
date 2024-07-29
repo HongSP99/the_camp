@@ -5,6 +5,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class PaymentGetDto {
+public class PaymentPostDto {
     private String paymentId;
+    private Long reservationId;
+    private String reason;
 }
