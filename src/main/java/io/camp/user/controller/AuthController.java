@@ -4,6 +4,7 @@ package io.camp.user.controller;
 import io.camp.user.model.User;
 import io.camp.user.model.dto.JoinDto;
 import io.camp.user.model.dto.LoginDto;
+import io.camp.user.model.dto.UserGetDto;
 import io.camp.user.service.AuthService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -29,15 +30,13 @@ public class AuthController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping("/test")
-    public ResponseEntity<?> testTokenLoginUser() {
-        authService.testTokenLoginUser();
-        return new ResponseEntity<>(HttpStatus.OK);
+    @GetMapping("/api/user")
+    public ResponseEntity<UserGetDto> loginUserData() {
+        return new ResponseEntity<>(authService.LoginUserData(), HttpStatus.OK);
     }
+
     @GetMapping("/api/user/profile")
     public User  profile() {
         return authService.getVerifiyLoginCurrentUser();
     }
-
-
 }
