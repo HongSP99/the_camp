@@ -75,7 +75,7 @@ public class ReissueController {
         }
 
         String email = jwtTokenUtil.getEmail(refresh);
-        String role = String.valueOf(jwtTokenUtil.getRole(refresh));
+        UserRole role = jwtTokenUtil.getRole(refresh);
         String name = jwtTokenUtil.getName(refresh);
         String birthday = jwtTokenUtil.getBirthDay(refresh);
         String phoneNumber = jwtTokenUtil.getPhoneNumber(refresh);
@@ -85,8 +85,8 @@ public class ReissueController {
 
 
         //make new JWT
-        String newAuthorization = jwtTokenUtil.createToken("Authorization", email,role,name,birthday,phoneNumber,gender,seq, 600000L);
-        String newRefresh = jwtTokenUtil.createToken("refresh", email,role,name,birthday,phoneNumber,gender,seq, 86400000L);
+        String newAuthorization = jwtTokenUtil.createToken("Authorization", email,role.getKey(),name,birthday,phoneNumber,gender,seq, 600000L);
+        String newRefresh = jwtTokenUtil.createToken("refresh", email,role.getKey(),name,birthday,phoneNumber,gender,seq, 86400000L);
 
 
         refreshRepository.deleteByRefresh(refresh);
