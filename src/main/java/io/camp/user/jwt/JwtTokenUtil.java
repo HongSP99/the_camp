@@ -26,6 +26,26 @@ public class JwtTokenUtil {
     public String getEmail(String token) {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("email", String.class);
     }
+    public Long getSeq(String token) {
+        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("seq", Long.class);
+    }
+
+    public String getPhoneNumber(String token) {
+        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("phoneNumber", String.class);
+    }
+    public String getGender(String token) {
+        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("gender", String.class);
+    }
+    public String getName(String token) {
+        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("name", String.class);
+    }
+    public String getBirthDay(String token) {
+        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("birthday", String.class);
+    }
+    public String getPassword(String token) {
+        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("password", String.class);
+    }
+
 
     public UserRole getRole(String token) {
         String role = Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("role", String.class);
@@ -42,16 +62,22 @@ public class JwtTokenUtil {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().getExpiration().before(new Date());
     }
 
-    public String createToken(String category, String email, String role, Long expiredMs) {
+    public String createToken(String category, String email, String role, String name, String birthday, String phoneNumber, String gender, Long seq, Long expiredMs) {
         return Jwts.builder()
                 .claim("category", category)
                 .claim("email", email)
                 .claim("role", role)
-                .issuedAt(new Date(System.currentTimeMillis()))
+                .claim("name", name)
+                .claim("birthday", birthday)
+                .claim("phoneNumber", phoneNumber)
+                .claim("gender", gender)
+                .claim("seq", seq)
+                .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + expiredMs))
                 .signWith(secretKey)
                 .compact();
     }
+
 
     public Cookie createCookie(String key, String value) {
         Cookie cookie = new Cookie(key, value);

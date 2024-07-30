@@ -2,6 +2,7 @@ package io.camp.user.controller;
 
 import io.camp.user.jwt.JwtTokenUtil;
 import io.camp.user.model.RefreshEntity;
+import io.camp.user.model.UserRole;
 import io.camp.user.repository.RefreshRepository;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.http.Cookie;
@@ -75,17 +76,24 @@ public class ReissueController {
 
         String email = jwtTokenUtil.getEmail(refresh);
         String role = String.valueOf(jwtTokenUtil.getRole(refresh));
+        String name = jwtTokenUtil.getName(refresh);
+        String birthday = jwtTokenUtil.getBirthDay(refresh);
+        String phoneNumber = jwtTokenUtil.getPhoneNumber(refresh);
+        String gender = jwtTokenUtil.getName(refresh);
+        Long seq = jwtTokenUtil.getSeq(refresh);
+
+
 
         //make new JWT
-        String newAccess = jwtTokenUtil.createToken("access", email, role, 600000L);
-        String newRefresh = jwtTokenUtil.createToken("refresh", email, role, 86400000L);
+        String newAuthorization = jwtTokenUtil.createToken("Authorization", email,role,name,birthday,phoneNumber,gender,seq, 600000L);
+        String newRefresh = jwtTokenUtil.createToken("refresh", email,role,name,birthday,phoneNumber,gender,seq, 86400000L);
 
 
         refreshRepository.deleteByRefresh(refresh);
-        addRefreshEntity(email, newRefresh,86400000L );
+        addRefreshEntity(email, newRefresh,name,birthday,phoneNumber,gender,seq,86400000L );
 
         //response
-        response.setHeader("access", newAccess);
+        response.setHeader("Authorization", newAuthorization);
         response.addCookie(createCookie("refresh", newRefresh));
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -101,13 +109,18 @@ public class ReissueController {
     }
 
 
-    private void addRefreshEntity(String username, String refresh, Long expiredMs) {
+    private void addRefreshEntity(String username, String refresh, String name, String birthday, String phoneNumber, String  gender, Long seq, Long expiredMs) {
 
         Date date = new Date(System.currentTimeMillis() + expiredMs);
 
         RefreshEntity refreshEntity = new RefreshEntity();
         refreshEntity.setUsername(username);
         refreshEntity.setRefresh(refresh);
+        refreshEntity.setName(name);
+        refreshEntity.setBirthday(birthday);
+        refreshEntity.setPhoneNumber(phoneNumber);
+        refreshEntity.setGender(gender);
+        refreshEntity.setSeq(seq);
         refreshEntity.setExpiration(date.toString());
 
         refreshRepository.save(refreshEntity);

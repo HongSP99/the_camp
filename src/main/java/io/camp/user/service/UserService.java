@@ -1,24 +1,21 @@
 package io.camp.user.service;
 
-import io.camp.user.jwt.JwtTokenUtil;
 import io.camp.user.model.User;
 import io.camp.user.model.UserRole;
 import io.camp.user.model.dto.JoinDto;
-import io.camp.user.repository.AuthRepository;
-import jakarta.annotation.PostConstruct;
+import io.camp.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class AuthService {
+public class UserService {
 
-    private final AuthRepository authRepository;
+    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
     public User getVerifiyLoginCurrentUser() {
@@ -27,7 +24,7 @@ public class AuthService {
         if (email.equals("anonymousUser")) {
             throw new RuntimeException("유요한 사용자가 아닙니다.");
         }
-        return authRepository.findByEmail(email);
+        return userRepository.findByEmail(email);
     }
 
 
@@ -90,7 +87,7 @@ public class AuthService {
 
     @Transactional
     public void join(JoinDto joinDto) {
-        if (authRepository.existsByEmail(joinDto.getEmail())) {
+        if (userRepository.existsByEmail(joinDto.getEmail())) {
             throw new RuntimeException("아이디가 중복되었습니다");
         }
 
@@ -102,8 +99,13 @@ public class AuthService {
         user.setBirthday(joinDto.getBirthday());
         user.setPhoneNumber(joinDto.getPhoneNumber());
         user.setGender(joinDto.getGender());
-        authRepository.save(user);
+        userRepository.save(user);
     }
+
+    public void userProfile() {
+
+    }
+
 
 
 }

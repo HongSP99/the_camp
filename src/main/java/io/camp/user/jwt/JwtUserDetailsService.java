@@ -1,7 +1,7 @@
 package io.camp.user.jwt;
 
 import io.camp.user.model.User;
-import io.camp.user.repository.AuthRepository;
+import io.camp.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -12,12 +12,12 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class JwtUserDetailsService implements UserDetailsService {
 
-    private final AuthRepository authRepository;
+    private final UserRepository userRepository;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        if (authRepository.existsByEmail(email)) {
-            User user = authRepository.findByEmail(email);
+        if (userRepository.existsByEmail(email)) {
+            User user = userRepository.findByEmail(email);
             return new JwtUserDetails(user);
         }
         throw new UsernameNotFoundException("아이디, 비밀번호가 일치하지 않습니다.");
