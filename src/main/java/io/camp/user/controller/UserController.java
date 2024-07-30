@@ -37,10 +37,11 @@ public class UserController {
     @GetMapping("/api/user/profile")
     public ResponseEntity<User> getUserProfile(@AuthenticationPrincipal JwtUserDetails userDetails) {
         User user = userDetails.getUser();
-        // Null 체크 및 필요한 경우 예외 처리
+
         if (user == null) {
             return ResponseEntity.status(404).body(null);
         }
+
         return ResponseEntity.ok(user);
     }
 
