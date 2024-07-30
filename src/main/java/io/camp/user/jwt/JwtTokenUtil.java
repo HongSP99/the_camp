@@ -42,9 +42,6 @@
         public String getBirthDay(String token) {
             return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("birthday", String.class);
         }
-        public String getPassword(String token) {
-            return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("password", String.class);
-        }
 
 
         public UserRole getRole(String token) {

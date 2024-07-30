@@ -17,7 +17,7 @@ import java.util.HashMap;
 public class MailController {
 
     private final MailService mailService;
-    private int number; // 이메일 인증 숫자를 저장하는 변수
+
 
     // 인증 이메일 전송
     @PostMapping("/mailSend")
