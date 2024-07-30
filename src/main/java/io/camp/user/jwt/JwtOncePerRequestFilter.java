@@ -24,42 +24,54 @@ public class JwtOncePerRequestFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String accessToken = request.getHeader("access");
+        String authorizationToken = request.getHeader("Authorization");
 
-        if (StringUtils.isEmpty(accessToken) || accessToken.equals("null")) {
+        if (StringUtils.isEmpty(authorizationToken) || authorizationToken.equals("null")) {
             filterChain.doFilter(request, response);
             return;
         }
+
         try {
-            jwtTokenUtil.isExpired(accessToken);
+            jwtTokenUtil.isExpired(authorizationToken);
         } catch (ExpiredJwtException e) {
             PrintWriter writer = response.getWriter();
-            writer.print("access token expired");
+            writer.print("Authorization token expired");
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         } catch (MalformedJwtException e) {
             PrintWriter writer = response.getWriter();
-            writer.print("access token unsupported types");
+            writer.print("Authorization token unsupported types");
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
 
+        String category = jwtTokenUtil.getCategory(authorizationToken);
 
-        String category = jwtTokenUtil.getCategory(accessToken);
-
-        if (!category.equals("access")) {
+        if (!category.equals("Authorization")) {
             PrintWriter writer = response.getWriter();
-            writer.print("invalid access token");
+            writer.print("invalid authorization token");
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
 
-        String email = jwtTokenUtil.getEmail(accessToken);
-        UserRole role = jwtTokenUtil.getRole(accessToken);
+        String email = jwtTokenUtil.getEmail(authorizationToken);
+        UserRole role = jwtTokenUtil.getRole(authorizationToken);
+        String birthday = jwtTokenUtil.getBirthDay(authorizationToken);
+        String phoneNumber = jwtTokenUtil.getPhoneNumber(authorizationToken);
+        String gender = jwtTokenUtil.getGender(authorizationToken);
+        String name = jwtTokenUtil.getName(authorizationToken);
+        Long seq = jwtTokenUtil.getSeq(authorizationToken);
+
 
         User user = new User();
         user.setEmail(email);
         user.setRole(role);
+        user.setBirthday(birthday);
+        user.setPhoneNumber(phoneNumber);
+        user.setName(name);
+        user.setGender(gender);
+        user.setSeq(seq);
+
         JwtUserDetails jwtUserDetails = new JwtUserDetails(user);
 
         Authentication authToken = new UsernamePasswordAuthenticationToken(jwtUserDetails, null, jwtUserDetails.getAuthorities());

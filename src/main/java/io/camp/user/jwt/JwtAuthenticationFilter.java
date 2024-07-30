@@ -3,6 +3,7 @@ package io.camp.user.jwt;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.camp.user.model.RefreshEntity;
 import io.camp.user.model.User;
+import io.camp.user.model.UserRole;
 import io.camp.user.repository.RefreshRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -51,18 +52,24 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         JwtUserDetails jwtUserDetails = (JwtUserDetails) authentication.getPrincipal();
         String username = jwtUserDetails.getUsername();
         String role = jwtUserDetails.getRole().getKey();
+        String name = jwtUserDetails.getName();
+        String birthday = jwtUserDetails.getBirthDay();
+        String phoneNumber = jwtUserDetails.getPhoneNumber();
+        String gender = jwtUserDetails.getGender();
+        Long seq = jwtUserDetails.getSeq();
+
 
         //토큰 생성
-        String access = jwtTokenUtil.createToken("access", username, role, 600000L);
-        String refresh = jwtTokenUtil.createToken("refresh", username, role, 86400000L);
+        String authorization = jwtTokenUtil.createToken("Authorization", username,role, name,birthday,phoneNumber,gender,seq, 600000L);
+        String refresh = jwtTokenUtil.createToken("refresh",username,role, name,birthday,phoneNumber,gender,seq, 86400000L);
 
-        log.info("access token : " + access);
+        log.info("Authorization token : " + authorization);
         log.info("refresh token : " + refresh);
 
-        addRefreshEntity(username, refresh, 86400000L);
+        addRefreshEntity(username, refresh,name,birthday,phoneNumber,gender,seq, 86400000L);
 
         //응답 설정
-        response.setHeader("access", access);
+        response.setHeader("Authorization", authorization);
         response.addCookie(jwtTokenUtil.createCookie("refresh", refresh));
         response.setStatus(HttpStatus.OK.value());
     }
@@ -72,13 +79,19 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         response.setStatus(401);
     }
 
-    private void addRefreshEntity(String username, String refresh, Long expiredMs) {
+    private void addRefreshEntity(String username,  String refresh, String name, String birthday, String phoneNumber, String gender, Long seq, Long expiredMs) {
 
         Date date = new Date(System.currentTimeMillis() + expiredMs);
 
         RefreshEntity refreshEntity = new RefreshEntity();
         refreshEntity.setUsername(username);
         refreshEntity.setRefresh(refresh);
+        refreshEntity.setName(name);
+        refreshEntity.setBirthday(birthday);
+        refreshEntity.setPhoneNumber(phoneNumber);
+        refreshEntity.setGender(gender);
+        refreshEntity.setSeq(seq);
+
         refreshEntity.setExpiration(date.toString());
 
         refreshRepository.save(refreshEntity);

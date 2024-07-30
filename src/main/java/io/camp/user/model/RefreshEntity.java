@@ -1,9 +1,6 @@
 package io.camp.user.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,9 +11,21 @@ public class RefreshEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long seq;
 
     private String username;
     private String refresh;
     private String expiration;
+
+
+    @Enumerated(EnumType.STRING)
+    private UserRole role;
+
+    private String name;
+
+    private String birthday;
+
+    private String phoneNumber;
+
+    private String gender;
 }
