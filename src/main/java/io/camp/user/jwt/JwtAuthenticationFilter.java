@@ -66,7 +66,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         log.info("Authorization token : " + authorization);
         log.info("refresh token : " + refresh);
 
-        addRefreshEntity(username, refresh,name,birthday,phoneNumber,gender,seq, 86400000L);
+        addRefreshEntity(username, refresh,name,birthday,phoneNumber,gender,seq,jwtUserDetails.getRole(), 86400000L);
 
         //응답 설정
         response.setHeader("Authorization", authorization);
@@ -79,8 +79,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         response.setStatus(401);
     }
 
-    private void addRefreshEntity(String username,  String refresh, String name, String birthday, String phoneNumber, String gender, Long seq, Long expiredMs) {
-
+    private void addRefreshEntity(String username, String refresh, String name, String birthday, String phoneNumber, String gender, Long seq,UserRole role, Long expiredMs ) {
         Date date = new Date(System.currentTimeMillis() + expiredMs);
 
         RefreshEntity refreshEntity = new RefreshEntity();
@@ -91,8 +90,9 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         refreshEntity.setPhoneNumber(phoneNumber);
         refreshEntity.setGender(gender);
         refreshEntity.setSeq(seq);
-
+        refreshEntity.setRole(role); // Role 설정 추가
         refreshEntity.setExpiration(date.toString());
+
 
         refreshRepository.save(refreshEntity);
     }
