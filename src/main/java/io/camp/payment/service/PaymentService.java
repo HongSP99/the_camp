@@ -11,7 +11,7 @@ import io.camp.payment.repository.PaymentRepository;
 import io.camp.reservation.model.Reservation;
 import io.camp.reservation.repository.ReservationRepository;
 import io.camp.user.model.User;
-import io.camp.user.service.AuthService;
+import io.camp.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
@@ -23,7 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class PaymentService {
     private final PaymentRepository paymentRepository;
     private final PaymentCancellationRepository paymentCancellationRepository;
-    private final AuthService authService;
+    private final UserService authService;
     private final ReservationRepository reservationRepository;
 
     public void paymentCancel(PaymentPostDto paymentPostDto, String json) {

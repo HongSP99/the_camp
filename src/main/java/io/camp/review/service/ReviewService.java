@@ -7,20 +7,19 @@ import io.camp.review.model.dto.ReviewDto;
 import io.camp.review.model.dto.UpdateReviewDto;
 import io.camp.review.repository.ReviewRepository;
 import io.camp.user.model.User;
-import io.camp.user.repository.AuthRepository;
+import io.camp.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import io.camp.user.service.AuthService;
 
 @Service
 @RequiredArgsConstructor
 public class ReviewService {
     private final ReviewRepository reviewRepository;
     //private final AuthRepository authRepository;
-    private final AuthService authService;
+    private final UserService authService;
 
     //리뷰 생성
     @Transactional
