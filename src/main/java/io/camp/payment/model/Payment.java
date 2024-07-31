@@ -82,15 +82,15 @@ public class Payment {
     private String customerId;
     private String customerEmail;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_seq")
     private User user;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "reservation_seq")
     private Reservation reservation;
 
-    @OneToOne(mappedBy = "payment")
+    @OneToOne(mappedBy = "payment" , cascade = CascadeType.ALL)
     private PaymentCancellation paymentCancellation;
 
     public void setPaymentInstanceVariable(PaymentType paymentType, String input) {
