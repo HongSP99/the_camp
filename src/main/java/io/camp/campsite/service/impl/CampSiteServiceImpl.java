@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -51,5 +52,12 @@ public class CampSiteServiceImpl implements CampSiteService {
     public Page<CampSiteDto> searchCampsites(String name, Pageable pageable) {
         Page<Campsite> campsites = campSiteRepository.findByFacltNmContainingIgnoreCase(name, pageable);
         return campsites.map(campsiteMapper::toCampsiteDto);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<CampSiteDto> getAllPaging(int page, int size){
+        Page<Campsite> campsites = campSiteRepository.findAll(PageRequest.of(page,size));
+        Page<CampSiteDto> campsiteDtos = campsites.map(campsiteMapper::toCampsiteDto);
+        return campsiteDtos;
     }
 }

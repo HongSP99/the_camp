@@ -6,7 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-@Repository
-public interface CampSiteRepository extends JpaRepository<Campsite, Long> {
+
+public interface CampSiteRepository extends JpaRepository<Campsite, Long> , CampSiteRepositoryCustom{
     Page<Campsite> findByFacltNmContainingIgnoreCase(String facltNm, Pageable pageable);
 }
