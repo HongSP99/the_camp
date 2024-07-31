@@ -4,7 +4,7 @@ package io.camp.like.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "like")
+@Table(name = "likes")
 public class Like {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
