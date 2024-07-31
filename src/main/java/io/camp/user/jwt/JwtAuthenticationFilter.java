@@ -51,6 +51,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException, ServletException {
         JwtUserDetails jwtUserDetails = (JwtUserDetails) authentication.getPrincipal();
         String username = jwtUserDetails.getUsername();
+        String password = jwtUserDetails.getPassword();
         String role = jwtUserDetails.getRole().getKey();
         String name = jwtUserDetails.getName();
         String birthday = jwtUserDetails.getBirthDay();
@@ -60,13 +61,13 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
 
         //토큰 생성
-        String authorization = jwtTokenUtil.createToken("Authorization", username,role, name,birthday,phoneNumber,gender,seq, 600000L);
-        String refresh = jwtTokenUtil.createToken("refresh",username,role, name,birthday,phoneNumber,gender,seq, 86400000L);
+        String authorization = jwtTokenUtil.createToken("Authorization", username,password,role, name,birthday,phoneNumber,gender,seq, 600000L);
+        String refresh = jwtTokenUtil.createToken("refresh",username,password,role, name,birthday,phoneNumber,gender,seq, 86400000L);
 
         log.info("Authorization token : " + authorization);
         log.info("refresh token : " + refresh);
 
-        addRefreshEntity(username, refresh,name,birthday,phoneNumber,gender,seq,jwtUserDetails.getRole(), 86400000L);
+        addRefreshEntity(username, refresh,password,name,birthday,phoneNumber,gender,seq,jwtUserDetails.getRole(), 86400000L);
 
         //응답 설정
         response.setHeader("Authorization", authorization);
@@ -79,12 +80,13 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         response.setStatus(401);
     }
 
-    private void addRefreshEntity(String username, String refresh, String name, String birthday, String phoneNumber, String gender, Long seq,UserRole role, Long expiredMs ) {
+    private void addRefreshEntity(String username, String refresh, String password, String name, String birthday, String phoneNumber, String gender, Long seq,UserRole role, Long expiredMs ) {
         Date date = new Date(System.currentTimeMillis() + expiredMs);
 
         RefreshEntity refreshEntity = new RefreshEntity();
         refreshEntity.setUsername(username);
         refreshEntity.setRefresh(refresh);
+        refreshEntity.setPassword(password);
         refreshEntity.setName(name);
         refreshEntity.setBirthday(birthday);
         refreshEntity.setPhoneNumber(phoneNumber);

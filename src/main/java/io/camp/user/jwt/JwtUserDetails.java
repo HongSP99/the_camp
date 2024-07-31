@@ -42,6 +42,7 @@ public class JwtUserDetails implements UserDetails {
     public String getBirthDay() {
         return user.getBirthday();
     }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(user.getRole().getKey()).stream().map(role -> new SimpleGrantedAuthority(role)).toList();

@@ -4,6 +4,7 @@ import io.camp.user.model.User;
 import io.camp.user.model.UserRole;
 import io.camp.user.model.dto.JoinDto;
 import io.camp.user.repository.UserRepository;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -50,7 +51,7 @@ public class UserService {
 //        user.setBirthday("0000-00-00");
 //        user.setPhoneNumber("000-1234-5678");
 //        user.setGender("성별");
-//        authRepository.save(user);
+//        userRepository.save(user);
 //    }
 //
 //    public void userInit() {
@@ -102,9 +103,16 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public void userProfile() {
-
+    @Transactional
+    public void updatePassword(String currentPassword, String newPassword) {
+        User user = getVerifiyLoginCurrentUser();
+        if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
+            throw new RuntimeException("현재 비밀번호가 일치하지 않습니다.");
+        }
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
     }
+
 
 
 

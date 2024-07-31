@@ -43,6 +43,9 @@
             return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("birthday", String.class);
         }
 
+        public String getPassword(String token) {
+            return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("password", String.class);
+        }
 
         public UserRole getRole(String token) {
             String role = Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("role", String.class);
@@ -59,10 +62,11 @@
             return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().getExpiration().before(new Date());
         }
 
-        public String createToken(String category, String email, String role, String name, String birthday, String phoneNumber, String gender, Long seq, Long expiredMs) {
+        public String createToken(String category, String email, String password, String role, String name, String birthday, String phoneNumber, String gender, Long seq, Long expiredMs) {
             return Jwts.builder()
                     .claim("category", category)
                     .claim("email", email)
+                    .claim("password",password)
                     .claim("role", role)
                     .claim("name", name)
                     .claim("birthday", birthday)
