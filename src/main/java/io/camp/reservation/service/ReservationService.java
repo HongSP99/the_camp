@@ -1,12 +1,20 @@
 package io.camp.reservation.service;
 
+import io.camp.campsite.model.entity.Campsite;
+import io.camp.campsite.repository.CampSiteRepository;
+import io.camp.exception.ExceptionCode;
+import io.camp.exception.reservation.ReservationException;
 import io.camp.reservation.mapper.ReservationMapper;
 import io.camp.reservation.model.Reservation;
+import io.camp.reservation.model.dto.ReservationDto;
 import io.camp.reservation.model.dto.ReservationPostDto;
 import io.camp.reservation.repository.ReservationRepository;
 import io.camp.user.model.User;
-import io.camp.user.service.AuthService;
+import io.camp.user.service.UserService;
 import jakarta.transaction.Transactional;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
