@@ -48,7 +48,7 @@ public class ReservationService {
         try{
             savedReservation = reservationRepository.save(reservation);
         } catch (Exception e){
-            throw new IllegalArgumentException("예약 중 문제 발생");
+            throw new ReservationException(ExceptionCode.RESERVATION_NOT_FOUND);
         }
 
         return savedReservation;
