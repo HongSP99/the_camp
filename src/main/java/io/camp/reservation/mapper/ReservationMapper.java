@@ -10,8 +10,9 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface ReservationMapper {
 
-    @Mapping(target = "reservationState", ignore = true)
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "campsite", ignore = true)
+    @Mapping(target = "user", ignore = true)
     Reservation reservationPostDtoToReservation(ReservationPostDto reservationPostDto);
 
     default ReservationResponseDto reservationToReservationResponseDto(Reservation reservation){
