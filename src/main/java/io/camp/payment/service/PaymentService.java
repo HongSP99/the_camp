@@ -11,7 +11,6 @@ import io.camp.payment.repository.PaymentRepository;
 import io.camp.reservation.model.Reservation;
 import io.camp.reservation.repository.ReservationRepository;
 import io.camp.user.model.User;
-import io.camp.user.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
@@ -23,11 +22,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class PaymentService {
     private final PaymentRepository paymentRepository;
     private final PaymentCancellationRepository paymentCancellationRepository;
-    private final AuthService authService;
+//    private final AuthService authService;
     private final ReservationRepository reservationRepository;
 
     public void paymentCancel(PaymentPostDto paymentPostDto, String json) {
-        User user = authService.getVerifiyLoginCurrentUser();
+//        User user = authService.getVerifiyLoginCurrentUser();
 
         PaymentCancellation paymentCancellation = jsonToPaymentCancellation(json, paymentPostDto);
         Payment payment = paymentRepository.findByPaymentId(paymentCancellation.getPaymentId());
@@ -46,8 +45,8 @@ public class PaymentService {
         payment.setPaymentId(paymentPostDto.getPaymentId());
         jsonToPayment(json, "", payment);
 
-        User user = authService.getVerifiyLoginCurrentUser();
-        payment.setUser(user);
+        //User user = authService.getVerifiyLoginCurrentUser();
+        //payment.setUser(user);
 
 //        if (user.getEmail().equals(payment.getCustomerEmail())) {
 //            throw new RuntimeException("이메일이 일치하지 않습니다.");
