@@ -20,28 +20,24 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api")
+@RequestMapping("/reservation")
 @Slf4j
 public class ReservationController {
     private final ReservationService reservationService;
     private final ReservationMapper mapper;
 
     //예약 생성
-    @PostMapping("/reservation")
+    @PostMapping()
     public ResponseEntity<Object> createReservation(@RequestBody ReservationPostDto postDto){
         //동시 예약 시도 체크
-        try{
-            log.info("예약 생성 시작");
-            Reservation reservation = reservationService.createReservation(postDto);
-            return new ResponseEntity<>(reservation, HttpStatus.CREATED);
-        } catch (Exception e){
-            return new ResponseEntity<>("동시 예약이 발생했습니다. 잠시 후 다시 시도해주세요.", HttpStatus.CONFLICT);
-        }
+        log.info("예약 생성 시작");
+        Reservation reservation = reservationService.createReservation(postDto);
+        return new ResponseEntity<>(reservation, HttpStatus.CREATED);
     }
 
     //특정 예약 상세 조회
-    @GetMapping("/reservation/{reservation_id}")
-    public ResponseEntity<ReservationResponseDto> getReservation(@PathVariable("reservation_id") Long reservationId){
+    @GetMapping("/{reservationId}")
+    public ResponseEntity<ReservationResponseDto> getReservation(@PathVariable("reservationId") Long reservationId){
         Reservation reservation = reservationService.findReservation(reservationId);
 
         ReservationResponseDto responseDto = mapper.reservationToReservationResponseDto(reservation);
@@ -50,8 +46,8 @@ public class ReservationController {
     }
 
     //회원 예약 내역 조회
-    @GetMapping("/reservation/{user_seq}")
-    public ResponseEntity<List<ReservationDto>> getReservationByUserSeq(@PathVariable("user_seq") Long userSeq){
+    @GetMapping("/{userSeq}")
+    public ResponseEntity<List<ReservationDto>> getReservationByUserSeq(@PathVariable("userSeq") Long userSeq){
         List<ReservationDto> reservations = reservationService.findReservationsByUserId(userSeq);
 
         return ResponseEntity.ok(reservations);

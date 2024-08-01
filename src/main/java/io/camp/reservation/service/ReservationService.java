@@ -2,15 +2,15 @@ package io.camp.reservation.service;
 
 import io.camp.campsite.model.entity.Campsite;
 import io.camp.campsite.repository.CampSiteRepository;
+import io.camp.exception.reservation.ReservationException;
+import io.camp.exception.ExceptionCode;
 import io.camp.reservation.mapper.ReservationMapper;
 import io.camp.reservation.model.Reservation;
-import io.camp.reservation.model.ReservationState;
 import io.camp.reservation.model.dto.ReservationDto;
 import io.camp.reservation.model.dto.ReservationPostDto;
 import io.camp.reservation.repository.ReservationRepository;
 import io.camp.user.model.User;
 import io.camp.user.service.AuthService;
-import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -56,7 +56,7 @@ public class ReservationService {
     public Reservation findReservation(long reservationId) {
         Optional<Reservation> optionalReservation = reservationRepository.findById(reservationId);
         Reservation findReservation = optionalReservation.orElseThrow(() ->
-                        new IllegalArgumentException("RESERVATION_NOT_FOUND"));
+                        new ReservationException(ExceptionCode.RESERVATION_NOT_FOUND));
 
         return findReservation;
     }
