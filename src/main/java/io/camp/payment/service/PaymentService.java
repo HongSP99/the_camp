@@ -30,7 +30,7 @@ public class PaymentService {
         User user = authService.getVerifiyLoginCurrentUser();
 
         PaymentCancellation paymentCancellation = jsonToPaymentCancellation(json, paymentPostDto);
-        Payment payment = paymentRepository.findByPaymentId(paymentCancellation.getPaymentId());
+        Payment payment = paymentRepository.qFindByPaymentId(paymentCancellation.getPaymentId());
         paymentCancellation.setPayment(payment);
 
         if (payment.getAmountTotal() != paymentCancellation.getTotalAmount()) {
