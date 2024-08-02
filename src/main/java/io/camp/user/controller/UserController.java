@@ -3,10 +3,8 @@ package io.camp.user.controller;
 
 import io.camp.user.jwt.JwtUserDetails;
 import io.camp.user.model.User;
-import io.camp.user.model.UserRole;
 import io.camp.user.model.dto.JoinDto;
 import io.camp.user.model.dto.LoginDto;
-import io.camp.user.model.dto.RoleGetDto;
 import io.camp.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -53,4 +51,16 @@ public class UserController {
 
         return ResponseEntity.ok(user);
     }
+
+    @PostMapping("/update-password")
+    public ResponseEntity<?> updatePassword(@RequestBody PasswordDto updatePasswordDto) {
+        try {
+            userService.updatePassword(updatePasswordDto.getCurrentPassword(), updatePasswordDto.getNewPassword());
+            return ResponseEntity.ok("비밀번호가 성공적으로 변경되었습니다.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+
 }

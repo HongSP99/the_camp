@@ -75,6 +75,7 @@ public class ReissueController {
         }
 
         String email = jwtTokenUtil.getEmail(refresh);
+        String password = jwtTokenUtil.getPassword(refresh);
         UserRole role = jwtTokenUtil.getRole(refresh);
         String name = jwtTokenUtil.getName(refresh);
         String birthday = jwtTokenUtil.getBirthDay(refresh);
@@ -85,12 +86,12 @@ public class ReissueController {
 
 
         //make new JWT
-        String newAuthorization = jwtTokenUtil.createToken("Authorization", email,role.getKey(),name,birthday,phoneNumber,gender,seq, 600000L);
-        String newRefresh = jwtTokenUtil.createToken("refresh", email,role.getKey(),name,birthday,phoneNumber,gender,seq, 86400000L);
+        String newAuthorization = jwtTokenUtil.createToken("Authorization", email,password,role.getKey(),name,birthday,phoneNumber,gender,seq, 600000L);
+        String newRefresh = jwtTokenUtil.createToken("refresh", email,password,role.getKey(),name,birthday,phoneNumber,gender,seq, 86400000L);
 
 
         refreshRepository.deleteByRefresh(refresh);
-        addRefreshEntity(email, newRefresh,name,birthday,phoneNumber,gender,seq,86400000L );
+        addRefreshEntity(email, newRefresh,name,password,birthday,phoneNumber,gender,seq,86400000L );
 
         //response
         response.setHeader("Authorization", newAuthorization);
@@ -109,13 +110,14 @@ public class ReissueController {
     }
 
 
-    private void addRefreshEntity(String username, String refresh, String name, String birthday, String phoneNumber, String  gender, Long seq, Long expiredMs) {
+    private void addRefreshEntity(String username, String refresh, String password, String name, String birthday, String phoneNumber, String  gender, Long seq, Long expiredMs) {
 
         Date date = new Date(System.currentTimeMillis() + expiredMs);
 
         RefreshEntity refreshEntity = new RefreshEntity();
         refreshEntity.setUsername(username);
         refreshEntity.setRefresh(refresh);
+        refreshEntity.setPassword(password);
         refreshEntity.setName(name);
         refreshEntity.setBirthday(birthday);
         refreshEntity.setPhoneNumber(phoneNumber);

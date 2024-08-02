@@ -8,8 +8,6 @@ import io.camp.user.model.dto.RoleGetDto;
 import io.camp.user.repository.UserRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -109,9 +107,16 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public void userProfile() {
-
+    @Transactional
+    public void updatePassword(String currentPassword, String newPassword) {
+        User user = getVerifiyLoginCurrentUser();
+        if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
+            throw new RuntimeException("현재 비밀번호가 일치하지 않습니다.");
+        }
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
     }
+
 
     public RoleGetDto verifyRole(JwtUserDetails jwtUserDetails) {
         RoleGetDto roleGetDto = new RoleGetDto();

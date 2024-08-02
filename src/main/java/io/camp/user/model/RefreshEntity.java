@@ -17,8 +17,10 @@ public class RefreshEntity {
 
     @Column(length = 500)
     private String refresh;
+
     private String expiration;
 
+    private  String password;
 
     @Enumerated(EnumType.STRING)
     private UserRole role;
