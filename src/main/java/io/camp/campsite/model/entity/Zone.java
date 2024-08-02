@@ -1,10 +1,13 @@
 package io.camp.campsite.model.entity;
 
+import io.camp.campsite.model.dto.SiteDto;
+import io.camp.campsite.model.dto.ZoneDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import net.minidev.json.annotate.JsonIgnore;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -47,4 +50,19 @@ public class Zone {
 
     @OneToMany(mappedBy = "zone" , fetch = FetchType.EAGER)
     private List<Site> sites;
+
+
+    public ZoneDto toDto(){
+        List<SiteDto> siteDtos =sites.stream().map(Site::toDto).toList();
+
+      return  ZoneDto.builder()
+                .title(title)
+                .intro(intro)
+                .checkin(checkin)
+                .checkout(checkout)
+                .offSeasonPrice(offSeasonPrice)
+                .peakSeasonPrice(peakSeasonPrice)
+                .bestPeakSeasonPrice(bestPeakSeasonPrice)
+                .sites(siteDtos).build();
+    }
 }

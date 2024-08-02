@@ -75,8 +75,11 @@ public class CampsiteController {
 
 
     @GetMapping("/zone/site/{id}")
-    public void getCampsiteWithAll(@PathVariable("id") long id){
-        campSiteService.getCampsiteWithAllInfo(id);
+    public ResponseEntity<CampSiteDto> getCampsiteWithAll(@PathVariable("id") long id){
+
+      CampSiteDto campSiteDto =  campSiteService.getCampsiteWithAllInfo(id);
+
+      return ResponseEntity.ok(campSiteDto);
     }
 
 

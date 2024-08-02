@@ -2,8 +2,10 @@ package io.camp.campsite.service.impl;
 
 import com.google.gson.Gson;
 import io.camp.campsite.mapper.CampsiteMapper;
+import io.camp.campsite.model.dto.CampSiteAllDto;
 import io.camp.campsite.model.dto.CampSiteDto;
 import io.camp.campsite.model.entity.Campsite;
+import io.camp.campsite.model.entity.Zone;
 import io.camp.campsite.repository.CampSiteRepository;
 import io.camp.campsite.service.CampSiteService;
 import io.camp.exception.Campsite.CampsiteNotFoundException;
@@ -62,8 +64,12 @@ public class CampSiteServiceImpl implements CampSiteService {
     }
 
     @Transactional(readOnly = true)
-    public void getCampsiteWithAllInfo(long id){
+    public CampSiteDto getCampsiteWithAllInfo(long id){
        Campsite campsite =  campSiteRepository.findCampsiteWithAllInfo(id);
-       System.out.println(campsite);
+       CampSiteDto campsiteDto = campsiteMapper.toCampsiteDto(campsite);
+       campsiteDto.setZones(campsite.getZones().stream().map(Zone::toDto).toList());
+
+
+       return campsiteDto;
     }
 }

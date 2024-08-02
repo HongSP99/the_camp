@@ -25,8 +25,6 @@ public class CampSiteRepositoryCustomImpl implements CampSiteRepositoryCustom{
     public Campsite findCampsiteWithAllInfo(long id) {
         return queryFactory
                 .selectFrom(campsite)
-                .join(campsite.zones , QZone.zone)
-                .fetchJoin()
                 .where(campsite.seq.eq(id))
                 .fetchOne();
     }

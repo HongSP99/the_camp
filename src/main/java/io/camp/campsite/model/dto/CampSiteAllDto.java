@@ -1,30 +1,22 @@
-package io.camp.campsite.model.entity;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.google.gson.annotations.Expose;
-import io.camp.reservation.model.Reservation;
-import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+package io.camp.campsite.model.dto;
 
 
-import java.util.ArrayList;
+import io.camp.campsite.model.entity.Zone;
+import jakarta.persistence.Column;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.OneToMany;
+import lombok.*;
+
 import java.util.List;
 
-@Entity
+@Data
 @Builder
-@Getter
-@ToString
-@NoArgsConstructor
 @AllArgsConstructor
-public class Campsite {
+@NoArgsConstructor
+@ToString
+public class CampSiteAllDto {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long seq;
+
 
     private int contentId;
 
@@ -32,7 +24,7 @@ public class Campsite {
 
     private String lineIntro;
 
-    @Column(columnDefinition = "TEXT")
+
     private String intro;
 
     private int allar;
@@ -41,7 +33,7 @@ public class Campsite {
 
     private String bizrno;
 
-    @Column(columnDefinition = "TEXT")
+
     private String featureNm;
 
     private String induty;
@@ -120,6 +112,5 @@ public class Campsite {
 
     private String modifiedtime;
 
-    @OneToMany(mappedBy = "campsite" , fetch = FetchType.EAGER)
-    private List<Zone> zones;
+    //private List<Zone> zones;
 }

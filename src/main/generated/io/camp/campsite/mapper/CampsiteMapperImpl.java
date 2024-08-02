@@ -2,12 +2,15 @@ package io.camp.campsite.mapper;
 
 import io.camp.campsite.model.dto.CampSiteDto;
 import io.camp.campsite.model.entity.Campsite;
+import io.camp.campsite.model.entity.Zone;
+import java.util.ArrayList;
+import java.util.List;
 import javax.annotation.processing.Generated;
 import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-08-02T13:15:44+0900",
+    date = "2024-08-02T15:24:34+0900",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17.0.12 (Ubuntu)"
 )
 @Component
@@ -125,6 +128,10 @@ public class CampsiteMapperImpl implements CampsiteMapper {
         campsite.firstImageUrl( campSiteDto.getFirstImageUrl() );
         campsite.createdtime( campSiteDto.getCreatedtime() );
         campsite.modifiedtime( campSiteDto.getModifiedtime() );
+        List<Zone> list = campSiteDto.getZones();
+        if ( list != null ) {
+            campsite.zones( new ArrayList<Zone>( list ) );
+        }
 
         return campsite.build();
     }

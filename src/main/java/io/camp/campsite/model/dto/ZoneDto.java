@@ -2,15 +2,18 @@ package io.camp.campsite.model.dto;
 
 import io.camp.campsite.model.entity.Zone;
 import jakarta.persistence.Column;
-import lombok.Data;
-import lombok.ToString;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 
 
 @Data
 @ToString
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ZoneDto {
 
     private String title;
@@ -31,8 +34,15 @@ public class ZoneDto {
 
     private long campSite;
 
+    private List<SiteDto> sites;
+
+
+
 
     public Zone toEntity(){
+
+
+
        return Zone.builder()
                 .title(title)
                 .intro(intro)

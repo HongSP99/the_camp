@@ -1,6 +1,9 @@
 package io.camp.campsite.model.dto;
 
+import io.camp.campsite.model.entity.Zone;
 import lombok.*;
+
+import java.util.List;
 
 @Builder
 @NoArgsConstructor
@@ -104,4 +107,5 @@ public class CampSiteDto {
 
     private String modifiedtime;
 
+    private List<ZoneDto> zones;
 }
