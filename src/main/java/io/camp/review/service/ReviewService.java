@@ -26,7 +26,7 @@ public class ReviewService {
     @PreAuthorize("isAuthenticated()")
     public ReviewDto createReview(CreateReviewDto createReviewDto, String username) {
 
-        User user = authService.getVerifiyLoginCurrentUser();
+        //User user = authService.getVerifiyLoginCurrentUser();
         Review review = Review.builder()
                 .content(createReviewDto.getContent())
                 //.auth(auth)

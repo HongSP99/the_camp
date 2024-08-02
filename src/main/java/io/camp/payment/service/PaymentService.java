@@ -27,7 +27,7 @@ public class PaymentService {
     private final ReservationRepository reservationRepository;
 
     public void paymentCancel(PaymentPostDto paymentPostDto, String json) {
-        User user = authService.getVerifiyLoginCurrentUser();
+//        User user = authService.getVerifiyLoginCurrentUser();
 
         PaymentCancellation paymentCancellation = jsonToPaymentCancellation(json, paymentPostDto);
         Payment payment = paymentRepository.qFindByPaymentId(paymentCancellation.getPaymentId());
@@ -46,8 +46,8 @@ public class PaymentService {
         payment.setPaymentId(paymentPostDto.getPaymentId());
         jsonToPayment(json, "", payment);
 
-        User user = authService.getVerifiyLoginCurrentUser();
-        payment.setUser(user);
+        //User user = authService.getVerifiyLoginCurrentUser();
+        //payment.setUser(user);
 
 //        if (user.getEmail().equals(payment.getCustomerEmail())) {
 //            throw new RuntimeException("이메일이 일치하지 않습니다.");

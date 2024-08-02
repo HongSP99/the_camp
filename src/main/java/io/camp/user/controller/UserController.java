@@ -3,8 +3,10 @@ package io.camp.user.controller;
 
 import io.camp.user.jwt.JwtUserDetails;
 import io.camp.user.model.User;
+import io.camp.user.model.UserRole;
 import io.camp.user.model.dto.JoinDto;
 import io.camp.user.model.dto.LoginDto;
+import io.camp.user.model.dto.RoleGetDto;
 import io.camp.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -34,6 +36,13 @@ public class UserController {
         userService.testTokenLoginUser();
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @GetMapping("/api/role")
+    public ResponseEntity<RoleGetDto> getRole(@AuthenticationPrincipal JwtUserDetails jwtUserDetails) {
+        RoleGetDto roleGetDto = userService.verifyRole(jwtUserDetails);
+        return new ResponseEntity<>(roleGetDto, HttpStatus.OK);
+    }
+
     @GetMapping("/api/user/profile")
     public ResponseEntity<User> getUserProfile(@AuthenticationPrincipal JwtUserDetails userDetails) {
         User user = userDetails.getUser();
@@ -44,6 +53,4 @@ public class UserController {
 
         return ResponseEntity.ok(user);
     }
-
-
 }

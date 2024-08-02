@@ -46,16 +46,9 @@
             return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("password", String.class);
         }
 
-
         public UserRole getRole(String token) {
             String role = Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("role", String.class);
-            if (role.equals(UserRole.ADMIN.getKey())) {
-                return UserRole.ADMIN;
-            } else if (role.equals(UserRole.USER.getKey())) {
-                return UserRole.USER;
-            } else {
-                return null;
-            }
+            return UserRole.valueOf(role.substring(5));
         }
 
         public Boolean isExpired(String token) {
