@@ -5,6 +5,8 @@ import io.camp.user.jwt.JwtUserDetails;
 import io.camp.user.model.User;
 import io.camp.user.model.dto.JoinDto;
 import io.camp.user.model.dto.LoginDto;
+import io.camp.user.model.dto.PasswordDto;
+import io.camp.user.model.dto.RoleGetDto;
 import io.camp.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
