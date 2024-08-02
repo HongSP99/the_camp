@@ -7,8 +7,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-07-27T13:08:22+0900",
-    comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17.0.11 (Ubuntu)"
+    date = "2024-08-02T13:15:44+0900",
+    comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17.0.12 (Ubuntu)"
 )
 @Component
 public class CampsiteMapperImpl implements CampsiteMapper {
@@ -69,5 +69,63 @@ public class CampsiteMapperImpl implements CampsiteMapper {
         campSiteDto.modifiedtime( campsite.getModifiedtime() );
 
         return campSiteDto.build();
+    }
+
+    @Override
+    public Campsite toCampsiteEntity(CampSiteDto campSiteDto) {
+        if ( campSiteDto == null ) {
+            return null;
+        }
+
+        Campsite.CampsiteBuilder campsite = Campsite.builder();
+
+        campsite.contentId( campSiteDto.getContentId() );
+        campsite.facltNm( campSiteDto.getFacltNm() );
+        campsite.lineIntro( campSiteDto.getLineIntro() );
+        campsite.intro( campSiteDto.getIntro() );
+        campsite.allar( campSiteDto.getAllar() );
+        campsite.trsagntNo( campSiteDto.getTrsagntNo() );
+        campsite.bizrno( campSiteDto.getBizrno() );
+        campsite.featureNm( campSiteDto.getFeatureNm() );
+        campsite.induty( campSiteDto.getInduty() );
+        campsite.lctCl( campSiteDto.getLctCl() );
+        campsite.doNm( campSiteDto.getDoNm() );
+        campsite.sigunguNm( campSiteDto.getSigunguNm() );
+        campsite.zipcode( campSiteDto.getZipcode() );
+        campsite.addr1( campSiteDto.getAddr1() );
+        campsite.addr2( campSiteDto.getAddr2() );
+        campsite.mapX( campSiteDto.getMapX() );
+        campsite.mapY( campSiteDto.getMapY() );
+        campsite.direction( campSiteDto.getDirection() );
+        campsite.tel( campSiteDto.getTel() );
+        campsite.homepage( campSiteDto.getHomepage() );
+        campsite.resveUrl( campSiteDto.getResveUrl() );
+        campsite.glampSiteCo( campSiteDto.getGlampSiteCo() );
+        campsite.caravSiteCo( campSiteDto.getCaravSiteCo() );
+        campsite.siteBottomCl1( campSiteDto.getSiteBottomCl1() );
+        campsite.siteBottomCl2( campSiteDto.getSiteBottomCl2() );
+        campsite.siteBottomCl3( campSiteDto.getSiteBottomCl3() );
+        campsite.siteBottomCl4( campSiteDto.getSiteBottomCl4() );
+        campsite.siteBottomCl5( campSiteDto.getSiteBottomCl5() );
+        campsite.tooltip( campSiteDto.getTooltip() );
+        campsite.glampInnerFclty( campSiteDto.getGlampInnerFclty() );
+        campsite.caravInnerFclty( campSiteDto.getCaravInnerFclty() );
+        campsite.operPdCl( campSiteDto.getOperPdCl() );
+        campsite.operDeCl( campSiteDto.getOperDeCl() );
+        campsite.toiletCo( campSiteDto.getToiletCo() );
+        campsite.swrmCo( campSiteDto.getSwrmCo() );
+        campsite.wtrplCo( campSiteDto.getWtrplCo() );
+        campsite.brazierCl( campSiteDto.getBrazierCl() );
+        campsite.sbrsCl( campSiteDto.getSbrsCl() );
+        campsite.sbrsEtc( campSiteDto.getSbrsEtc() );
+        campsite.posblFcltyCl( campSiteDto.getPosblFcltyCl() );
+        campsite.posblFcltyEtc( campSiteDto.getPosblFcltyEtc() );
+        campsite.themaEnyrnCl( campSiteDto.getThemaEnyrnCl() );
+        campsite.animalCmgCl( campSiteDto.getAnimalCmgCl() );
+        campsite.firstImageUrl( campSiteDto.getFirstImageUrl() );
+        campsite.createdtime( campSiteDto.getCreatedtime() );
+        campsite.modifiedtime( campSiteDto.getModifiedtime() );
+
+        return campsite.build();
     }
 }

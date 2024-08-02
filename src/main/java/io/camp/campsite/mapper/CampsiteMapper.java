@@ -9,4 +9,5 @@ public interface CampsiteMapper {
 
     CampSiteDto toCampsiteDto(Campsite campsite);
 
+    Campsite toCampsiteEntity(CampSiteDto campSiteDto);
 }

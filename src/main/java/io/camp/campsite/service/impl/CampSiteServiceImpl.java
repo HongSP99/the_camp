@@ -17,8 +17,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.stream.Collectors;
-
 @Service
 @Slf4j
 @AllArgsConstructor
@@ -33,8 +31,10 @@ public class CampSiteServiceImpl implements CampSiteService {
         Gson gson = new Gson();
         campsiteArray.forEach(item -> {
             JSONObject object = (JSONObject) item;
-            Campsite campSite = gson.fromJson(object.toJSONString(), Campsite.class);
-            campSiteRepository.save(campSite);
+
+            CampSiteDto campSite = gson.fromJson(object.toJSONString(), CampSiteDto.class);
+
+            campSiteRepository.save(campsiteMapper.toCampsiteEntity(campSite));
         });
         log.info("api 데이터가 등록되었습니다.");
     }
@@ -59,5 +59,11 @@ public class CampSiteServiceImpl implements CampSiteService {
         Page<Campsite> campsites = campSiteRepository.findAll(PageRequest.of(page,size));
         Page<CampSiteDto> campsiteDtos = campsites.map(campsiteMapper::toCampsiteDto);
         return campsiteDtos;
+    }
+
+    @Transactional(readOnly = true)
+    public void getCampsiteWithAllInfo(long id){
+       Campsite campsite =  campSiteRepository.findCampsiteWithAllInfo(id);
+       System.out.println(campsite);
     }
 }

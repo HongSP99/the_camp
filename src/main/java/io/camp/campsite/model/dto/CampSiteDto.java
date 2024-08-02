@@ -1,7 +1,5 @@
 package io.camp.campsite.model.dto;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Id;
 import lombok.*;
 
 @Builder

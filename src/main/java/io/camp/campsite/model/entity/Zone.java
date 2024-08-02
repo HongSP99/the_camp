@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 
 @Entity
 @Builder
@@ -43,4 +44,7 @@ public class Zone {
 
     @ManyToOne(cascade = CascadeType.ALL)
     private Campsite campsite;
+
+    @OneToMany(mappedBy = "zone" , fetch = FetchType.EAGER)
+    private List<Site> sites;
 }

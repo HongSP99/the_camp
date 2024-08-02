@@ -1,5 +1,6 @@
 package io.camp.campsite.controller;
 
+
 import io.camp.campsite.service.CampSiteService;
 import io.camp.campsite.model.dto.CampSiteDto;
 import lombok.AllArgsConstructor;
@@ -71,4 +72,12 @@ public class CampsiteController {
     public CampSiteDto getCampsiteById(@PathVariable("id") int id){
         return campSiteService.getCampsiteBySeq(id);
     }
+
+
+    @GetMapping("/zone/site/{id}")
+    public void getCampsiteWithAll(@PathVariable("id") long id){
+        campSiteService.getCampsiteWithAllInfo(id);
+    }
+
+
 }
