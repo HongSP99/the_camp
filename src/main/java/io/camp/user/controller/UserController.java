@@ -39,21 +39,7 @@ public class UserController {
 
     @GetMapping("/api/role")
     public ResponseEntity<RoleGetDto> getRole(@AuthenticationPrincipal JwtUserDetails jwtUserDetails) {
-        RoleGetDto roleGetDto = new RoleGetDto();
-
-        if (jwtUserDetails == null) {
-            roleGetDto.setRole(UserRole.GUEST.getKey());
-            return new ResponseEntity<>(roleGetDto, HttpStatus.OK);
-        }
-
-        User user = jwtUserDetails.getUser();
-
-        if (user.getRole() == UserRole.USER) {
-            roleGetDto.setRole(UserRole.USER.getKey());
-        } else if (user.getRole() == UserRole.ADMIN) {
-            roleGetDto.setRole(UserRole.ADMIN.getKey());
-        }
-
+        RoleGetDto roleGetDto = userService.verifyRole(jwtUserDetails);
         return new ResponseEntity<>(roleGetDto, HttpStatus.OK);
     }
 

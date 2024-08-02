@@ -1,11 +1,15 @@
 package io.camp.user.service;
 
+import io.camp.user.jwt.JwtUserDetails;
 import io.camp.user.model.User;
 import io.camp.user.model.UserRole;
 import io.camp.user.model.dto.JoinDto;
+import io.camp.user.model.dto.RoleGetDto;
 import io.camp.user.repository.UserRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -109,6 +113,23 @@ public class UserService {
 
     }
 
+    public RoleGetDto verifyRole(JwtUserDetails jwtUserDetails) {
+        RoleGetDto roleGetDto = new RoleGetDto();
 
+        if (jwtUserDetails == null) {
+            roleGetDto.setRole(UserRole.GUEST.getKey());
+            return roleGetDto;
+        }
 
+        User user = jwtUserDetails.getUser();
+
+        if (user.getRole() == UserRole.USER) {
+            roleGetDto.setRole(UserRole.USER.getKey());
+            return roleGetDto;
+        } else if (user.getRole() == UserRole.ADMIN) {
+            roleGetDto.setRole(UserRole.ADMIN.getKey());
+            return roleGetDto;
+        }
+        return roleGetDto;
+    }
 }
