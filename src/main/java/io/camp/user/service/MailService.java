@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
@@ -37,10 +38,13 @@ public class MailService {
             message.setFrom(senderEmail);
             message.setRecipients(MimeMessage.RecipientType.TO, mail);
             message.setSubject("[The Camp] 이메일 인증");
-            String body = "";
-            body += "<h3>" + "요청하신 인증 번호입니다." + "</h3>";
-            body += "<h1>" + number + "</h1>";
-            body += "<h3>" + "감사합니다." + "</h3>";
+
+            String body = """
+            <h3>요청하신 인증 번호입니다.</h3>
+            <h1>%s</h1>
+            <h3>감사합니다.</h3>
+            """.formatted(number);
+
             message.setText(body, "UTF-8", "html");
         } catch (MessagingException e) {
             e.printStackTrace();
@@ -48,6 +52,7 @@ public class MailService {
 
         return message;
     }
+
 
 
     @Transactional
@@ -68,7 +73,8 @@ public class MailService {
         authCodeRepository.deleteByEmail(email); // 기존 코드 삭제
         authCodeRepository.save(authCode);
     }
-    @Transactional
+
+    //@Transactional
     public boolean verifyAuthCode(String email, int code) {
         Optional<AuthCode> authCodeOpt = authCodeRepository.findByEmail(email);
         if (authCodeOpt.isPresent()) {
@@ -90,9 +96,45 @@ public class MailService {
     }
 
     @Scheduled(cron = "0 */3 * * * *") // 매 3분마다 실행
-    @Transactional
+    //@Transactional
     public void deleteExpiredAuthCodes() {
         LocalDateTime now = LocalDateTime.now();
         authCodeRepository.deleteByExpiresAtBefore(now);
     }
+
+    public String generateTemporaryPassword() {
+        int length = 10;
+        String charSet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%";
+        StringBuilder tempPassword = new StringBuilder(length);
+        Random random = new Random();
+
+        for (int i = 0; i < length; i++) {
+            int index = random.nextInt(charSet.length());
+            tempPassword.append(charSet.charAt(index));
+        }
+
+        return tempPassword.toString();
+    }
+
+    public void sendTemporaryPassword(String email, String tempPassword) throws MessagingException {
+        MimeMessage message = javaMailSender.createMimeMessage();
+
+        message.setFrom(senderEmail);
+        message.setRecipients(MimeMessage.RecipientType.TO, email);
+        message.setSubject("[The Camp] 임시 비밀번호 안내");
+
+        String body = """
+        <h3>요청하신 임시 비밀번호입니다.</h3>
+        <h1>%s</h1>
+        <h3>로그인 후 비밀번호를 변경해 주세요.</h3>
+        """.formatted(tempPassword);
+
+        message.setText(body, "UTF-8", "html");
+
+        javaMailSender.send(message);
+    }
+
+
+
+
 }
