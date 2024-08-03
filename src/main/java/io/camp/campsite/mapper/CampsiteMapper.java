@@ -12,7 +12,8 @@ public interface CampsiteMapper {
     @Mapping(source = "zones", target = "zones", ignore = true)
     CampSiteDto toCampsiteDto(Campsite campsite);
 
+    @Mapping(source = "zones", target = "zones", ignore = true)
     Campsite toCampsiteEntity(CampSiteDto campSiteDto);
 
-    //CampSiteAllDto toCampSiteAllDto(Campsite campsite);
+    CampSiteAllDto toCampSiteAllDto(Campsite campsite);
 }

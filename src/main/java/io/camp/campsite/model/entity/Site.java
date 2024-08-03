@@ -14,18 +14,18 @@ public class Site {
     private Long seq;
 
     @Column
-    private int number;
+    private String title;
 
     @ManyToOne(cascade = CascadeType.ALL)
     private Zone zone;
 
-    public Site(int number , Zone zone){
-        this.number = number;
+    public Site(String title , Zone zone){
+        this.title = title;
         this.zone  = zone;
     }
 
 
     public SiteDto toDto(){
-        return SiteDto.builder().number(number).build();
+        return SiteDto.builder().title(title).build();
     }
 }

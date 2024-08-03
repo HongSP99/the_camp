@@ -107,5 +107,5 @@ public class CampSiteDto {
 
     private String modifiedtime;
 
-    private List<ZoneDto> zones;
+    private transient List<ZoneDto> zones;
 }

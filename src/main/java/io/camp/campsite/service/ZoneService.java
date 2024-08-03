@@ -25,4 +25,14 @@ public class ZoneService {
         zone.setCampsite(campsite);
         return zoneRepository.save(zone);
     }
+
+
+
+    public Long deleteZoneBySeq(Long seq){
+         zoneRepository.deleteById(seq);
+         return seq;
+    }
+
+
+
 }

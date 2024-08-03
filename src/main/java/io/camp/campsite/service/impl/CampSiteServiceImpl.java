@@ -68,8 +68,6 @@ public class CampSiteServiceImpl implements CampSiteService {
        Campsite campsite =  campSiteRepository.findCampsiteWithAllInfo(id);
        CampSiteDto campsiteDto = campsiteMapper.toCampsiteDto(campsite);
        campsiteDto.setZones(campsite.getZones().stream().map(Zone::toDto).toList());
-
-
        return campsiteDto;
     }
 }

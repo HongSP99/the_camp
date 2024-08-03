@@ -10,6 +10,6 @@ import lombok.*;
 @Builder
 public class SiteDto {
 
-    private int number;
+    private String title;
 
 }
