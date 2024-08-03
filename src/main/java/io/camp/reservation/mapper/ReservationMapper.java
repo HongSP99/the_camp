@@ -11,7 +11,7 @@ import org.mapstruct.Mapping;
 public interface ReservationMapper {
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "campsite", ignore = true)
+    @Mapping(target = "site", ignore = true)
     @Mapping(target = "user", ignore = true)
     Reservation reservationPostDtoToReservation(ReservationPostDto reservationPostDto);
 
@@ -22,7 +22,9 @@ public interface ReservationMapper {
         responseDto.setReservationState(reservation.getReservationState());
         responseDto.setAdults(reservation.getAdults());
         responseDto.setChildren(reservation.getChildren());
-        responseDto.setCampsiteName(reservation.getCampsite());
+        responseDto.setCampsiteName(reservation.getSite().getZone().getCampsite());
+        responseDto.setZoneName(reservation.getSite().getZone());
+        responseDto.setSiteNumber(reservation.getSite());
         responseDto.setCreatedAt(reservation.getCreatedAt());
 
         return responseDto;
