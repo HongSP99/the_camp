@@ -38,7 +38,7 @@ public class ReservationService {
     private final SiteRepository siteRepository;
 
     //새로운 예약을 생성한다.
-    public Reservation createReservation(ReservationPostDto requestDto){
+    public ReservationDto createReservation(ReservationPostDto requestDto){
         log.info("유저 찾기");
         User user = authService.getVerifiyLoginCurrentUser();
         log.info("유저 찾기 성공");
@@ -60,7 +60,7 @@ public class ReservationService {
             throw new ReservationException(ExceptionCode.RESERVATION_NOT_FOUND);
         }
 
-        return savedReservation;
+        return ReservationDto.fromEntity(reservation);
     }
 
     //예약 취소
