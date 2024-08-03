@@ -14,7 +14,7 @@ import lombok.*;
 public class Review extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", updatable = false)
+    @Column(name = "review_id", updatable = false)
     private Long id;
 
     @Column(name = "content", nullable = false)
