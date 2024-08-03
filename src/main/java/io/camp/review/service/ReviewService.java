@@ -1,6 +1,6 @@
 package io.camp.review.service;
 
-import io.camp.review.Exception.ReviewNotFoundException;
+import io.camp.exception.review.ReviewNotFoundException;
 import io.camp.review.model.Review;
 import io.camp.review.model.dto.CreateReviewDto;
 import io.camp.review.model.dto.ReviewDto;
@@ -10,7 +10,6 @@ import io.camp.user.model.User;
 import io.camp.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
