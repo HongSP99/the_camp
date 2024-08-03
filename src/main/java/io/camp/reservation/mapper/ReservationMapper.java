@@ -13,6 +13,7 @@ public interface ReservationMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "site", ignore = true)
     @Mapping(target = "user", ignore = true)
+    @Mapping(target = "reservationState", ignore = true)
     Reservation reservationPostDtoToReservation(ReservationPostDto reservationPostDto);
 
     default ReservationResponseDto reservationToReservationResponseDto(Reservation reservation){

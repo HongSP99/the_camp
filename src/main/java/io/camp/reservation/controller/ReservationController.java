@@ -28,11 +28,11 @@ public class ReservationController {
 
     //예약 생성
     @PostMapping()
-    public ResponseEntity<Object> createReservation(@RequestBody ReservationPostDto postDto){
+    public ResponseEntity<ReservationDto> createReservation(@RequestBody ReservationPostDto postDto){
         //동시 예약 시도 체크
         log.info("예약 생성 시작");
-        Reservation reservation = reservationService.createReservation(postDto);
-        return new ResponseEntity<>(reservation, HttpStatus.CREATED);
+        ReservationDto dto = reservationService.createReservation(postDto);
+        return new ResponseEntity<>(dto, HttpStatus.CREATED);
     }
 
     //특정 예약 상세 조회
@@ -46,7 +46,7 @@ public class ReservationController {
     }
 
     //회원 예약 내역 조회
-    @GetMapping("/{userSeq}")
+    @GetMapping("/user/{userSeq}")
     public ResponseEntity<List<ReservationDto>> getReservationByUserSeq(@PathVariable("userSeq") Long userSeq){
         List<ReservationDto> reservations = reservationService.findReservationsByUserId(userSeq);
 
@@ -54,7 +54,7 @@ public class ReservationController {
     }
 
     //예약 수정
-    @PostMapping("/{reservationSeq}")
+    @PostMapping("/cancel/{reservationSeq}")
     public ResponseEntity<Void> cancelReservation(@PathVariable("reservationSeq") Long reservationSeq){
         reservationService.cancelReservation(reservationSeq);
 
