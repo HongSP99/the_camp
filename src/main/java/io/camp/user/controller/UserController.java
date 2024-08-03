@@ -3,10 +3,7 @@ package io.camp.user.controller;
 
 import io.camp.user.jwt.JwtUserDetails;
 import io.camp.user.model.User;
-import io.camp.user.model.dto.JoinDto;
-import io.camp.user.model.dto.LoginDto;
-import io.camp.user.model.dto.PasswordDto;
-import io.camp.user.model.dto.RoleGetDto;
+import io.camp.user.model.dto.*;
 import io.camp.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -41,6 +38,12 @@ public class UserController {
     public ResponseEntity<RoleGetDto> getRole(@AuthenticationPrincipal JwtUserDetails jwtUserDetails) {
         RoleGetDto roleGetDto = userService.verifyRole(jwtUserDetails);
         return new ResponseEntity<>(roleGetDto, HttpStatus.OK);
+    }
+
+    @GetMapping("/api/user/payment")
+    public ResponseEntity<UserPaymentGetDto> getUserPayment(@AuthenticationPrincipal JwtUserDetails jwtUserDetails) {
+        UserPaymentGetDto userPaymentGetDto = userService.getUserPayment(jwtUserDetails);
+        return new ResponseEntity<>(userPaymentGetDto, HttpStatus.OK);
     }
 
     @GetMapping("/api/user/profile")

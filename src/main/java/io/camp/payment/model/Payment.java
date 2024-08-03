@@ -1,5 +1,8 @@
 package io.camp.payment.model;
 
+import io.camp.audit.BaseEntity;
+import io.camp.exception.ExceptionCode;
+import io.camp.exception.payment.PaymentException;
 import io.camp.reservation.model.Reservation;
 import io.camp.user.model.User;
 import jakarta.persistence.*;
@@ -13,7 +16,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Payment {
+public class Payment extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
@@ -267,7 +270,7 @@ public class Payment {
                 this.customerEmail = input;
                 break;
             default:
-                throw new RuntimeException("요소가 없습니다.");
+                throw new PaymentException(ExceptionCode.PAYMENT_IMPORT_TYPE);
         }
     }
 }

@@ -1,6 +1,7 @@
 package io.camp.exception;
 
 
+import io.camp.exception.payment.PaymentException;
 import io.camp.exception.reservation.ReservationException;
 import io.camp.exception.user.UserAnonymousException;
 import jakarta.validation.ConstraintViolationException;
@@ -79,7 +80,14 @@ public class GlobalExceptionHandler {
     public ResponseEntity handleReservationException(
             ReservationException e) {
         ErrorResponse response = ErrorResponse.of(e.getExceptionCode());
-        return new ResponseEntity<>(response,HttpStatus.valueOf(e.getExceptionCode().getStatus()));
+        return new ResponseEntity<>(response, HttpStatus.valueOf(e.getExceptionCode().getStatus()));
+    }
+
+    @ExceptionHandler
+    public ResponseEntity handlePaymentException(
+            PaymentException e) {
+        ErrorResponse response = ErrorResponse.of(e.getExceptionCode());
+        return new ResponseEntity<>(response, HttpStatus.valueOf(e.getExceptionCode().getStatus()));
     }
 
     //위에 명시된 예외 외의 모든 예외 처리

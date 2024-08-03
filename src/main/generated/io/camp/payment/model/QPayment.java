@@ -22,6 +22,8 @@ public class QPayment extends EntityPathBase<Payment> {
 
     public static final QPayment payment = new QPayment("payment");
 
+    public final io.camp.audit.QBaseEntity _super = new io.camp.audit.QBaseEntity(this);
+
     public final StringPath amount = createString("amount");
 
     public final StringPath amountCancelled = createString("amountCancelled");
@@ -53,6 +55,9 @@ public class QPayment extends EntityPathBase<Payment> {
     public final StringPath channelPgProvider = createString("channelPgProvider");
 
     public final StringPath channelType = createString("channelType");
+
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
     public final StringPath currency = createString("currency");
 
@@ -107,6 +112,9 @@ public class QPayment extends EntityPathBase<Payment> {
     public final StringPath methodProvider = createString("methodProvider");
 
     public final StringPath methodType = createString("methodType");
+
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> modifiedAt = _super.modifiedAt;
 
     public final StringPath orderName = createString("orderName");
 
