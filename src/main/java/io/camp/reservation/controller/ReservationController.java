@@ -52,4 +52,12 @@ public class ReservationController {
 
         return ResponseEntity.ok(reservations);
     }
+
+    //예약 수정
+    @PostMapping("/{reservationSeq}")
+    public ResponseEntity<Void> cancelReservation(@PathVariable("reservationSeq") Long reservationSeq){
+        reservationService.cancelReservation(reservationSeq);
+
+        return ResponseEntity.ok().build();
+    }
 }

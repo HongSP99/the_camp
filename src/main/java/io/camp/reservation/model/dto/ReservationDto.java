@@ -18,7 +18,7 @@ public class ReservationDto {
     private int totalPrice;
     private ReservationState reservationState;
     private Long userSeq;
-    private Long campsiteSeq;
+    private Long zoneSeq;
 
     public static ReservationDto fromEntity(Reservation reservation){
         ReservationDto dto = new ReservationDto();
@@ -32,8 +32,8 @@ public class ReservationDto {
         if(reservation.getUser() != null){
             dto.setUserSeq(reservation.getUser().getSeq());
         }
-        if(reservation.getCampsite() != null){
-            dto.setCampsiteSeq(reservation.getCampsite().getSeq());
+        if(reservation.getSite() != null){
+            dto.setZoneSeq(reservation.getSite().getSeq());
         }
 
         return dto;

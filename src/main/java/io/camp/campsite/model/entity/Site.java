@@ -4,9 +4,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.camp.campsite.model.dto.SiteDto;
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
+import lombok.Getter;
 
 @Entity
 @NoArgsConstructor
+@Getter
 public class Site {
 
     @Id
