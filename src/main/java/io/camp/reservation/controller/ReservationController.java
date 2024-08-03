@@ -46,7 +46,7 @@ public class ReservationController {
     }
 
     //회원 예약 내역 조회
-    @GetMapping("/{userSeq}")
+    @GetMapping("/user/{userSeq}")
     public ResponseEntity<List<ReservationDto>> getReservationByUserSeq(@PathVariable("userSeq") Long userSeq){
         List<ReservationDto> reservations = reservationService.findReservationsByUserId(userSeq);
 
@@ -54,7 +54,7 @@ public class ReservationController {
     }
 
     //예약 수정
-    @PostMapping("/{reservationSeq}")
+    @PostMapping("/cancel/{reservationSeq}")
     public ResponseEntity<Void> cancelReservation(@PathVariable("reservationSeq") Long reservationSeq){
         reservationService.cancelReservation(reservationSeq);
 
