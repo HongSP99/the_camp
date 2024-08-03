@@ -6,11 +6,13 @@ import io.camp.reservation.model.dto.ReservationDto;
 import io.camp.reservation.model.dto.ReservationPostDto;
 import io.camp.reservation.model.dto.ReservationResponseDto;
 import io.camp.reservation.service.ReservationService;
+import io.camp.user.jwt.JwtUserDetails;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -46,9 +48,9 @@ public class ReservationController {
     }
 
     //회원 예약 내역 조회
-    @GetMapping("/user/{userSeq}")
-    public ResponseEntity<List<ReservationDto>> getReservationByUserSeq(@PathVariable("userSeq") Long userSeq){
-        List<ReservationDto> reservations = reservationService.findReservationsByUserId(userSeq);
+    @GetMapping("/user")
+    public ResponseEntity<List<ReservationDto>> getReservationByUserSeq(@AuthenticationPrincipal JwtUserDetails userDetails){
+        List<ReservationDto> reservations = reservationService.findReservationsByUserId(userDetails.getSeq());
 
         return ResponseEntity.ok(reservations);
     }

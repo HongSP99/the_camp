@@ -77,6 +77,7 @@ public class ReservationService {
         }
 
         reservation.setReservationState(ReservationState.CANCEL);
+        reservationRepository.save(reservation);
     }
 
     //유저 예약 내역
