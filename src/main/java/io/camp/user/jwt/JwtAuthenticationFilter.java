@@ -61,7 +61,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
 
         //토큰 생성
-        String authorization = jwtTokenUtil.createToken("Authorization", username,password,role, name,birthday,phoneNumber,gender,seq, 600000L);
+        String authorization = jwtTokenUtil.createToken("Authorization", username,password,role, name,birthday,phoneNumber,gender,seq, 86400000L);
         String refresh = jwtTokenUtil.createToken("refresh",username,password,role, name,birthday,phoneNumber,gender,seq, 86400000L);
 
         log.info("Authorization token : " + authorization);
