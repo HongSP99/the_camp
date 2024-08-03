@@ -5,6 +5,7 @@ import io.camp.user.model.User;
 import io.camp.user.model.UserRole;
 import io.camp.user.model.dto.JoinDto;
 import io.camp.user.model.dto.RoleGetDto;
+import io.camp.user.model.dto.UserPaymentGetDto;
 import io.camp.user.repository.UserRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -136,5 +137,20 @@ public class UserService {
             return roleGetDto;
         }
         return roleGetDto;
+    }
+
+    public UserPaymentGetDto getUserPayment(JwtUserDetails jwtUserDetails) {
+        UserPaymentGetDto userPaymentGetDto = new UserPaymentGetDto();
+
+        if (jwtUserDetails == null) {
+            throw  new RuntimeException("사용자 인증 실패");
+        }
+
+        User user = jwtUserDetails.getUser();
+        userPaymentGetDto.setEmail(user.getEmail());
+        userPaymentGetDto.setFullName(user.getName());
+        userPaymentGetDto.setPhoneNumber(user.getPhoneNumber());
+
+        return userPaymentGetDto;
     }
 }

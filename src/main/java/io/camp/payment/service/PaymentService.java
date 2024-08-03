@@ -2,6 +2,8 @@ package io.camp.payment.service;
 
 
 import com.google.gson.Gson;
+import io.camp.exception.ExceptionCode;
+import io.camp.exception.payment.PaymentException;
 import io.camp.payment.model.Payment;
 import io.camp.payment.model.PaymentCancellation;
 import io.camp.payment.model.PaymentType;
@@ -10,6 +12,7 @@ import io.camp.payment.repository.PaymentCancellationRepository;
 import io.camp.payment.repository.PaymentRepository;
 import io.camp.reservation.model.Reservation;
 import io.camp.reservation.repository.ReservationRepository;
+import io.camp.reservation.service.ReservationService;
 import io.camp.user.model.User;
 import io.camp.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -23,18 +26,15 @@ import org.springframework.transaction.annotation.Transactional;
 public class PaymentService {
     private final PaymentRepository paymentRepository;
     private final PaymentCancellationRepository paymentCancellationRepository;
-    private final UserService authService;
-    private final ReservationRepository reservationRepository;
+    private final ReservationService reservationService;
 
     public void paymentCancel(PaymentPostDto paymentPostDto, String json) {
-//        User user = authService.getVerifiyLoginCurrentUser();
-
         PaymentCancellation paymentCancellation = jsonToPaymentCancellation(json, paymentPostDto);
         Payment payment = paymentRepository.qFindByPaymentId(paymentCancellation.getPaymentId());
         paymentCancellation.setPayment(payment);
 
         if (payment.getAmountTotal() != paymentCancellation.getTotalAmount()) {
-            throw new RuntimeException("결제 테이블 금액과 취소한 금액이 일치하지 않습니다.");
+            throw new PaymentException(ExceptionCode.PAYMENT_NOT_EQUAL_CANCEL);
         }
 
         paymentCancellationRepository.save(paymentCancellation);
@@ -46,24 +46,13 @@ public class PaymentService {
         payment.setPaymentId(paymentPostDto.getPaymentId());
         jsonToPayment(json, "", payment);
 
-        //User user = authService.getVerifiyLoginCurrentUser();
-        //payment.setUser(user);
+        Reservation findReservation = reservationService.findReservation(paymentPostDto.getReservationId());
 
-//        if (user.getEmail().equals(payment.getCustomerEmail())) {
-//            throw new RuntimeException("이메일이 일치하지 않습니다.");
-//        } else if (user.getName().equals(payment.getCustomerName())) {
-//            throw new RuntimeException(("이름이 일치하지 않습니다."));
-//        } else if (user.getPhoneNumber().equals(payment.getCustomerPhoneNumber())) {
-//            throw new RuntimeException("휴대폰 번호가 일치하지 않습니다");
-//        }
-
-        Reservation findReservation = reservationRepository.findById(paymentPostDto.getReservationId())
-                .orElseThrow(() -> new RuntimeException("예약 정보가 존재하지 않습니다."));
         if (findReservation.getTotalPrice() != payment.getAmountTotal()) {
-            throw new RuntimeException("예약 테이블에 있는 예약 총금액과 결제금액이 일치하지 않습니다.");
+            throw new PaymentException(ExceptionCode.PAYMENT_NOT_EQUAL_RESERVATION);
         }
-        payment.setReservation(findReservation);
 
+        payment.setReservation(findReservation);
         paymentRepository.save(payment);
     }
 
