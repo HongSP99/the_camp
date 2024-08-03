@@ -2,6 +2,8 @@ package io.camp.reservation.model;
 
 import io.camp.audit.BaseEntity;
 import io.camp.campsite.model.entity.Campsite;
+import io.camp.campsite.model.entity.Site;
+import io.camp.campsite.model.entity.Zone;
 import io.camp.payment.model.Payment;
 import io.camp.user.model.User;
 import jakarta.persistence.*;
@@ -16,7 +18,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @NoArgsConstructor
-@ToString(exclude = {"user", "campsite"})
+@ToString(exclude = {"user", "site"})
 public class Reservation extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,16 +50,16 @@ public class Reservation extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "campsite_seq", referencedColumnName = "seq", columnDefinition = "BIGINT", nullable = false)
-    private Campsite campsite;
+    private Site site;
 
-    @OneToOne(mappedBy = "reservation")
-    private Payment payment;
+//    @OneToOne(mappedBy = "reservation")
+//    private Payment payment;
 
     public void setUser(User user){
         this.user = user;
     }
 
-    public void setCampsite(Campsite campsite){
-        this.campsite = campsite;
+    public void setSite(Site site){
+        this.site = site;
     }
 }

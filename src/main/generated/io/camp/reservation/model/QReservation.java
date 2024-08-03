@@ -26,8 +26,6 @@ public class QReservation extends EntityPathBase<Reservation> {
 
     public final NumberPath<Integer> adults = createNumber("adults", Integer.class);
 
-    public final io.camp.campsite.model.entity.QCampsite campsite;
-
     public final NumberPath<Integer> children = createNumber("children", Integer.class);
 
     //inherited
@@ -38,13 +36,13 @@ public class QReservation extends EntityPathBase<Reservation> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> modifiedAt = _super.modifiedAt;
 
-    public final io.camp.payment.model.QPayment payment;
-
     public final EnumPath<ReservationState> reservationState = createEnum("reservationState", ReservationState.class);
 
     public final DateTimePath<java.time.LocalDateTime> reserveEndDate = createDateTime("reserveEndDate", java.time.LocalDateTime.class);
 
     public final DateTimePath<java.time.LocalDateTime> reserveStartDate = createDateTime("reserveStartDate", java.time.LocalDateTime.class);
+
+    public final io.camp.campsite.model.entity.QSite site;
 
     public final NumberPath<Integer> totalPrice = createNumber("totalPrice", Integer.class);
 
@@ -68,8 +66,7 @@ public class QReservation extends EntityPathBase<Reservation> {
 
     public QReservation(Class<? extends Reservation> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.campsite = inits.isInitialized("campsite") ? new io.camp.campsite.model.entity.QCampsite(forProperty("campsite")) : null;
-        this.payment = inits.isInitialized("payment") ? new io.camp.payment.model.QPayment(forProperty("payment"), inits.get("payment")) : null;
+        this.site = inits.isInitialized("site") ? new io.camp.campsite.model.entity.QSite(forProperty("site"), inits.get("site")) : null;
         this.user = inits.isInitialized("user") ? new io.camp.user.model.QUser(forProperty("user")) : null;
     }
 

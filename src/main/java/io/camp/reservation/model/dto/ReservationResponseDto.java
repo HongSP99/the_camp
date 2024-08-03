@@ -1,6 +1,8 @@
 package io.camp.reservation.model.dto;
 
 import io.camp.campsite.model.entity.Campsite;
+import io.camp.campsite.model.entity.Site;
+import io.camp.campsite.model.entity.Zone;
 import io.camp.reservation.model.ReservationState;
 
 import java.time.LocalDateTime;
@@ -24,8 +26,18 @@ public class ReservationResponseDto {
 
     @Setter(AccessLevel.NONE)
     private String campsiteName;
+    private String zoneName;
+    private String siteTitle;
 
     public void setCampsiteName(Campsite campsite){
         this.campsiteName = campsite.getFacltNm();
+    }
+
+    public void setZoneName(Zone zone){
+        this.zoneName = zone.getTitle();
+    }
+
+    public void setSiteNumber(Site site){
+        this.siteTitle = site.getTitle();
     }
 }

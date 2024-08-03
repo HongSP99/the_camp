@@ -22,9 +22,9 @@ public class QSite extends EntityPathBase<Site> {
 
     public static final QSite site = new QSite("site");
 
-    public final NumberPath<Integer> number = createNumber("number", Integer.class);
-
     public final NumberPath<Long> seq = createNumber("seq", Long.class);
+
+    public final StringPath title = createString("title");
 
     public final QZone zone;
 

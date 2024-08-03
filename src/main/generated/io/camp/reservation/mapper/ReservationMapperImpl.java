@@ -7,8 +7,13 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
+<<<<<<< HEAD
     date = "2024-08-03T15:31:12+0900",
     comments = "version: 1.5.5.Final, compiler: IncrementalProcessingEnvironment from gradle-language-java-8.8.jar, environment: Java 17.0.10 (Oracle Corporation)"
+=======
+    date = "2024-08-03T15:29:14+0900",
+    comments = "version: 1.5.5.Final, compiler: IncrementalProcessingEnvironment from gradle-language-java-8.8.jar, environment: Java 17.0.8 (Oracle Corporation)"
+>>>>>>> ce0d2ee4ce7c15f5553d398512a29c5c457097ff
 )
 @Component
 public class ReservationMapperImpl implements ReservationMapper {
@@ -25,6 +30,7 @@ public class ReservationMapperImpl implements ReservationMapper {
         reservation.setReserveEndDate( reservationPostDto.getReserveEndDate() );
         reservation.setAdults( reservationPostDto.getAdults() );
         reservation.setChildren( reservationPostDto.getChildren() );
+        reservation.setTotalPrice( reservationPostDto.getTotalPrice() );
 
         return reservation;
     }
