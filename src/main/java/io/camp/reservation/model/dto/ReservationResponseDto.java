@@ -27,7 +27,7 @@ public class ReservationResponseDto {
     @Setter(AccessLevel.NONE)
     private String campsiteName;
     private String zoneName;
-    private int siteNumber;
+    private String siteTitle;
 
     public void setCampsiteName(Campsite campsite){
         this.campsiteName = campsite.getFacltNm();
@@ -38,6 +38,6 @@ public class ReservationResponseDto {
     }
 
     public void setSiteNumber(Site site){
-        this.siteNumber = site.getNumber();
+        this.siteTitle = site.getTitle();
     }
 }
