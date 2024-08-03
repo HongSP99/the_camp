@@ -38,6 +38,8 @@ public class QZone extends EntityPathBase<Zone> {
 
     public final NumberPath<Long> seq = createNumber("seq", Long.class);
 
+    public final ListPath<Site, QSite> sites = this.<Site, QSite>createList("sites", Site.class, QSite.class, PathInits.DIRECT2);
+
     public final StringPath title = createString("title");
 
     public QZone(String variable) {

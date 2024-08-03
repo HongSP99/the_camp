@@ -1,16 +1,21 @@
 package io.camp.campsite.model.dto;
 
+
 import io.camp.campsite.model.entity.Zone;
+import jakarta.persistence.Column;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.OneToMany;
 import lombok.*;
 
 import java.util.List;
 
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@ToString
 @Data
-public class CampSiteDto {
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
+public class CampSiteAllDto {
+
 
 
     private int contentId;
@@ -73,8 +78,8 @@ public class CampSiteDto {
 
     private String tooltip;
 
-
     private String glampInnerFclty;
+
     private String caravInnerFclty;
 
     private String operPdCl;
@@ -107,5 +112,5 @@ public class CampSiteDto {
 
     private String modifiedtime;
 
-    private transient List<ZoneDto> zones;
+    //private List<Zone> zones;
 }

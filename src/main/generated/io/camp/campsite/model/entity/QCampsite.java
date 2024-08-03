@@ -7,6 +7,7 @@ import com.querydsl.core.types.dsl.*;
 import com.querydsl.core.types.PathMetadata;
 import javax.annotation.processing.Generated;
 import com.querydsl.core.types.Path;
+import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
@@ -112,6 +113,8 @@ public class QCampsite extends EntityPathBase<Campsite> {
     public final NumberPath<Integer> wtrplCo = createNumber("wtrplCo", Integer.class);
 
     public final StringPath zipcode = createString("zipcode");
+
+    public final ListPath<Zone, QZone> zones = this.<Zone, QZone>createList("zones", Zone.class, QZone.class, PathInits.DIRECT2);
 
     public QCampsite(String variable) {
         super(Campsite.class, forVariable(variable));

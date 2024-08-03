@@ -1,5 +1,7 @@
 package io.camp.campsite.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.google.gson.annotations.Expose;
 import io.camp.reservation.model.Reservation;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -84,8 +86,8 @@ public class Campsite {
 
     private String tooltip;
 
-
     private String glampInnerFclty;
+
     private String caravInnerFclty;
 
     private String operPdCl;
@@ -117,4 +119,7 @@ public class Campsite {
     private String createdtime;
 
     private String modifiedtime;
+
+    @OneToMany(mappedBy = "campsite" , fetch = FetchType.EAGER)
+    private List<Zone> zones;
 }

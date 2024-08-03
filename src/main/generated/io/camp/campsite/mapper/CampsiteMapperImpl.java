@@ -1,5 +1,6 @@
 package io.camp.campsite.mapper;
 
+import io.camp.campsite.model.dto.CampSiteAllDto;
 import io.camp.campsite.model.dto.CampSiteDto;
 import io.camp.campsite.model.entity.Campsite;
 import javax.annotation.processing.Generated;
@@ -7,8 +8,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-08-02T13:53:50+0900",
-    comments = "version: 1.5.5.Final, compiler: IncrementalProcessingEnvironment from gradle-language-java-8.8.jar, environment: Java 17.0.10 (Oracle Corporation)"
+    date = "2024-08-02T18:48:19+0900",
+    comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17.0.12 (Ubuntu)"
 )
 @Component
 public class CampsiteMapperImpl implements CampsiteMapper {
@@ -69,5 +70,121 @@ public class CampsiteMapperImpl implements CampsiteMapper {
         campSiteDto.modifiedtime( campsite.getModifiedtime() );
 
         return campSiteDto.build();
+    }
+
+    @Override
+    public Campsite toCampsiteEntity(CampSiteDto campSiteDto) {
+        if ( campSiteDto == null ) {
+            return null;
+        }
+
+        Campsite.CampsiteBuilder campsite = Campsite.builder();
+
+        campsite.contentId( campSiteDto.getContentId() );
+        campsite.facltNm( campSiteDto.getFacltNm() );
+        campsite.lineIntro( campSiteDto.getLineIntro() );
+        campsite.intro( campSiteDto.getIntro() );
+        campsite.allar( campSiteDto.getAllar() );
+        campsite.trsagntNo( campSiteDto.getTrsagntNo() );
+        campsite.bizrno( campSiteDto.getBizrno() );
+        campsite.featureNm( campSiteDto.getFeatureNm() );
+        campsite.induty( campSiteDto.getInduty() );
+        campsite.lctCl( campSiteDto.getLctCl() );
+        campsite.doNm( campSiteDto.getDoNm() );
+        campsite.sigunguNm( campSiteDto.getSigunguNm() );
+        campsite.zipcode( campSiteDto.getZipcode() );
+        campsite.addr1( campSiteDto.getAddr1() );
+        campsite.addr2( campSiteDto.getAddr2() );
+        campsite.mapX( campSiteDto.getMapX() );
+        campsite.mapY( campSiteDto.getMapY() );
+        campsite.direction( campSiteDto.getDirection() );
+        campsite.tel( campSiteDto.getTel() );
+        campsite.homepage( campSiteDto.getHomepage() );
+        campsite.resveUrl( campSiteDto.getResveUrl() );
+        campsite.glampSiteCo( campSiteDto.getGlampSiteCo() );
+        campsite.caravSiteCo( campSiteDto.getCaravSiteCo() );
+        campsite.siteBottomCl1( campSiteDto.getSiteBottomCl1() );
+        campsite.siteBottomCl2( campSiteDto.getSiteBottomCl2() );
+        campsite.siteBottomCl3( campSiteDto.getSiteBottomCl3() );
+        campsite.siteBottomCl4( campSiteDto.getSiteBottomCl4() );
+        campsite.siteBottomCl5( campSiteDto.getSiteBottomCl5() );
+        campsite.tooltip( campSiteDto.getTooltip() );
+        campsite.glampInnerFclty( campSiteDto.getGlampInnerFclty() );
+        campsite.caravInnerFclty( campSiteDto.getCaravInnerFclty() );
+        campsite.operPdCl( campSiteDto.getOperPdCl() );
+        campsite.operDeCl( campSiteDto.getOperDeCl() );
+        campsite.toiletCo( campSiteDto.getToiletCo() );
+        campsite.swrmCo( campSiteDto.getSwrmCo() );
+        campsite.wtrplCo( campSiteDto.getWtrplCo() );
+        campsite.brazierCl( campSiteDto.getBrazierCl() );
+        campsite.sbrsCl( campSiteDto.getSbrsCl() );
+        campsite.sbrsEtc( campSiteDto.getSbrsEtc() );
+        campsite.posblFcltyCl( campSiteDto.getPosblFcltyCl() );
+        campsite.posblFcltyEtc( campSiteDto.getPosblFcltyEtc() );
+        campsite.themaEnyrnCl( campSiteDto.getThemaEnyrnCl() );
+        campsite.animalCmgCl( campSiteDto.getAnimalCmgCl() );
+        campsite.firstImageUrl( campSiteDto.getFirstImageUrl() );
+        campsite.createdtime( campSiteDto.getCreatedtime() );
+        campsite.modifiedtime( campSiteDto.getModifiedtime() );
+
+        return campsite.build();
+    }
+
+    @Override
+    public CampSiteAllDto toCampSiteAllDto(Campsite campsite) {
+        if ( campsite == null ) {
+            return null;
+        }
+
+        CampSiteAllDto.CampSiteAllDtoBuilder campSiteAllDto = CampSiteAllDto.builder();
+
+        campSiteAllDto.contentId( campsite.getContentId() );
+        campSiteAllDto.facltNm( campsite.getFacltNm() );
+        campSiteAllDto.lineIntro( campsite.getLineIntro() );
+        campSiteAllDto.intro( campsite.getIntro() );
+        campSiteAllDto.allar( campsite.getAllar() );
+        campSiteAllDto.trsagntNo( campsite.getTrsagntNo() );
+        campSiteAllDto.bizrno( campsite.getBizrno() );
+        campSiteAllDto.featureNm( campsite.getFeatureNm() );
+        campSiteAllDto.induty( campsite.getInduty() );
+        campSiteAllDto.lctCl( campsite.getLctCl() );
+        campSiteAllDto.doNm( campsite.getDoNm() );
+        campSiteAllDto.sigunguNm( campsite.getSigunguNm() );
+        campSiteAllDto.zipcode( campsite.getZipcode() );
+        campSiteAllDto.addr1( campsite.getAddr1() );
+        campSiteAllDto.addr2( campsite.getAddr2() );
+        campSiteAllDto.mapX( campsite.getMapX() );
+        campSiteAllDto.mapY( campsite.getMapY() );
+        campSiteAllDto.direction( campsite.getDirection() );
+        campSiteAllDto.tel( campsite.getTel() );
+        campSiteAllDto.homepage( campsite.getHomepage() );
+        campSiteAllDto.resveUrl( campsite.getResveUrl() );
+        campSiteAllDto.glampSiteCo( campsite.getGlampSiteCo() );
+        campSiteAllDto.caravSiteCo( campsite.getCaravSiteCo() );
+        campSiteAllDto.siteBottomCl1( campsite.getSiteBottomCl1() );
+        campSiteAllDto.siteBottomCl2( campsite.getSiteBottomCl2() );
+        campSiteAllDto.siteBottomCl3( campsite.getSiteBottomCl3() );
+        campSiteAllDto.siteBottomCl4( campsite.getSiteBottomCl4() );
+        campSiteAllDto.siteBottomCl5( campsite.getSiteBottomCl5() );
+        campSiteAllDto.tooltip( campsite.getTooltip() );
+        campSiteAllDto.glampInnerFclty( campsite.getGlampInnerFclty() );
+        campSiteAllDto.caravInnerFclty( campsite.getCaravInnerFclty() );
+        campSiteAllDto.operPdCl( campsite.getOperPdCl() );
+        campSiteAllDto.operDeCl( campsite.getOperDeCl() );
+        campSiteAllDto.toiletCo( campsite.getToiletCo() );
+        campSiteAllDto.swrmCo( campsite.getSwrmCo() );
+        campSiteAllDto.wtrplCo( campsite.getWtrplCo() );
+        campSiteAllDto.brazierCl( campsite.getBrazierCl() );
+        campSiteAllDto.sbrsCl( campsite.getSbrsCl() );
+        campSiteAllDto.sbrsEtc( campsite.getSbrsEtc() );
+        campSiteAllDto.posblFcltyCl( campsite.getPosblFcltyCl() );
+        campSiteAllDto.posblFcltyEtc( campsite.getPosblFcltyEtc() );
+        campSiteAllDto.themaEnyrnCl( campsite.getThemaEnyrnCl() );
+        campSiteAllDto.animalCmgCl( campsite.getAnimalCmgCl() );
+        campSiteAllDto.firstImageUrl( campsite.getFirstImageUrl() );
+        campSiteAllDto.createdtime( campsite.getCreatedtime() );
+        campSiteAllDto.modifiedtime( campsite.getModifiedtime() );
+
+        return campSiteAllDto.build();
     }
 }

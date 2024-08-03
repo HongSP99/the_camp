@@ -18,7 +18,7 @@ public class SiteService {
     public int insertSites(Zone zone,int numOfSites){
 
         for(int i=1;i<=numOfSites;i++){
-            siteRepository.save(new Site(i,zone));
+            siteRepository.save(new Site(zone.getTitle()+"-"+i,zone));
         }
 
         return numOfSites;
