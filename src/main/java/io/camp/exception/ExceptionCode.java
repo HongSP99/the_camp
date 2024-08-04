@@ -45,6 +45,7 @@ public enum ExceptionCode {
 
     //유저
     USER_NOT_FOUND(404, "사용자를 찾을 수 없습니다."),
+    LOGIN_FAILED(401,"로그인 실패"),
     EMAIL_ALREADY_EXISTS(409, "이미 존재하는 이메일입니다."),
     INVALID_PASSWORD(400, "잘못된 비밀번호입니다."),
     UNREGISTERED_EMAIL(404, "등록되지 않은 이메일입니다."),

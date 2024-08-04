@@ -28,7 +28,7 @@ public class MailController {
             mailService.saveAuthCode(email, number);
             return ResponseEntity.ok(MailResponse.success("인증 메일이 발송되었습니다."));
         } catch (Exception e) {
-            return ResponseEntity.status(500).body(MailResponse.error(ExceptionCode.INTERNAL_SERVER_ERROR));
+            return ResponseEntity.status(500).body(MailResponse.error(ExceptionCode.MAIL_SEND_FAILED));
         }
     }
 
