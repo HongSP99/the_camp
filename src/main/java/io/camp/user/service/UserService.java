@@ -1,5 +1,9 @@
 package io.camp.user.service;
 
+
+import io.camp.exception.ExceptionCode;
+import io.camp.exception.user.CustomException;
+import io.camp.exception.user.UserAnonymousException;
 import io.camp.user.jwt.JwtUserDetails;
 import io.camp.user.model.User;
 import io.camp.user.model.UserRole;
@@ -28,7 +32,7 @@ public class UserService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
         if (email.equals("anonymousUser")) {
-            throw new RuntimeException("유요한 사용자가 아닙니다.");
+            throw new CustomException(ExceptionCode.USER_INVALID);
         }
         return userRepository.findByEmail(email);
     }
@@ -96,7 +100,7 @@ public class UserService {
     @Transactional
     public void join(JoinDto joinDto) {
         if (userRepository.existsByEmail(joinDto.getEmail())) {
-            throw new RuntimeException("아이디가 중복되었습니다");
+            throw new CustomException(ExceptionCode.EMAIL_ALREADY_EXISTS);
         }
 
         User user = new User();
@@ -114,7 +118,7 @@ public class UserService {
     public void updatePassword(String currentPassword, String newPassword) {
         User user = getVerifiyLoginCurrentUser();
         if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
-            throw new RuntimeException("현재 비밀번호가 일치하지 않습니다.");
+            throw new CustomException(ExceptionCode.INVALID_PASSWORD);
         }
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
@@ -145,7 +149,7 @@ public class UserService {
         UserPaymentGetDto userPaymentGetDto = new UserPaymentGetDto();
 
         if (jwtUserDetails == null) {
-            throw  new RuntimeException("사용자 인증 실패");
+            throw  new CustomException(ExceptionCode.USER_NOT_FOUND);
         }
 
         User user = jwtUserDetails.getUser();
@@ -159,7 +163,7 @@ public class UserService {
     public void resetPassword(String email) throws MessagingException {
         User user = userRepository.findByEmail(email);
         if (user == null) {
-            throw new RuntimeException("등록되지 않은 이메일입니다.");
+            throw new CustomException(ExceptionCode.UNREGISTERED_EMAIL);
         }
 
         String tempPassword = mailService.generateTemporaryPassword();

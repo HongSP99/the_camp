@@ -1,5 +1,7 @@
 package io.camp.user.jwt;
 
+import io.camp.exception.ExceptionCode;
+import io.camp.exception.user.CustomException;
 import io.camp.user.repository.RefreshRepository;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
@@ -11,6 +13,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.filter.GenericFilterBean;
 
+import java.io.EOFException;
 import java.io.IOException;
 
 public class JwtLogoutFilter extends GenericFilterBean {
@@ -55,29 +58,25 @@ public class JwtLogoutFilter extends GenericFilterBean {
 
         System.out.println("Refresh Token: " + refresh);
         if (refresh == null) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return;
+            throw new CustomException(ExceptionCode.REFRESH_TOKEN_NOT_FOUND);
         }
 
         try {
             jwtTokenUtil.isExpired(refresh);
         } catch (ExpiredJwtException e) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return;
+            throw new CustomException(ExceptionCode.REFRESH_TOKEN_EXPIRED);
         }
 
         String category = jwtTokenUtil.getCategory(refresh);
         System.out.println("Token Category: " + category);
         if (!category.equals("refresh")) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return;
+            throw new CustomException(ExceptionCode.INVALID_REFRESH_TOKEN);
         }
 
         Boolean isExist = refreshRepository.existsByRefresh(refresh);
         System.out.println("Token Exists in DB: " + isExist);
         if (!isExist) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return;
+            throw new CustomException(ExceptionCode.BAD_REQUEST);
         }
 
         refreshRepository.deleteByRefresh(refresh);
