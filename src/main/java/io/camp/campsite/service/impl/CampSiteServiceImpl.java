@@ -44,8 +44,11 @@ public class CampSiteServiceImpl implements CampSiteService {
     @Override
     @Transactional(readOnly = true)
     public CampSiteDto getCampsiteBySeq(long seq) {
+
         Campsite campsite = campSiteRepository.findById(seq)
                 .orElseThrow(() -> new CampsiteNotFoundException("해당 캠핑장이 존재하지 않습니다."));
+
+        System.out.println(campsite.getSeq());
         return campsiteMapper.toCampsiteDto(campsite);
     }
 

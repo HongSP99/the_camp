@@ -31,8 +31,8 @@ public class ZoneController {
 
 
     @DeleteMapping("/{seq}")
-    public ResponseEntity<Long> deleteZone(@PathVariable("seq") Long seq){
-        zoneService.deleteZoneBySeq(seq);
+    public ResponseEntity<Long> deleteZone(@PathVariable("seq") long seq){
+        System.out.println(zoneService.deleteZoneBySeq(seq));
         return ResponseEntity.ok(seq);
     }
 

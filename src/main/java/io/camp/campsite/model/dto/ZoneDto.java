@@ -16,6 +16,8 @@ import java.util.List;
 @AllArgsConstructor
 public class ZoneDto {
 
+    private Long seq;
+
     private String title;
 
     private String intro;

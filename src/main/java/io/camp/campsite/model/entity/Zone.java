@@ -45,10 +45,10 @@ public class Zone {
     @Column
     private int bestPeakSeasonPrice;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     private Campsite campsite;
 
-    @OneToMany(mappedBy = "zone" , fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "zone" , fetch = FetchType.EAGER , cascade = CascadeType.ALL)
     private List<Site> sites;
 
 
@@ -56,6 +56,7 @@ public class Zone {
         List<SiteDto> siteDtos =sites.stream().map(Site::toDto).toList();
 
       return  ZoneDto.builder()
+                .seq(seq)
                 .title(title)
                 .intro(intro)
                 .checkin(checkin)
