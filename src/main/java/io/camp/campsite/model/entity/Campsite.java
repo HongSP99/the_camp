@@ -4,11 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.gson.annotations.Expose;
 import io.camp.reservation.model.Reservation;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 
 import java.util.ArrayList;
@@ -17,6 +13,7 @@ import java.util.List;
 @Entity
 @Builder
 @Getter
+@Setter
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
@@ -24,7 +21,7 @@ public class Campsite {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long seq;
+    private long seq;
 
     private int contentId;
 
@@ -120,6 +117,6 @@ public class Campsite {
 
     private String modifiedtime;
 
-    @OneToMany(mappedBy = "campsite" , fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "campsite" , fetch = FetchType.EAGER )
     private List<Zone> zones;
 }

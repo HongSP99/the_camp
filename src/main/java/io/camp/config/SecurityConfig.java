@@ -46,7 +46,6 @@ public class SecurityConfig {
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers("/reissue").permitAll()
                         .anyRequest().permitAll()
-
                 );
         http
                 .addFilter(corsConfig.corsFilter())

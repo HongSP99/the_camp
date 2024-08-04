@@ -28,6 +28,7 @@ public class ZoneService {
 
 
 
+    @Transactional
     public Long deleteZoneBySeq(Long seq){
          zoneRepository.deleteById(seq);
          return seq;

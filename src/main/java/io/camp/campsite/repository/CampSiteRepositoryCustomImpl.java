@@ -23,6 +23,10 @@ public class CampSiteRepositoryCustomImpl implements CampSiteRepositoryCustom{
 
     @Override
     public Campsite findCampsiteWithAllInfo(long id) {
+        QCampsite campsite = QCampsite.campsite;
+        QZone zone = QZone.zone;
+        QSite site = QSite.site;
+
         return queryFactory
                 .selectFrom(campsite)
                 .where(campsite.seq.eq(id))

@@ -10,6 +10,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class SiteService {
@@ -18,13 +21,15 @@ public class SiteService {
 
 
     @Transactional
-    public int insertSites(Zone zone,int numOfSites){
-
+    public List<SiteDto> insertSites(Zone zone,int numOfSites){
+        List<SiteDto> dtos = new ArrayList<>();
         for(int i=1;i<=numOfSites;i++){
-            siteRepository.save(new Site(zone.getTitle()+"-"+i,zone));
+
+            SiteDto dto = siteRepository.save(new Site(zone.getTitle()+"-"+i,zone)).toDto();
+            dtos.add(dto);
         }
 
-        return numOfSites;
+        return dtos;
     }
 
     public List<SiteDto> getSiteByZone(Long zoneSeq){

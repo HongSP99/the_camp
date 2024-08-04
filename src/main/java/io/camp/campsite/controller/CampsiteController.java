@@ -70,7 +70,9 @@ public class CampsiteController {
 
     @GetMapping("/{id}")
     public CampSiteDto getCampsiteById(@PathVariable("id") int id){
-        return campSiteService.getCampsiteBySeq(id);
+        CampSiteDto campSiteDto = campSiteService.getCampsiteBySeq(id);
+        System.out.println(campSiteDto);
+        return campSiteDto;
     }
 
 

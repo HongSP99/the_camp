@@ -10,6 +10,7 @@ import org.mapstruct.Mapping;
 public interface CampsiteMapper {
 
     @Mapping(source = "zones", target = "zones", ignore = true)
+    @Mapping(source = "seq", target = "seq")
     CampSiteDto toCampsiteDto(Campsite campsite);
 
     @Mapping(source = "zones", target = "zones", ignore = true)
