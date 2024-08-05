@@ -2,13 +2,11 @@ package io.camp.campsite.service;
 
 
 import io.camp.campsite.model.dto.SeasonDto;
-import io.camp.campsite.model.dto.SiteDto;
 import io.camp.campsite.model.entity.Campsite;
 import io.camp.campsite.model.entity.Season;
-import io.camp.campsite.model.entity.Site;
 import io.camp.campsite.repository.CampSiteRepository;
 import io.camp.campsite.repository.SeasonRepository;
-import io.camp.exception.Campsite.CampsiteNotFoundException;
+import io.camp.common.exception.Campsite.CampsiteNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

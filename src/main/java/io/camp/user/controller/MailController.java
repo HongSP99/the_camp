@@ -1,7 +1,6 @@
 package io.camp.user.controller;
 
-import io.camp.exception.ExceptionCode;
-import io.camp.exception.user.CustomException;
+import io.camp.common.exception.ExceptionCode;
 import io.camp.user.model.email.AuthCodeDto;
 
 import io.camp.user.model.response.MailResponse;

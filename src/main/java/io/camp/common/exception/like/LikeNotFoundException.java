@@ -1,4 +1,4 @@
-package io.camp.exception.like;
+package io.camp.common.exception.like;
 
 public class LikeNotFoundException extends RuntimeException {
     public LikeNotFoundException(Long userId, Long reviewId) {

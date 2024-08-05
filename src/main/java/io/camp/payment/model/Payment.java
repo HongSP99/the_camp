@@ -1,8 +1,8 @@
 package io.camp.payment.model;
 
 import io.camp.audit.BaseEntity;
-import io.camp.exception.ExceptionCode;
-import io.camp.exception.payment.PaymentException;
+import io.camp.common.exception.ExceptionCode;
+import io.camp.common.exception.payment.PaymentException;
 import io.camp.reservation.model.Reservation;
 import io.camp.user.model.User;
 import jakarta.persistence.*;

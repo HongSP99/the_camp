@@ -2,8 +2,8 @@ package io.camp.payment.service;
 
 
 import com.google.gson.Gson;
-import io.camp.exception.ExceptionCode;
-import io.camp.exception.payment.PaymentException;
+import io.camp.common.exception.ExceptionCode;
+import io.camp.common.exception.payment.PaymentException;
 import io.camp.payment.model.Payment;
 import io.camp.payment.model.PaymentCancellation;
 import io.camp.payment.model.PaymentType;
@@ -11,10 +11,7 @@ import io.camp.payment.model.dto.PaymentPostDto;
 import io.camp.payment.repository.PaymentCancellationRepository;
 import io.camp.payment.repository.PaymentRepository;
 import io.camp.reservation.model.Reservation;
-import io.camp.reservation.repository.ReservationRepository;
 import io.camp.reservation.service.ReservationService;
-import io.camp.user.model.User;
-import io.camp.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;

@@ -1,6 +1,6 @@
-package io.camp.exception.user;
+package io.camp.common.exception.user;
 
-import io.camp.exception.ExceptionCode;
+import io.camp.common.exception.ExceptionCode;
 import lombok.Getter;
 
 @Getter

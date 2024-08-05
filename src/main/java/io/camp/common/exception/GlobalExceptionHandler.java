@@ -1,9 +1,9 @@
-package io.camp.exception;
+package io.camp.common.exception;
 
 
-import io.camp.exception.payment.PaymentException;
-import io.camp.exception.reservation.ReservationException;
-import io.camp.exception.user.UserAnonymousException;
+import io.camp.common.exception.payment.PaymentException;
+import io.camp.common.exception.reservation.ReservationException;
+import io.camp.common.exception.user.UserAnonymousException;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

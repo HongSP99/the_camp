@@ -1,6 +1,6 @@
-package io.camp.exception.payment;
+package io.camp.common.exception.payment;
 
-import io.camp.exception.ExceptionCode;
+import io.camp.common.exception.ExceptionCode;
 import lombok.Getter;
 
 public class PaymentException extends RuntimeException{

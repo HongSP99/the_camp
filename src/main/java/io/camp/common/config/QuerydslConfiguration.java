@@ -1,4 +1,4 @@
-package io.camp.config;
+package io.camp.common.config;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;

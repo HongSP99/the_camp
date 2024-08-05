@@ -1,7 +1,7 @@
 package io.camp.user.jwt;
 
-import io.camp.exception.ExceptionCode;
-import io.camp.exception.user.CustomException;
+import io.camp.common.exception.ExceptionCode;
+import io.camp.common.exception.user.CustomException;
 import io.camp.user.model.User;
 import io.camp.user.model.UserRole;
 import io.jsonwebtoken.ExpiredJwtException;

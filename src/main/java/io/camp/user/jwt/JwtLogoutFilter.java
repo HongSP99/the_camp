@@ -1,7 +1,7 @@
 package io.camp.user.jwt;
 
-import io.camp.exception.ExceptionCode;
-import io.camp.exception.user.CustomException;
+import io.camp.common.exception.ExceptionCode;
+import io.camp.common.exception.user.CustomException;
 import io.camp.user.repository.RefreshRepository;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
@@ -13,7 +13,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.filter.GenericFilterBean;
 
-import java.io.EOFException;
 import java.io.IOException;
 
 public class JwtLogoutFilter extends GenericFilterBean {

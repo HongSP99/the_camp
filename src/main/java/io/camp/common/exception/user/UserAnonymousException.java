@@ -1,4 +1,4 @@
-package io.camp.exception.user;
+package io.camp.common.exception.user;
 
 
 import lombok.Getter;

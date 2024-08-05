@@ -1,6 +1,6 @@
 package io.camp.user.model.response;
 
-import io.camp.exception.ExceptionCode;
+import io.camp.common.exception.ExceptionCode;
 import lombok.Getter;
 import lombok.Setter;
 @Getter

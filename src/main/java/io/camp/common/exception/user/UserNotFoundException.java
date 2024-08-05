@@ -1,4 +1,4 @@
-package io.camp.exception.user;
+package io.camp.common.exception.user;
 
 public class UserNotFoundException extends RuntimeException {
     public UserNotFoundException(Long id) {

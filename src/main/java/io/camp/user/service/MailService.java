@@ -1,7 +1,7 @@
 package io.camp.user.service;
 
-import io.camp.exception.ExceptionCode;
-import io.camp.exception.user.CustomException;
+import io.camp.common.exception.ExceptionCode;
+import io.camp.common.exception.user.CustomException;
 import io.camp.user.model.email.AuthCode;
 import io.camp.user.repository.AuthCodeRepository;
 import jakarta.mail.MessagingException;

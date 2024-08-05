@@ -1,9 +1,8 @@
 package io.camp.user.service;
 
 
-import io.camp.exception.ExceptionCode;
-import io.camp.exception.user.CustomException;
-import io.camp.exception.user.UserAnonymousException;
+import io.camp.common.exception.ExceptionCode;
+import io.camp.common.exception.user.CustomException;
 import io.camp.user.jwt.JwtUserDetails;
 import io.camp.user.model.User;
 import io.camp.user.model.UserRole;
@@ -11,7 +10,6 @@ import io.camp.user.model.dto.JoinDto;
 import io.camp.user.model.dto.RoleGetDto;
 import io.camp.user.model.dto.UserPaymentGetDto;
 import io.camp.user.repository.UserRepository;
-import jakarta.annotation.PostConstruct;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;

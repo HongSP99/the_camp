@@ -1,8 +1,8 @@
 package io.camp.user.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.camp.exception.ExceptionCode;
-import io.camp.exception.user.CustomException;
+import io.camp.common.exception.ExceptionCode;
+import io.camp.common.exception.user.CustomException;
 import io.camp.user.model.RefreshEntity;
 import io.camp.user.model.User;
 import io.camp.user.model.UserRole;

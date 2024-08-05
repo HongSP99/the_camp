@@ -1,12 +1,11 @@
 package io.camp.review.service;
 
-import io.camp.exception.review.ReviewNotFoundException;
+import io.camp.common.exception.review.ReviewNotFoundException;
 import io.camp.review.model.Review;
 import io.camp.review.model.dto.CreateReviewDto;
 import io.camp.review.model.dto.ReviewDto;
 import io.camp.review.model.dto.UpdateReviewDto;
 import io.camp.review.repository.ReviewRepository;
-import io.camp.user.model.User;
 import io.camp.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;

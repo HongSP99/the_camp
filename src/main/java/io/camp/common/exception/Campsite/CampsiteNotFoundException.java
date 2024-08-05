@@ -1,4 +1,4 @@
-package io.camp.exception.Campsite;
+package io.camp.common.exception.Campsite;
 
 import lombok.Data;
 

@@ -1,7 +1,7 @@
 package io.camp.like.service;
 
-import io.camp.exception.review.ReviewNotFoundException;
-import io.camp.exception.user.UserNotFoundException;
+import io.camp.common.exception.review.ReviewNotFoundException;
+import io.camp.common.exception.user.UserNotFoundException;
 import io.camp.like.model.Like;
 import io.camp.like.model.dto.LikeRequestDTO;
 import io.camp.like.repository.LikeRepository;
@@ -11,8 +11,7 @@ import io.camp.user.model.User;
 import io.camp.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import io.camp.exception.like.LikeNotFoundException;
+import io.camp.common.exception.like.LikeNotFoundException;
 
 
 @Service

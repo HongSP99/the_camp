@@ -1,4 +1,4 @@
-package io.camp.exception;
+package io.camp.common.exception;
 
 import jakarta.validation.ConstraintViolation;
 import java.util.List;

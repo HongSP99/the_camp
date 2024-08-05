@@ -1,4 +1,4 @@
-package io.camp.config;
+package io.camp.common.config;
 
 
 import org.springframework.context.annotation.Bean;

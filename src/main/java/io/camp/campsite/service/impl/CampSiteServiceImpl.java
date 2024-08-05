@@ -2,13 +2,12 @@ package io.camp.campsite.service.impl;
 
 import com.google.gson.Gson;
 import io.camp.campsite.mapper.CampsiteMapper;
-import io.camp.campsite.model.dto.CampSiteAllDto;
 import io.camp.campsite.model.dto.CampSiteDto;
 import io.camp.campsite.model.entity.Campsite;
 import io.camp.campsite.model.entity.Zone;
 import io.camp.campsite.repository.CampSiteRepository;
 import io.camp.campsite.service.CampSiteService;
-import io.camp.exception.Campsite.CampsiteNotFoundException;
+import io.camp.common.exception.Campsite.CampsiteNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONArray;
