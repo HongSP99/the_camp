@@ -36,7 +36,11 @@ public class ZoneController {
         return ResponseEntity.ok(seq);
     }
 
-
+    @GetMapping("/{zoneSeq}")
+    public ResponseEntity<ZoneDto> getZone(@PathVariable("zoneSeq") Long zoneSeq){
+        ZoneDto dto = zoneService.getZone(zoneSeq);
+        return ResponseEntity.ok(dto);
+    }
 
 
 }
