@@ -1,11 +1,10 @@
 package io.camp.campsite.repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import io.camp.campsite.model.entity.Campsite;
-import io.camp.campsite.model.entity.QCampsite;
+import io.camp.campsite.model.entity.*;
+
 import static io.camp.campsite.model.entity.QCampsite.campsite;
-import io.camp.campsite.model.entity.QSite;
-import io.camp.campsite.model.entity.QZone;
+
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -27,9 +26,21 @@ public class CampSiteRepositoryCustomImpl implements CampSiteRepositoryCustom{
         QZone zone = QZone.zone;
         QSite site = QSite.site;
 
-        return queryFactory
+        Campsite result = queryFactory
                 .selectFrom(campsite)
+                .leftJoin(campsite.zones).fetchJoin()
                 .where(campsite.seq.eq(id))
                 .fetchOne();
+
+        List<Long> zoneSeqs = result.getZones().stream().map(Zone::getSeq).toList();
+
+        queryFactory
+                .selectFrom(zone)
+                .leftJoin(zone.sites,site)
+                .fetchJoin()
+                .where(zone.seq.in(zoneSeqs))
+                .fetch();
+
+        return result;
     }
 }
