@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 public interface ReviewRepositoryCustom {
 
     Page<ReviewDto> reviewJoinCampsite(Long campsiteId, Pageable pageable);
+    Page<ReviewDto> getAllReviewDesc(Pageable pageable);
     Review reviewLoginUser(Long reviewId, User loginUser);
 
 }

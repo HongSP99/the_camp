@@ -28,6 +28,12 @@ public class ReviewController {
         return ResponseEntity.ok(createdReview);
     }
 
+    @GetMapping("/desc")
+    public ResponseEntity<Page<ReviewDto>> getAllReviewDesc() {
+        Page<ReviewDto> reviewSort = reviewService.getAllReviewDesc();
+        return ResponseEntity.ok(reviewSort);
+    }
+
     @GetMapping("/{campsiteId}")
     public ResponseEntity<Page<ReviewDto>> getReview(@PathVariable("campsiteId") Long campsiteId) {
         Page<ReviewDto> review = reviewService.getReview(campsiteId);

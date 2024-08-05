@@ -49,6 +49,24 @@ public class ReviewRepositoryCustomImpl implements ReviewRepositoryCustom {
     }
 
     @Override
+    public Page<ReviewDto> getAllReviewDesc(Pageable pageable) {
+        QueryResults<ReviewDto> results = jpaQueryFactory.select(Projections.bean(ReviewDto.class,
+                        review.id,
+                        review.content,
+                        review.user.name.as("userName"),
+                        review.likeCount,
+                        review.campsite.facltNm.as("campName")))
+                .from(review)
+                .orderBy(review.createdAt.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetchResults();
+        List<ReviewDto> content = results.getResults();
+        long total = results.getTotal();
+        return new PageImpl<>(content, pageable, total);
+    }
+
+    @Override
     public Review reviewLoginUser(Long reviewId, User loginUser) {
         return jpaQueryFactory
                 .select(review)

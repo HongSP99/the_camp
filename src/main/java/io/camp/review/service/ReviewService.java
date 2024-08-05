@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -55,11 +56,15 @@ public class ReviewService {
     //전체 리뷰 조회 (좋아요 순)
 
     //전체 리뷰 조회 (최신 순)
+    public Page<ReviewDto> getAllReviewDesc() {
+        Pageable Pageable = PageRequest.of(0, 6);
+        return reviewRepository.getAllReviewDesc(Pageable);
+    }
 
     //리뷰 조회
     @Transactional(readOnly = true)
     public Page<ReviewDto> getReview(Long campsiteId) {
-        Pageable pageable = PageRequest.of(0, 6);
+        Pageable pageable = PageRequest.of(0, 6, Sort.by("createdAt").descending());
         Page<ReviewDto> reviews = reviewRepository.reviewJoinCampsite(campsiteId, pageable);
         return reviews;
     }
