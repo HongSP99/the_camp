@@ -54,6 +54,10 @@ public class ReviewService {
     }
 
     //전체 리뷰 조회 (좋아요 순)
+    public Page<ReviewDto> getAllReviewLikeCountDesc() {
+        Pageable Pageable = PageRequest.of(0, 6);
+        return reviewRepository.getAllReviewLikeCountDesc(Pageable);
+    }
 
     //전체 리뷰 조회 (최신 순)
     public Page<ReviewDto> getAllReviewDesc() {

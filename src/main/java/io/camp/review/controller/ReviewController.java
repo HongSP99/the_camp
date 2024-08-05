@@ -28,6 +28,13 @@ public class ReviewController {
         return ResponseEntity.ok(createdReview);
     }
 
+
+    @GetMapping("/desc/like")
+    public ResponseEntity<Page<ReviewDto>> getAllReviewLikeCountDesc() {
+        Page<ReviewDto> reviewSort = reviewService.getAllReviewLikeCountDesc();
+        return ResponseEntity.ok(reviewSort);
+    }
+
     @GetMapping("/desc")
     public ResponseEntity<Page<ReviewDto>> getAllReviewDesc() {
         Page<ReviewDto> reviewSort = reviewService.getAllReviewDesc();
@@ -55,7 +62,7 @@ public class ReviewController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/{reviewId}/like")
+    @GetMapping("/like/{reviewId}")
     public ResponseEntity<Void> likeReview(@PathVariable("reviewId") Long reviewId,
                                            @AuthenticationPrincipal JwtUserDetails jwtUserDetails) {
         reviewService.likeReview(reviewId, jwtUserDetails);
