@@ -1,5 +1,6 @@
 package io.camp.reservation.controller;
 
+import io.camp.common.dto.SingleResponseDto;
 import io.camp.reservation.mapper.ReservationMapper;
 import io.camp.reservation.model.Reservation;
 import io.camp.reservation.model.dto.ReservationDto;
@@ -39,12 +40,13 @@ public class ReservationController {
 
     //특정 예약 상세 조회
     @GetMapping("/{reservationId}")
-    public ResponseEntity<ReservationResponseDto> getReservation(@PathVariable("reservationId") Long reservationId){
+    public ResponseEntity<SingleResponseDto<?>> getReservation(@PathVariable("reservationId") Long reservationId){
         Reservation reservation = reservationService.findReservation(reservationId);
 
         ReservationResponseDto responseDto = mapper.reservationToReservationResponseDto(reservation);
 
-        return ResponseEntity.ok(responseDto);
+        return new ResponseEntity<>(
+                new SingleResponseDto<>(responseDto), HttpStatus.OK);
     }
 
     //회원 예약 내역 조회

@@ -21,6 +21,8 @@ public interface ReservationMapper {
 
         responseDto.setReservationId(reservation.getId());
         responseDto.setReservationState(reservation.getReservationState());
+        responseDto.setReserveStartDate(reservation.getReserveStartDate());
+        responseDto.setReserveEndDate(reservation.getReserveEndDate());
         responseDto.setAdults(reservation.getAdults());
         responseDto.setChildren(reservation.getChildren());
         responseDto.setCampsiteName(reservation.getSite().getZone().getCampsite());
