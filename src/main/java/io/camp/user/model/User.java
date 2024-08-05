@@ -5,10 +5,7 @@ import io.camp.audit.BaseEntity;
 import io.camp.payment.model.Payment;
 import io.camp.reservation.model.Reservation;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +13,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
+@ToString(exclude = {"reservations", "payments"})
 @NoArgsConstructor
 @AllArgsConstructor
 public class User extends BaseEntity {

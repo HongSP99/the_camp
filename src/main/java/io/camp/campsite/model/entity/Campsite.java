@@ -3,6 +3,7 @@ package io.camp.campsite.model.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.gson.annotations.Expose;
 import io.camp.reservation.model.Reservation;
+import io.camp.review.model.Review;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,7 +18,7 @@ import java.util.List;
 @Entity
 @Builder
 @Getter
-@ToString
+@ToString(exclude = {"campsite"})
 @NoArgsConstructor
 @AllArgsConstructor
 public class Campsite {
@@ -122,4 +123,7 @@ public class Campsite {
 
     @OneToMany(mappedBy = "campsite" , fetch = FetchType.EAGER)
     private List<Zone> zones;
+
+    @OneToMany(mappedBy = "campsite")
+    private List<Review> reviews;
 }

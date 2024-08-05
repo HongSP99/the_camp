@@ -24,6 +24,8 @@ public class QReview extends EntityPathBase<Review> {
 
     public final io.camp.audit.QBaseEntity _super = new io.camp.audit.QBaseEntity(this);
 
+    public final io.camp.campsite.model.entity.QCampsite campsite;
+
     public final StringPath content = createString("content");
 
     //inherited
@@ -32,6 +34,8 @@ public class QReview extends EntityPathBase<Review> {
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
     public final NumberPath<Integer> likeCount = createNumber("likeCount", Integer.class);
+
+    public final ListPath<io.camp.like.model.Like, io.camp.like.model.QLike> likes = this.<io.camp.like.model.Like, io.camp.like.model.QLike>createList("likes", io.camp.like.model.Like.class, io.camp.like.model.QLike.class, PathInits.DIRECT2);
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> modifiedAt = _super.modifiedAt;
@@ -56,6 +60,7 @@ public class QReview extends EntityPathBase<Review> {
 
     public QReview(Class<? extends Review> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
+        this.campsite = inits.isInitialized("campsite") ? new io.camp.campsite.model.entity.QCampsite(forProperty("campsite")) : null;
         this.user = inits.isInitialized("user") ? new io.camp.user.model.QUser(forProperty("user")) : null;
     }
 
