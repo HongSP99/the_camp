@@ -34,6 +34,13 @@ public class ZoneService {
          return seq;
     }
 
+    public ZoneDto getZone(Long zoneSeq){
+        Zone zone = zoneRepository.findById(zoneSeq)
+                .orElseThrow(() -> new IllegalArgumentException("존을 찾을 수 없다."));
+
+        return ZoneDto.fromEntity(zone);
+    }
+
 
 
 }
