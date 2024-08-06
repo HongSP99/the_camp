@@ -43,7 +43,6 @@ public class CampSiteServiceImpl implements CampSiteService {
     @Override
     @Transactional(readOnly = true)
     public CampSiteDto getCampsiteBySeq(long seq) {
-
         Campsite campsite = campSiteRepository.findById(seq)
                 .orElseThrow(() -> new CampsiteNotFoundException("해당 캠핑장이 존재하지 않습니다."));
 
@@ -71,5 +70,18 @@ public class CampSiteServiceImpl implements CampSiteService {
        CampSiteDto campsiteDto = campsiteMapper.toCampsiteDto(campsite);
        campsiteDto.setZones(campsite.getZones().stream().map(Zone::toDto).toList());
        return campsiteDto;
+    }
+
+
+    public Page<CampSiteDto> getCampsitesByTitleWithPaging(String query, Pageable pageable){
+       Page<Campsite> campsites = campSiteRepository.findCampsitesByTitleWithPaging(query,pageable);
+       Page<CampSiteDto> campsiteDtos = campsites.map(campsiteMapper::toCampsiteDto);
+       return campsiteDtos;
+    }
+
+    public Page<CampSiteDto> getCampsitesByRegionWithPaging(String query, Pageable pageable){
+        Page<Campsite> campsites = campSiteRepository.findCampsitesByRegionWithPaging(query,pageable);
+        Page<CampSiteDto> campsiteDtos = campsites.map(campsiteMapper::toCampsiteDto);
+        return campsiteDtos;
     }
 }

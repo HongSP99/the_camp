@@ -9,6 +9,8 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -28,19 +30,50 @@ public class CampSiteRepositoryCustomImpl implements CampSiteRepositoryCustom{
 
         Campsite result = queryFactory
                 .selectFrom(campsite)
-                .leftJoin(campsite.zones).fetchJoin()
+                .leftJoin(campsite.zones,zone)
+                .leftJoin(zone.sites,site)
                 .where(campsite.seq.eq(id))
                 .fetchOne();
 
-        List<Long> zoneSeqs = result.getZones().stream().map(Zone::getSeq).toList();
-
-        queryFactory
-                .selectFrom(zone)
-                .leftJoin(zone.sites,site)
-                .fetchJoin()
-                .where(zone.seq.in(zoneSeqs))
-                .fetch();
 
         return result;
     }
+
+    @Override
+    public Page<Campsite> findCampsitesByTitleWithPaging(String query, Pageable pageable) {
+        List<Campsite> fetch = queryFactory.selectFrom(campsite)
+                .where(campsite.facltNm.contains(query))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        Long count = queryFactory
+                .select(campsite.count())
+                .from(campsite)
+                .where(campsite.facltNm.contains(query))
+                .fetchOne();
+
+        return new PageImpl<>(fetch,pageable,count);
+    }
+
+    @Override
+    public Page<Campsite> findCampsitesByRegionWithPaging(String query, Pageable pageable) {
+        List<Campsite> fetch = queryFactory.selectFrom(campsite)
+                .where(campsite.doNm.contains(query).or(campsite.sigunguNm.contains(query)
+                        .or(campsite.addr1.contains(query))))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        Long count = queryFactory
+                .select(campsite.count())
+                .from(campsite)
+                .where(campsite.doNm.contains(query).or(campsite.sigunguNm.contains(query)
+                        .or(campsite.addr1.contains(query))))
+                .fetchOne();
+
+        return new PageImpl<>(fetch,pageable,count);
+    }
+
+
 }

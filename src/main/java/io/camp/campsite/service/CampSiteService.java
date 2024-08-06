@@ -11,4 +11,6 @@ public interface CampSiteService {
     Page<CampSiteDto> searchCampsites(String name, Pageable pageable);
     Page<CampSiteDto> getAllPaging(int page, int size);
     CampSiteDto getCampsiteWithAllInfo(long id);
+    Page<CampSiteDto> getCampsitesByTitleWithPaging(String query, Pageable pageable);
+    Page<CampSiteDto> getCampsitesByRegionWithPaging(String query, Pageable pageable);
 }
