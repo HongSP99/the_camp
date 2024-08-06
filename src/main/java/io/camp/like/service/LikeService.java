@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import io.camp.exception.like.LikeNotFoundException;
 
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class LikeService {

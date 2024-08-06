@@ -13,10 +13,12 @@ import io.camp.user.jwt.JwtUserDetails;
 import io.camp.user.model.User;
 import io.camp.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -55,14 +57,14 @@ public class ReviewService {
 
     //전체 리뷰 조회 (좋아요 순)
     public Page<ReviewDto> getAllReviewLikeCountDesc() {
-        Pageable Pageable = PageRequest.of(0, 6);
-        return reviewRepository.getAllReviewLikeCountDesc(Pageable);
+        Pageable Pageable = PageRequest.of(0, 6, Sort.by("likeCount").descending());
+        return reviewRepository.getAllReviewSort(Pageable);
     }
 
     //전체 리뷰 조회 (최신 순)
     public Page<ReviewDto> getAllReviewDesc() {
-        Pageable Pageable = PageRequest.of(0, 6);
-        return reviewRepository.getAllReviewDesc(Pageable);
+        Pageable Pageable = PageRequest.of(0, 6, Sort.by("createdAt").descending());
+        return reviewRepository.getAllReviewSort(Pageable);
     }
 
     //리뷰 조회
@@ -117,7 +119,6 @@ public class ReviewService {
         }
         likeService.isLike(reviewId, user);
     }
-
 
     //dto 전환
     public ReviewDto convertToDto(Review review) {
