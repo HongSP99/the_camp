@@ -5,12 +5,9 @@ import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import io.camp.campsite.model.entity.Campsite;
-import io.camp.like.model.Like;
 import io.camp.review.model.Review;
 import io.camp.review.model.dto.ReviewDto;
 import io.camp.user.model.User;
-import jakarta.persistence.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -52,7 +49,9 @@ public class ReviewRepositoryCustomImpl implements ReviewRepositoryCustom {
                         review.content,
                         review.user.name.as("userName"),
                         review.likeCount,
-                        review.campsite.facltNm.as("campName")))
+                        review.campsite.facltNm.as("campName"),
+                        review.user.email.as("email")
+                ))
                 .from(review)
                 .join(review.campsite, campsite)
                 .on(review.campsite.seq.eq(campsite.seq))
@@ -67,8 +66,6 @@ public class ReviewRepositoryCustomImpl implements ReviewRepositoryCustom {
         return new PageImpl<>(content, pageable, total);
     }
 
-
-
     @Override
     public Page<ReviewDto> getAllReviewSort(Pageable pageable) {
         QueryResults<ReviewDto> results = jpaQueryFactory.select(Projections.bean(ReviewDto.class,
@@ -76,7 +73,9 @@ public class ReviewRepositoryCustomImpl implements ReviewRepositoryCustom {
                         review.content,
                         review.user.name.as("userName"),
                         review.likeCount,
-                        review.campsite.facltNm.as("campName")))
+                        review.campsite.facltNm.as("campName"),
+                        review.user.email.as("email")
+                ))
                 .from(review)
                 .orderBy(reviewSort(pageable))
                 .offset(pageable.getOffset())

@@ -6,6 +6,8 @@ import io.camp.review.model.dto.ReviewDto;
 import io.camp.review.model.dto.UpdateReviewDto;
 import io.camp.review.service.ReviewService;
 import io.camp.user.jwt.JwtUserDetails;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/reviews")
 @RequiredArgsConstructor
 public class ReviewController {
+    private static final Logger log = LoggerFactory.getLogger(ReviewController.class);
     private final ReviewService reviewService;
 
     @PostMapping("/{campsiteId}")
@@ -30,20 +33,30 @@ public class ReviewController {
 
 
     @GetMapping("/desc/like")
-    public ResponseEntity<Page<ReviewDto>> getAllReviewLikeCountDesc() {
-        Page<ReviewDto> reviewSort = reviewService.getAllReviewLikeCountDesc();
+    public ResponseEntity<Page<ReviewDto>> getAllReviewLikeCountDesc(@RequestParam(value = "page", defaultValue = "0") int page,
+                                                                     @RequestParam(value = "size", defaultValue = "6") int size) {
+        Page<ReviewDto> reviewSort = reviewService.getAllReviewLikeCountDesc(page, size);
         return ResponseEntity.ok(reviewSort);
     }
 
     @GetMapping("/desc")
-    public ResponseEntity<Page<ReviewDto>> getAllReviewDesc() {
-        Page<ReviewDto> reviewSort = reviewService.getAllReviewDesc();
+    public ResponseEntity<Page<ReviewDto>> getAllReviewDesc(@RequestParam(value = "page", defaultValue = "0") int page,
+                                                            @RequestParam(value = "size", defaultValue = "6") int size) {
+        Page<ReviewDto> reviewSort = reviewService.getAllReviewDesc(page, size);
         return ResponseEntity.ok(reviewSort);
     }
 
-    @GetMapping("/{campsiteId}")
-    public ResponseEntity<Page<ReviewDto>> getReview(@PathVariable("campsiteId") Long campsiteId) {
-        Page<ReviewDto> review = reviewService.getReview(campsiteId);
+    @GetMapping("/campsite/{campsiteId}")
+    public ResponseEntity<Page<ReviewDto>> getReview(@PathVariable("campsiteId") Long campsiteId,
+                                                     @RequestParam(value = "page", defaultValue = "0") int page,
+                                                     @RequestParam(value = "size", defaultValue = "6") int size) {
+        Page<ReviewDto> review = reviewService.getReview(campsiteId, page, size);
+        return ResponseEntity.ok(review);
+    }
+
+    @GetMapping("/{reviewId}")
+    public ResponseEntity<ReviewDto> getReviewOne(@PathVariable("reviewId") Long reviewId) {
+        ReviewDto review = reviewService.getReviewOne(reviewId);
         return ResponseEntity.ok(review);
     }
 

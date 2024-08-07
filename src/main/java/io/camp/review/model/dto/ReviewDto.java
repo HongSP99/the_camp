@@ -10,13 +10,17 @@ public class ReviewDto {
     private String userName;
     private int likeCount;
     private String campName;
+    private String email;
+    private Long userId;
 
-    public ReviewDto(Long id, String content, String userName, int likeCount, String campName) {
+    public ReviewDto(Long id, String content, String userName, int likeCount, String campName, String email) {
         this.id = id;
         this.content = content;
         this.userName = userName;
         this.likeCount = likeCount;
         this.campName = campName;
+        this.email = email;
+        this.userId = userId;
     }
 }
 

@@ -18,8 +18,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.retry.annotation.Retryable;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -56,23 +54,30 @@ public class ReviewService {
     }
 
     //전체 리뷰 조회 (좋아요 순)
-    public Page<ReviewDto> getAllReviewLikeCountDesc() {
-        Pageable Pageable = PageRequest.of(0, 6, Sort.by("likeCount").descending());
+    public Page<ReviewDto> getAllReviewLikeCountDesc(int page, int size) {
+        Pageable Pageable = PageRequest.of(page, size, Sort.by("likeCount").descending());
         return reviewRepository.getAllReviewSort(Pageable);
     }
 
     //전체 리뷰 조회 (최신 순)
-    public Page<ReviewDto> getAllReviewDesc() {
-        Pageable Pageable = PageRequest.of(0, 6, Sort.by("createdAt").descending());
+    public Page<ReviewDto> getAllReviewDesc(int page, int size) {
+        Pageable Pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         return reviewRepository.getAllReviewSort(Pageable);
     }
 
     //리뷰 조회
     @Transactional(readOnly = true)
-    public Page<ReviewDto> getReview(Long campsiteId) {
-        Pageable pageable = PageRequest.of(0, 6, Sort.by("createdAt").descending());
+    public Page<ReviewDto> getReview(Long campsiteId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         Page<ReviewDto> reviews = reviewRepository.reviewJoinCampsite(campsiteId, pageable);
         return reviews;
+    }
+
+    //리뷰 단건 조회
+    public ReviewDto getReviewOne(Long reviewId) {
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new RuntimeException("리뷰를 찾을 수 없습니다."));
+        return convertToDto(review);
     }
 
     //리뷰 수정
@@ -128,6 +133,8 @@ public class ReviewService {
         dto.setCampName(review.getCampsite().getFacltNm());
         dto.setUserName(review.getUser().getName());
         dto.setLikeCount(review.getLikeCount());
+        dto.setEmail(review.getUser().getEmail());
+        dto.setUserId(review.getUser().getSeq());
         return dto;
     }
 }

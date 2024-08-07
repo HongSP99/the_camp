@@ -16,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 import io.camp.exception.like.LikeNotFoundException;
 
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class LikeService {
@@ -60,7 +59,6 @@ public class LikeService {
         }
     }
 
-
     public void createLike(LikeRequestDTO likeRequestDTO) throws Exception {
         User user = userRepository.findById(likeRequestDTO.getUserId())
                 .orElseThrow(() -> new UserNotFoundException(likeRequestDTO.getUserId()));
@@ -70,7 +68,6 @@ public class LikeService {
         Like like = Like.builder().review(review).user(user).build();
         likeRepository.save(like);
     }
-
 
     public void deleteLike(LikeRequestDTO likeRequestDTO){
         User user = userRepository.findById(likeRequestDTO.getUserId())

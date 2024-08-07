@@ -18,7 +18,6 @@ import java.util.List;
 @Entity
 @Builder
 @Getter
-@ToString(exclude = {"campsite"})
 @NoArgsConstructor
 @AllArgsConstructor
 public class Campsite {
