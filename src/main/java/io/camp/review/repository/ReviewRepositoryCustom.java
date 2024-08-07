@@ -8,9 +8,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface ReviewRepositoryCustom {
-
-    Page<ReviewDto> reviewJoinCampsite(Long campsiteId, Pageable pageable);
+    Page<ReviewDto> getAllCampsiteReviewSort(Long campsiteId, Pageable pageable);
     Page<ReviewDto> getAllReviewSort(Pageable pageable);
-    Review reviewLoginUser(Long reviewId, User loginUser);
-
+    ReviewDto getCampsiteReview(Long reviewId);
+    long updateReview(Long reviewId, String content);
 }

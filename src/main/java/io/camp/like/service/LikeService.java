@@ -30,9 +30,6 @@ public class LikeService {
                 .orElseThrow(() -> new RuntimeException("리뷰를 찾을 수 없어요"));
 
         if (isLike == null) {
-            review.setLikeCount(review.getLikeCount() + 1);
-            reviewRepository.save(review);
-
             Like like = new Like();
             like.setLike(true);
             like.setReview(review);
@@ -43,16 +40,10 @@ public class LikeService {
         }
 
         if (isLike.isLike() == true) {
-            review.setLikeCount(review.getLikeCount() - 1);
-            reviewRepository.save(review);
-
             isLike.setLike(false);
             likeRepository.save(isLike);
             return true;
         } else {
-            review.setLikeCount(review.getLikeCount() + 1);
-            reviewRepository.save(review);
-
             isLike.setLike(true);
             likeRepository.save(isLike);
             return false;

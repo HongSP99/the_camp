@@ -21,10 +21,10 @@ public class LikeRepositoryCustomImpl implements LikeRepositoryCustom {
     public Like reviewLikeUser(Long reviewId, User loginUser) {
         Like res = jpaQueryFactory
                 .selectFrom(like)
-                .join(like.user, user)
-                .join(like.review, review)
-                .where(review.id.eq(reviewId)
-                .and(user.seq.eq(loginUser.getSeq())))
+                .join(user)
+                .on(like.user.seq.eq(loginUser.getSeq()))
+                .join(review)
+                .on(review.id.eq(reviewId))
                 .fetchOne();
         return res;
     }

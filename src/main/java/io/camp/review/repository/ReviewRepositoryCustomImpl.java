@@ -17,6 +17,7 @@ import org.springframework.data.domain.Sort;
 import java.util.List;
 
 import static io.camp.campsite.model.entity.QCampsite.campsite;
+import static io.camp.like.model.QLike.like;
 import static io.camp.review.model.QReview.review;
 import static io.camp.user.model.QUser.user;
 
@@ -34,7 +35,7 @@ public class ReviewRepositoryCustomImpl implements ReviewRepositoryCustom {
                     case "createdAt":
                         return new OrderSpecifier(direction, review.createdAt);
                     case "likeCount":
-                        return new OrderSpecifier(direction, review.likeCount);
+                        return new OrderSpecifier(direction, like.isLike.when(true).then(1).otherwise(0).sum());
                 }
             }
         }
@@ -42,23 +43,25 @@ public class ReviewRepositoryCustomImpl implements ReviewRepositoryCustom {
     }
 
     @Override
-    public Page<ReviewDto> reviewJoinCampsite(Long campsiteId, Pageable pageable) {
+    public Page<ReviewDto> getAllCampsiteReviewSort(Long campsiteId, Pageable pageable) {
         QueryResults<ReviewDto> results = jpaQueryFactory
                 .select(Projections.bean(ReviewDto.class,
                         review.id,
                         review.content,
                         review.user.name.as("userName"),
-                        review.likeCount,
+                        like.isLike.when(true).then(1).otherwise(0).sum().as("likeCount"),
                         review.campsite.facltNm.as("campName"),
-                        review.user.email.as("email")
+                        review.user.email.as("email"),
+                        review.user.seq.as("userSeq")
                 ))
-                .from(review)
-                .join(review.campsite, campsite)
-                .on(review.campsite.seq.eq(campsite.seq))
+                .from(campsite)
+                .join(review)
+                .on(campsite.seq.eq(review.campsite.seq))
+                .leftJoin(like)
+                .on(review.id.eq(like.review.id))
+                .groupBy(campsite.seq, review.id)
                 .where(campsite.seq.eq(campsiteId))
                 .orderBy(reviewSort(pageable))
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
                 .fetchResults();
 
         List<ReviewDto> content = results.getResults();
@@ -68,18 +71,23 @@ public class ReviewRepositoryCustomImpl implements ReviewRepositoryCustom {
 
     @Override
     public Page<ReviewDto> getAllReviewSort(Pageable pageable) {
-        QueryResults<ReviewDto> results = jpaQueryFactory.select(Projections.bean(ReviewDto.class,
+        QueryResults<ReviewDto> results = jpaQueryFactory
+                .select(Projections.bean(ReviewDto.class,
                         review.id,
                         review.content,
                         review.user.name.as("userName"),
-                        review.likeCount,
+                        like.isLike.when(true).then(1).otherwise(0).sum().as("likeCount"),
                         review.campsite.facltNm.as("campName"),
-                        review.user.email.as("email")
+                        review.user.email.as("email"),
+                        review.user.seq.as("userSeq")
                 ))
-                .from(review)
+                .from(campsite)
+                .join(review)
+                .on(campsite.seq.eq(review.campsite.seq))
+                .leftJoin(like)
+                .on(review.id.eq(like.review.id))
+                .groupBy(campsite.seq, review.id)
                 .orderBy(reviewSort(pageable))
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
                 .fetchResults();
         List<ReviewDto> content = results.getResults();
         long total = results.getTotal();
@@ -87,13 +95,35 @@ public class ReviewRepositoryCustomImpl implements ReviewRepositoryCustom {
     }
 
     @Override
-    public Review reviewLoginUser(Long reviewId, User loginUser) {
+    public ReviewDto getCampsiteReview(Long reviewId) {
         return jpaQueryFactory
-                .select(review)
-                .from(review)
-                .join(review.user, user)
+                .select(Projections.bean(ReviewDto.class,
+                        review.id,
+                        review.content,
+                        review.user.name.as("userName"),
+                        like.isLike.when(true).then(1).otherwise(0).sum().as("likeCount"),
+                        review.campsite.facltNm.as("campName"),
+                        review.user.email.as("email"),
+                        review.user.seq.as("userSeq")
+                ))
+                .from(campsite)
+                .join(review)
+                .on(campsite.seq.eq(review.campsite.seq))
+                .join(user)
                 .on(review.user.seq.eq(user.seq))
-                .where(review.id.eq(reviewId).and(user.seq.eq(loginUser.getSeq())))
+                .leftJoin(like)
+                .on(review.id.eq(like.review.id))
+                .groupBy(campsite.seq, review.id)
+                .where(review.id.eq(reviewId))
                 .fetchOne();
+    }
+
+    @Override
+    public long updateReview(Long reviewId, String content) {
+        return jpaQueryFactory
+                .update(review)
+                .set(review.content, content)
+                .where(review.id.eq(reviewId))
+                .execute();
     }
 }

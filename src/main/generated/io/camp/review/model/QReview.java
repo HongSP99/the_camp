@@ -33,8 +33,6 @@ public class QReview extends EntityPathBase<Review> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final NumberPath<Integer> likeCount = createNumber("likeCount", Integer.class);
-
     public final ListPath<io.camp.like.model.Like, io.camp.like.model.QLike> likes = this.<io.camp.like.model.Like, io.camp.like.model.QLike>createList("likes", io.camp.like.model.Like.class, io.camp.like.model.QLike.class, PathInits.DIRECT2);
 
     //inherited

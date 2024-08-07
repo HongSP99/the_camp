@@ -65,19 +65,17 @@ public class ReviewService {
         return reviewRepository.getAllReviewSort(Pageable);
     }
 
-    //리뷰 조회
+    //캠핑장 전체 리뷰 조회 (최신 순)
     @Transactional(readOnly = true)
     public Page<ReviewDto> getReview(Long campsiteId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
-        Page<ReviewDto> reviews = reviewRepository.reviewJoinCampsite(campsiteId, pageable);
+        Page<ReviewDto> reviews = reviewRepository.getAllCampsiteReviewSort(campsiteId, pageable);
         return reviews;
     }
 
     //리뷰 단건 조회
     public ReviewDto getReviewOne(Long reviewId) {
-        Review review = reviewRepository.findById(reviewId)
-                .orElseThrow(() -> new RuntimeException("리뷰를 찾을 수 없습니다."));
-        return convertToDto(review);
+        return reviewRepository.getCampsiteReview(reviewId);
     }
 
     //리뷰 수정
@@ -88,15 +86,14 @@ public class ReviewService {
             throw new RuntimeException("로그인한 사용자가 아닙니다.");
         }
 
-        Review review = reviewRepository.reviewLoginUser(reviewId, user);
-        if (review == null) {
+        ReviewDto reviewDto = reviewRepository.getCampsiteReview(reviewId);
+        if (reviewDto.getUserSeq() != user.getSeq()) {
             throw new RuntimeException("작성자가 아닙니다.");
         }
+        reviewDto.setContent(updateReviewDto.getContent());
+        reviewRepository.updateReview(reviewId, updateReviewDto.getContent());
 
-        review.setContent(updateReviewDto.getContent());
-        reviewRepository.save(review);
-
-        return convertToDto(review);
+        return reviewDto;
     }
 
     //리뷰 삭제
@@ -107,8 +104,8 @@ public class ReviewService {
             throw new RuntimeException("로그인한 사용자가 아닙니다.");
         }
 
-        Review review = reviewRepository.reviewLoginUser(reviewId, user);
-        if (review == null) {
+        ReviewDto reviewDto = reviewRepository.getCampsiteReview(reviewId);
+        if (reviewDto.getUserSeq() != user.getSeq()) {
             throw new RuntimeException("작성자가 아닙니다.");
         }
 
@@ -132,9 +129,8 @@ public class ReviewService {
         dto.setContent(review.getContent());
         dto.setCampName(review.getCampsite().getFacltNm());
         dto.setUserName(review.getUser().getName());
-        dto.setLikeCount(review.getLikeCount());
         dto.setEmail(review.getUser().getEmail());
-        dto.setUserId(review.getUser().getSeq());
+        dto.setUserSeq(review.getUser().getSeq());
         return dto;
     }
 }
