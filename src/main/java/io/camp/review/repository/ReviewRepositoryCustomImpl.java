@@ -5,9 +5,7 @@ import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import io.camp.review.model.Review;
 import io.camp.review.model.dto.ReviewDto;
-import io.camp.user.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -62,6 +60,8 @@ public class ReviewRepositoryCustomImpl implements ReviewRepositoryCustom {
                 .groupBy(campsite.seq, review.id)
                 .where(campsite.seq.eq(campsiteId))
                 .orderBy(reviewSort(pageable))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
                 .fetchResults();
 
         List<ReviewDto> content = results.getResults();
@@ -88,6 +88,8 @@ public class ReviewRepositoryCustomImpl implements ReviewRepositoryCustom {
                 .on(review.id.eq(like.review.id))
                 .groupBy(campsite.seq, review.id)
                 .orderBy(reviewSort(pageable))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
                 .fetchResults();
         List<ReviewDto> content = results.getResults();
         long total = results.getTotal();
