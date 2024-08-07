@@ -43,3 +43,6 @@ src/main/resources/application.properties
 !**/src/main/generated
 /node_modules/
 .DS_Store
+
+## 개인 설정
+application-local.properties
