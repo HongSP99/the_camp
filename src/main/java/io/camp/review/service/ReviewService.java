@@ -2,7 +2,6 @@ package io.camp.review.service;
 
 import io.camp.campsite.model.entity.Campsite;
 import io.camp.campsite.repository.CampSiteRepository;
-import io.camp.exception.review.ReviewNotFoundException;
 import io.camp.like.service.LikeService;
 import io.camp.review.model.Review;
 import io.camp.review.model.dto.CreateReviewDto;
