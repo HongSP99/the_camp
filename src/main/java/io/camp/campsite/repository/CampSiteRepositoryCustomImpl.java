@@ -76,4 +76,20 @@ public class CampSiteRepositoryCustomImpl implements CampSiteRepositoryCustom{
     }
 
 
+    public Page<Campsite> findCampsitesByThemeWithPaging(String query,Pageable pageable){
+        List<Campsite> fetch = queryFactory.selectFrom(campsite)
+                .where(campsite.posblFcltyCl.contains(query).or(campsite.sbrsCl.contains(query)))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        Long count = queryFactory
+                .select(campsite.count())
+                .from(campsite)
+                .where(campsite.posblFcltyCl.contains(query).or(campsite.sbrsCl.contains(query)))
+                .fetchOne();
+
+        return new PageImpl<>(fetch,pageable,count);
+
+    }
 }
