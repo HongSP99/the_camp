@@ -21,7 +21,7 @@ public class LikeService {
     private final LikeRepository likeRepository;
     private final UserRepository userRepository;
     private final ReviewRepository reviewRepository;
-    
+
     public boolean isLike(Long reviewId, User user) {
         Like isLike = likeRepository.reviewLikeUser(reviewId, user);
         Review review = reviewRepository.findById((long) reviewId)
@@ -34,11 +34,13 @@ public class LikeService {
             like.setUser(user);
             likeRepository.save(like);
             return false;
-        } else if (isLike.isLike() == true) {
+        }
+
+        if (isLike.isLike() == true) {
             isLike.setLike(false);
             likeRepository.save(isLike);
             return true;
-        } else if (isLike.isLike() == false) {
+        } else {
             isLike.setLike(true);
             likeRepository.save(isLike);
             return false;
