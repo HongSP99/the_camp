@@ -6,6 +6,7 @@ import io.camp.exception.review.ReviewNotFoundException;
 import io.camp.like.service.LikeService;
 import io.camp.review.model.Review;
 import io.camp.review.model.dto.CreateReviewDto;
+import io.camp.review.model.dto.LikeReviewDto;
 import io.camp.review.model.dto.ReviewDto;
 import io.camp.review.model.dto.UpdateReviewDto;
 import io.camp.review.repository.ReviewRepository;
@@ -114,12 +115,13 @@ public class ReviewService {
 
     //리뷰 좋아요
     @Transactional
-    public void likeReview(Long reviewId, JwtUserDetails jwtUserDetails) {
+    public LikeReviewDto likeReview(Long reviewId, JwtUserDetails jwtUserDetails) {
         User user = jwtUserDetails.getUser();
         if (user == null) {
             throw new RuntimeException("로그인 후 이용해주세요");
         }
         likeService.isLike(reviewId, user);
+        return reviewRepository.getLikeCount(reviewId);
     }
 
     //dto 전환

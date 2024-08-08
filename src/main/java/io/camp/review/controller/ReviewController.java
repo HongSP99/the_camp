@@ -2,6 +2,7 @@ package io.camp.review.controller;
 
 import io.camp.review.model.Review;
 import io.camp.review.model.dto.CreateReviewDto;
+import io.camp.review.model.dto.LikeReviewDto;
 import io.camp.review.model.dto.ReviewDto;
 import io.camp.review.model.dto.UpdateReviewDto;
 import io.camp.review.service.ReviewService;
@@ -76,9 +77,9 @@ public class ReviewController {
     }
 
     @GetMapping("/like/{reviewId}")
-    public ResponseEntity<Void> likeReview(@PathVariable("reviewId") Long reviewId,
-                                           @AuthenticationPrincipal JwtUserDetails jwtUserDetails) {
-        reviewService.likeReview(reviewId, jwtUserDetails);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<LikeReviewDto> likeReview(@PathVariable("reviewId") Long reviewId,
+                                                    @AuthenticationPrincipal JwtUserDetails jwtUserDetails) {
+        LikeReviewDto likeReviewDto = reviewService.likeReview(reviewId, jwtUserDetails);
+        return ResponseEntity.ok(likeReviewDto);
     }
 }

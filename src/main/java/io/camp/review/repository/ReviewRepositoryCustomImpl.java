@@ -1,10 +1,14 @@
 package io.camp.review.repository;
 
 import com.querydsl.core.QueryResults;
+import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import io.camp.like.model.Like;
+import io.camp.review.model.dto.LikeReviewDto;
 import io.camp.review.model.dto.ReviewDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -127,5 +131,20 @@ public class ReviewRepositoryCustomImpl implements ReviewRepositoryCustom {
                 .set(review.content, content)
                 .where(review.id.eq(reviewId))
                 .execute();
+    }
+
+    @Override
+    public LikeReviewDto getLikeCount(Long reviewId) {
+        return jpaQueryFactory
+                .select(Projections.bean(LikeReviewDto.class,
+                        ExpressionUtils.as(
+                                JPAExpressions
+                                        .select(like.isLike.when(true).then(1).otherwise(0).sum())
+                                        .from(like)
+                                        .where(like.review.id.eq(review.id))
+                                , "likeCount")
+                ))
+                .from(review)
+                .fetchOne();
     }
 }
