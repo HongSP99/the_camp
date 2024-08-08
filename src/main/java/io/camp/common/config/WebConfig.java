@@ -9,9 +9,9 @@ import org.springframework.web.servlet.mvc.Controller;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
-    @Override
-    public void configurePathMatch(PathMatchConfigurer configurer){
-        configurer.addPathPrefix("/api",
-                clazz -> clazz.isAnnotationPresent(RestController.class));
-    }
+//    @Override
+//    public void configurePathMatch(PathMatchConfigurer configurer){
+//        configurer.addPathPrefix("/api",
+//                clazz -> clazz.isAnnotationPresent(RestController.class));
+//    }
 }
