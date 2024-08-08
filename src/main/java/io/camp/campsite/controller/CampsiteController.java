@@ -72,6 +72,8 @@ public class CampsiteController {
             case "region":
                 result = campSiteService.getCampsitesByRegionWithPaging(query,pageable);
                 break;
+            case "theme":
+                result = campSiteService.getCampsitesByThemeWithPaging(query,pageable);
 
             default:
                 result = campSiteService.getAllPaging(page,6);

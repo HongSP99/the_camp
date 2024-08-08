@@ -84,4 +84,10 @@ public class CampSiteServiceImpl implements CampSiteService {
         Page<CampSiteDto> campsiteDtos = campsites.map(campsiteMapper::toCampsiteDto);
         return campsiteDtos;
     }
+
+    public Page<CampSiteDto> getCampsitesByThemeWithPaging(String query, Pageable pageable){
+        Page<Campsite> campsites = campSiteRepository.findCampsitesByThemeWithPaging(query,pageable);
+        Page<CampSiteDto> campSiteDtos = campsites.map(campsiteMapper::toCampsiteDto);
+        return campSiteDtos;
+    }
 }
