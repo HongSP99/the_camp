@@ -1,86 +1,138 @@
 package io.camp.review.service;
 
-import io.camp.common.exception.review.ReviewNotFoundException;
+import io.camp.campsite.model.entity.Campsite;
+import io.camp.campsite.repository.CampSiteRepository;
+import io.camp.exception.review.ReviewNotFoundException;
+import io.camp.like.service.LikeService;
 import io.camp.review.model.Review;
 import io.camp.review.model.dto.CreateReviewDto;
+import io.camp.review.model.dto.LikeReviewDto;
 import io.camp.review.model.dto.ReviewDto;
 import io.camp.review.model.dto.UpdateReviewDto;
 import io.camp.review.repository.ReviewRepository;
+import io.camp.user.jwt.JwtUserDetails;
+import io.camp.user.model.User;
 import io.camp.user.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.dao.OptimisticLockingFailureException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+import static io.camp.user.model.QUser.user;
 
 @Service
 @RequiredArgsConstructor
 public class ReviewService {
     private final ReviewRepository reviewRepository;
-    //private final AuthRepository authRepository;
     private final UserService authService;
+    private final CampSiteRepository campSiteRepository;
+    private final LikeService likeService;
 
     //리뷰 생성
-    @Transactional
-    @PreAuthorize("isAuthenticated()")
-    public ReviewDto createReview(CreateReviewDto createReviewDto, String username) {
+    public ReviewDto createReview(Long campsiteId, CreateReviewDto createReviewDto, JwtUserDetails jwtUserDetails) {
+        User uesr = jwtUserDetails.getUser();
 
-        //User user = authService.getVerifiyLoginCurrentUser();
+        if (user == null) {
+            throw new RuntimeException("로그인한 사용자가 아닙니다.");
+        }
+
+        Campsite campsite = campSiteRepository.findById(campsiteId)
+                .orElseThrow(() -> new RuntimeException("캠핑장을 찾을 수 없습니다."));
+
         Review review = Review.builder()
                 .content(createReviewDto.getContent())
-                //.auth(auth)
+                .user(uesr)
+                .campsite(campsite)
                 .build();
         Review savedReview = reviewRepository.save(review);
         return convertToDto(savedReview);
     }
 
-    //리뷰 조회
+    //전체 리뷰 조회 (좋아요 순)
+    public Page<ReviewDto> getAllReviewLikeCountDesc(int page, int size) {
+        Pageable Pageable = PageRequest.of(page, size, Sort.by("likeCount").descending());
+        return reviewRepository.getAllReviewSort(Pageable);
+    }
+
+    //전체 리뷰 조회 (최신 순)
+    public Page<ReviewDto> getAllReviewDesc(int page, int size) {
+        Pageable Pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        return reviewRepository.getAllReviewSort(Pageable);
+    }
+
+    //캠핑장 전체 리뷰 조회 (최신 순)
     @Transactional(readOnly = true)
-    public ReviewDto getReview(Long id) {
-        Review review = reviewRepository.findById(id)
-                .orElseThrow(() -> new ReviewNotFoundException(id));
-        return convertToDto(review);
+    public Page<ReviewDto> getReview(Long campsiteId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        Page<ReviewDto> reviews = reviewRepository.getAllCampsiteReviewSort(campsiteId, pageable);
+        return reviews;
+    }
+
+    //리뷰 단건 조회
+    public ReviewDto getReviewOne(Long reviewId) {
+        return reviewRepository.getCampsiteReview(reviewId);
     }
 
     //리뷰 수정
     @Transactional
-    @PreAuthorize("isAuthenticated() and @reviewSecurity.isReviewAuthor(#id, principal.username)")
-    public ReviewDto updateReview(Long id, UpdateReviewDto updateReviewDto) {
-        Review review = reviewRepository.findById(id)
-                .orElseThrow(() -> new ReviewNotFoundException(id));
-        review.setContent(updateReviewDto.getContent());
-        Review updatedReview = reviewRepository.save(review);
-        return convertToDto(updatedReview);
+    public ReviewDto updateReview(Long reviewId, UpdateReviewDto updateReviewDto, JwtUserDetails jwtUserDetails) {
+        User user = jwtUserDetails.getUser();
+        if (user == null) {
+            throw new RuntimeException("로그인한 사용자가 아닙니다.");
+        }
+
+        ReviewDto reviewDto = reviewRepository.getCampsiteReview(reviewId);
+        if (reviewDto.getUserSeq() != user.getSeq()) {
+            throw new RuntimeException("작성자가 아닙니다.");
+        }
+        reviewDto.setContent(updateReviewDto.getContent());
+        reviewRepository.updateReview(reviewId, updateReviewDto.getContent());
+
+        return reviewDto;
     }
 
     //리뷰 삭제
     @Transactional
-    @PreAuthorize("isAuthenticated() and @reviewSecurity.isReviewAuthor(#id, principal.username)")
-    public void deleteReview(Long id) {
-        if (!reviewRepository.existsById(id)) {
-            throw new ReviewNotFoundException(id);
+    public void deleteReview(Long reviewId, JwtUserDetails jwtUserDetails) {
+        User user = jwtUserDetails.getUser();
+        if (user == null) {
+            throw new RuntimeException("로그인한 사용자가 아닙니다.");
         }
-        reviewRepository.deleteById(id);
+
+        ReviewDto reviewDto = reviewRepository.getCampsiteReview(reviewId);
+        if (reviewDto.getUserSeq() != user.getSeq()) {
+            throw new RuntimeException("작성자가 아닙니다.");
+        }
+
+        reviewRepository.deleteById(reviewId);
     }
 
     //리뷰 좋아요
     @Transactional
-    @PreAuthorize("isAuthenticated()")
-    public ReviewDto likeReview(Long id) {
-        Review review = reviewRepository.findById(id)
-                .orElseThrow(() -> new ReviewNotFoundException(id));
-        review.setLikeCount(review.getLikeCount() + 1);
-        Review updatedReview = reviewRepository.save(review);
-        return convertToDto(updatedReview);
+    public LikeReviewDto likeReview(Long reviewId, JwtUserDetails jwtUserDetails) {
+        User user = jwtUserDetails.getUser();
+        if (user == null) {
+            throw new RuntimeException("로그인 후 이용해주세요");
+        }
+        likeService.isLike(reviewId, user);
+        return reviewRepository.getLikeCount(reviewId);
     }
 
-
     //dto 전환
-    private ReviewDto convertToDto(Review review) {
+    public ReviewDto convertToDto(Review review) {
         ReviewDto dto = new ReviewDto();
         dto.setId(review.getId());
         dto.setContent(review.getContent());
-        //dto.setUserName(review.getAuth().getUsername());
-        dto.setLikeCount(review.getLikeCount());
+        dto.setCampName(review.getCampsite().getFacltNm());
+        dto.setUserName(review.getUser().getName());
+        dto.setEmail(review.getUser().getEmail());
+        dto.setUserSeq(review.getUser().getSeq());
         return dto;
     }
 }

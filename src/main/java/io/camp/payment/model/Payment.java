@@ -85,7 +85,7 @@ public class Payment extends BaseEntity {
     private String customerId;
     private String customerEmail;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_seq")
     private User user;
 

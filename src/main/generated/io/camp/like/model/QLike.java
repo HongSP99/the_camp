@@ -24,6 +24,8 @@ public class QLike extends EntityPathBase<Like> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
+    public final BooleanPath isLike = createBoolean("isLike");
+
     public final io.camp.review.model.QReview review;
 
     public final io.camp.user.model.QUser user;

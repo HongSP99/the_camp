@@ -90,10 +90,10 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.valueOf(e.getExceptionCode().getStatus()));
     }
 
-    //위에 명시된 예외 외의 모든 예외 처리
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse handleException(Exception e) {
-        return ErrorResponse.of(HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+//    //위에 명시된 예외 외의 모든 예외 처리
+//    @ExceptionHandler
+//    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+//    public ErrorResponse handleException(Exception e) {
+//        return ErrorResponse.of(HttpStatus.INTERNAL_SERVER_ERROR);
+//    }
 }

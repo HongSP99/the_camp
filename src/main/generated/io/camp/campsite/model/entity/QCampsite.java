@@ -80,6 +80,8 @@ public class QCampsite extends EntityPathBase<Campsite> {
 
     public final StringPath resveUrl = createString("resveUrl");
 
+    public final ListPath<io.camp.review.model.Review, io.camp.review.model.QReview> reviews = this.<io.camp.review.model.Review, io.camp.review.model.QReview>createList("reviews", io.camp.review.model.Review.class, io.camp.review.model.QReview.class, PathInits.DIRECT2);
+
     public final StringPath sbrsCl = createString("sbrsCl");
 
     public final StringPath sbrsEtc = createString("sbrsEtc");
