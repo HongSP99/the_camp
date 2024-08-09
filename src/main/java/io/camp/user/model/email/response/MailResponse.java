@@ -1,6 +1,7 @@
 package io.camp.user.model.email.response;
 
-import io.camp.exception.ExceptionCode;
+
+import io.camp.common.exception.ExceptionCode;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;

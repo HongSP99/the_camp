@@ -1,6 +1,7 @@
 package io.camp.campsite.controller;
 
 
+import io.camp.campsite.model.dto.SiteDto;
 import io.camp.campsite.model.dto.ZoneDto;
 import io.camp.campsite.model.entity.Zone;
 import io.camp.campsite.service.CampSiteService;
@@ -12,6 +13,8 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/zone")
@@ -22,11 +25,13 @@ public class ZoneController {
     private final SiteService siteService;
 
     @PostMapping
-    public ResponseEntity<Long> insertZone(@RequestBody ZoneDto zoneDto){
+    public ResponseEntity<ZoneDto> insertZone(@RequestBody ZoneDto zoneDto){
             System.out.println(zoneDto);
             Zone zone = zoneService.insertZone(zoneDto);
-            siteService.insertSites(zone,zoneDto.getNumOfSite());
-            return new ResponseEntity<>(zone.getSeq() , HttpStatus.CREATED);
+            List<SiteDto> sites =siteService.insertSites(zone,zoneDto.getNumOfSite());
+            zoneDto.setSites(sites);
+            zoneDto.setSeq(zone.getSeq());
+            return new ResponseEntity<>(zoneDto , HttpStatus.CREATED);
     }
 
 

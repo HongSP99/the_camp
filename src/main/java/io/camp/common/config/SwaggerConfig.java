@@ -1,6 +1,6 @@
 package io.camp.common.config;
 
-import io.camp.exception.ErrorResponse;
+
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.examples.Example;
