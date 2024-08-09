@@ -57,7 +57,8 @@ public class SeasonService {
         for (SeasonDto season : seasonByCampsite) {
             LocalDateTime sStart = season.getStart().atTime(0, 0, 0);
             LocalDateTime sEnd = season.getEnd().atTime(23, 59, 59);
-            if (sStart.isAfter(start) &&  sEnd.isBefore(end)) {
+
+            if (start.isAfter(sStart) && end.isBefore(sEnd)) {
                 return season.getType();
             }
         }

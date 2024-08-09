@@ -22,6 +22,7 @@ import io.camp.reservation.model.Reservation;
 import io.camp.reservation.model.dto.ReservationPostDto;
 import io.camp.reservation.service.ReservationService;
 import io.camp.user.jwt.JwtUserDetails;
+import io.camp.user.model.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
@@ -61,6 +62,10 @@ public class PaymentService {
         Long zoneSeq = site.getZone().getSeq();
         ZoneDto zone = zoneService.getZone(zoneSeq);
         Long campsiteSeq = zone.getCampSite();
+
+        log.info("zoneSeq = {}", zoneSeq);
+        log.info("campsiteSeq = {}", campsiteSeq);
+
         SeasonType seasonType =
                 seasonService.getSeasonTypeByDateRange(dto.getReserveStartDate(),
                         dto.getReserveEndDate(),
@@ -75,10 +80,13 @@ public class PaymentService {
 
         int seasonPrice = 0;
         if(seasonType.equals(SeasonType.BEST_PEAK)){
+            log.info("극성수기 가격 적용 {}", zone.getBestPeakSeasonPrice());
             seasonPrice = zone.getBestPeakSeasonPrice() * dayDiff;
         } else if(seasonType.equals(SeasonType.PEAK)){
+            log.info("성수기 가격 적용 {}", zone.getPeakSeasonPrice());
             seasonPrice = zone.getPeakSeasonPrice() * dayDiff;
         } else {
+            log.info("오프 시즌 가격 적용 {}", zone.getOffSeasonPrice());
             seasonPrice = zone.getOffSeasonPrice() * dayDiff;
         }
 
@@ -106,6 +114,14 @@ public class PaymentService {
         ReservationPostDto reservationPostDto = getReservationPostDto(paymentPostDto, reservationTotalPrice);
         Reservation reservation = reservationService.createReservationEntity(reservationPostDto);
         payment.setReservation(reservation);
+
+        User user = jwtUserDetails.getUser();
+        if (user == null || !payment.getCustomerEmail().equals(user.getEmail())
+                && !payment.getCustomerName().equals(user.getName())
+                && !payment.getCustomerPhoneNumber().equals(user.getPhoneNumber())) {
+            throw new PaymentException(ExceptionCode.USER_INVALID);
+        };
+        payment.setUser(user);
         paymentRepository.save(payment);
     }
 

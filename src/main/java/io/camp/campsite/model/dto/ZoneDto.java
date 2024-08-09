@@ -73,6 +73,7 @@ public class ZoneDto {
         dto.setBestPeakSeasonPrice(zone.getBestPeakSeasonPrice());
         dto.setCampSiteImg(zone.getCampsite().getFirstImageUrl());
         dto.setCampSiteName(zone.getCampsite().getFacltNm());
+        dto.setCampSite(zone.getCampsite().getSeq());
 
         return dto;
     }
