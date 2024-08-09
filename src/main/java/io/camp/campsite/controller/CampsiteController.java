@@ -74,7 +74,7 @@ public class CampsiteController {
                 break;
             case "theme":
                 result = campSiteService.getCampsitesByThemeWithPaging(query,pageable);
-
+                break;
             default:
                 result = campSiteService.getAllPaging(page,6);
         }
