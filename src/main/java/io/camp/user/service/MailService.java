@@ -94,7 +94,7 @@ public class MailService {
                 return true;
             }
         }
-        return false;
+        throw new CustomException(ExceptionCode.VERIFY_CODE_NOTFOUND);
     }
 
     @Scheduled(cron = "0 */3 * * * *") // 매 3분마다 실행

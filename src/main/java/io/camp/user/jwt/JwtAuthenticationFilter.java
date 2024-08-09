@@ -3,6 +3,7 @@ package io.camp.user.jwt;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.camp.common.exception.ExceptionCode;
 import io.camp.common.exception.user.CustomException;
+
 import io.camp.user.model.RefreshEntity;
 import io.camp.user.model.User;
 import io.camp.user.model.UserRole;
@@ -78,8 +79,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     }
 
     @Override
-    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws CustomException {
-        throw new CustomException(ExceptionCode.INVALID_AUTHORIZATION_TOKEN);
+    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException {
+        throw new CustomException(ExceptionCode.UNAUTHORIZED_REQUEST);
     }
 
     private void addRefreshEntity(String username, String refresh, String password, String name, String birthday, String phoneNumber, String gender, Long seq,UserRole role, Long expiredMs ) {
