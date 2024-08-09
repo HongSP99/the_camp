@@ -1,6 +1,7 @@
 package io.camp.common.exception;
 
 
+import io.camp.common.exception.Campsite.SeasonAlreadyExsistException;
 import io.camp.common.exception.payment.PaymentException;
 import io.camp.common.exception.reservation.ReservationException;
 import io.camp.common.exception.user.UserAnonymousException;
@@ -88,6 +89,14 @@ public class GlobalExceptionHandler {
             PaymentException e) {
         ErrorResponse response = ErrorResponse.of(e.getExceptionCode());
         return new ResponseEntity<>(response, HttpStatus.valueOf(e.getExceptionCode().getStatus()));
+    }
+
+
+
+    @ExceptionHandler(SeasonAlreadyExsistException.class)
+    public ResponseEntity<String> handleSeasonAlreadyExsistException(SeasonAlreadyExsistException ex){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+
     }
 
 //    //위에 명시된 예외 외의 모든 예외 처리
