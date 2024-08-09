@@ -33,9 +33,8 @@ public class SeasonRepositoryCustomImpl  implements  SeasonRepositoryCustom{
         return queryFactory.select(QSeason.season.count())
                 .from(QSeason.season)
                 .where(QSeason.season.campsite.seq.eq(campsiteSeq).
-                        and(QSeason.season.start.between(start,end))
-                        .or(QSeason.season.end.between(start,end))
-                        .or(QSeason.season.start.loe(start).and(QSeason.season.end.goe(end))))
+                        and(QSeason.season.start.between(start,end).or(QSeason.season.end.between(start,end)
+                                .or(QSeason.season.start.loe(start).and(QSeason.season.end.goe(end))))))
                 .fetchFirst();
     }
 
