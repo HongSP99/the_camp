@@ -41,7 +41,7 @@ public class SecurityConfig {
 
         http
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/", "/join", "/login", "/test").permitAll()
+                        .requestMatchers("/", "/join", "/login", "/test","/reset-password").permitAll()
                         .requestMatchers("/api/user/**").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers("/reissue").permitAll()
@@ -51,6 +51,7 @@ public class SecurityConfig {
         http
                 .addFilter(corsConfig.corsFilter())
                 .addFilterBefore(new JwtOncePerRequestFilter(jwtTokenUtil), JwtAuthenticationFilter.class)
+
                 .addFilterAt(new JwtAuthenticationFilter(authenticationManager(authenticationConfiguration), jwtTokenUtil, refreshRepository), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(new JwtLogoutFilter(jwtTokenUtil, refreshRepository), LogoutFilter.class);
         return http.build();

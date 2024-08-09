@@ -1,7 +1,9 @@
 package io.camp.config;
 
+import io.camp.exception.ErrorResponse;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.examples.Example;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
@@ -21,6 +23,7 @@ public class SwaggerConfig {
                                         .in(SecurityScheme.In.HEADER)
                                         .name("Authorization")))
                 .addSecurityItem(new SecurityRequirement().addList("apiKey"))
+
                 .info(apiInfo());
     }
 
@@ -30,4 +33,5 @@ public class SwaggerConfig {
                 .description("Specification")
                 .version("1.0.0");
     }
+
 }
