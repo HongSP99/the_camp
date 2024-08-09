@@ -8,7 +8,9 @@ import io.camp.campsite.model.entity.SeasonType;
 import io.camp.campsite.repository.CampSiteRepository;
 import io.camp.campsite.repository.SeasonRepository;
 import io.camp.common.exception.Campsite.CampsiteNotFoundException;
+import io.camp.common.exception.Campsite.SeasonAlreadyExsistException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +20,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class SeasonService {
 
     private final SeasonRepository seasonRepository;
@@ -32,7 +35,15 @@ public class SeasonService {
                 .orElseThrow(() -> new CampsiteNotFoundException("해당 캠핑장이 존재하지 않습니다."));
         Season season = seasonDto.toEntity(campsite);
 
+        Long duplicatedCount = seasonRepository.findDuplicatedSeason(seasonDto.getCampsite(),seasonDto.getStart(),seasonDto.getEnd());
+
+        if(duplicatedCount>0){
+            log.info("중복된 시즌이 있습니다. "+duplicatedCount);
+            throw new SeasonAlreadyExsistException("중복된 시즌이 이미 있습니다.");
+        }
+
         Season result = seasonRepository.save(season);
+
         return result.toDto();
     }
 
