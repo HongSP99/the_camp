@@ -1,11 +1,14 @@
 package io.camp.payment.controller;
 
 
+import io.camp.payment.model.dto.PaymentCancelPostDto;
 import io.camp.payment.model.dto.PaymentPostDto;
 import io.camp.payment.service.PaymentService;
+import io.camp.user.jwt.JwtUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.*;
@@ -19,7 +22,8 @@ public class PaymentController {
     private final PaymentService paymentService;
 
     @PostMapping("/payment/complete")
-    public ResponseEntity savePayment(@RequestBody PaymentPostDto paymentPostDto) throws IOException {
+    public ResponseEntity savePayment(@RequestBody PaymentPostDto paymentPostDto,
+                                      @AuthenticationPrincipal JwtUserDetails jwtUserDetails) throws IOException {
         try {
             URL url = new URL("https://api.portone.io/payments/" + paymentPostDto.getPaymentId());
             HttpURLConnection conn = (HttpURLConnection)url.openConnection();
@@ -33,7 +37,7 @@ public class PaymentController {
             BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             StringBuilder sb = new StringBuilder(br.readLine());
             String json = sb.toString();
-            paymentService.paymentSave(paymentPostDto, json);
+            paymentService.paymentSave(paymentPostDto, json, jwtUserDetails);
         } catch (Exception e) {
             URL url = new URL("https://api.portone.io/payments/"+ paymentPostDto.getPaymentId() +"/cancel");
             HttpURLConnection conn = (HttpURLConnection)url.openConnection();
@@ -45,8 +49,7 @@ public class PaymentController {
             conn.setDoOutput(true);
 
             JSONObject requestBody = new JSONObject();
-            paymentPostDto.setReason("예약금액과 결제금액 불일치 오류");
-            requestBody.put("reason", paymentPostDto.getReason());
+            requestBody.put("reason", "결제금액이 불일치합니다.");
 
             try(OutputStream os = conn.getOutputStream()) {
                 byte[] input = requestBody.toString().getBytes("utf-8");
@@ -60,9 +63,10 @@ public class PaymentController {
     }
 
     @PostMapping("/payment/cancel")
-    public ResponseEntity cancelPayment(@RequestBody PaymentPostDto paymentPostDto) {
+    public ResponseEntity cancelPayment(@RequestBody PaymentCancelPostDto paymentCancelPostDto,
+                                        @AuthenticationPrincipal JwtUserDetails jwtUserDetails) {
         try {
-            URL url = new URL("https://api.portone.io/payments/"+ paymentPostDto.getPaymentId() +"/cancel");
+            URL url = new URL("https://api.portone.io/payments/"+ paymentCancelPostDto.getPaymentId() +"/cancel");
             HttpURLConnection conn = (HttpURLConnection)url.openConnection();
 
             conn.setRequestMethod("POST");
@@ -72,8 +76,7 @@ public class PaymentController {
             conn.setDoOutput(true);
 
             JSONObject requestBody = new JSONObject();
-            paymentPostDto.setReason("취소 사유 테스트");
-            requestBody.put("reason", paymentPostDto.getReason());
+            requestBody.put("reason", paymentCancelPostDto.getReason());
 
             try(OutputStream os = conn.getOutputStream()) {
                 byte[] input = requestBody.toString().getBytes("utf-8");
@@ -84,7 +87,7 @@ public class PaymentController {
             StringBuilder sb = new StringBuilder(br.readLine());
             String json = sb.toString();
             System.out.println(json);
-            paymentService.paymentCancel(paymentPostDto, json);
+            paymentService.paymentCancel(paymentCancelPostDto, json, jwtUserDetails);
         } catch (Exception e) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }

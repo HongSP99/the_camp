@@ -90,6 +90,31 @@ public class ReservationService {
                 .collect(Collectors.toList());
     }
 
+    public Reservation createReservationEntity(ReservationPostDto requestDto){
+        log.info("유저 찾기");
+        User user = authService.getVerifiyLoginCurrentUser();
+        log.info("유저 찾기 성공");
+        Site site = siteRepository.findById(requestDto.getSiteSeq())
+                .orElseThrow(() -> new IllegalArgumentException("캠핑장을 찾을 수 없습니다."));
+        log.info("campsite 찾기 성공");
+        log.info(requestDto.toString());
+        Reservation reservation = mapper.reservationPostDtoToReservation(requestDto);
+        log.info("예약 생성 성공");
+        reservation.setUser(user);
+        reservation.setSite(site);
+
+        log.info(reservation.toString());
+
+        Reservation savedReservation;
+        try{
+            savedReservation = reservationRepository.save(reservation);
+        } catch (Exception e){
+            throw new ReservationException(ExceptionCode.RESERVATION_NOT_FOUND);
+        }
+
+        return reservation;
+    }
+
     //TODO : 해당 존에 예약이 있는지 확인하는 기능 구현
 //    public boolean checkReservationExistence(ReservationExistenceDto existenceDto){
 //        List<ReservationState> status = Arrays.asList(

@@ -94,6 +94,16 @@ public class UserService {
         user.setPhoneNumber("000-3333-3333");
         user.setGender("남성");
         userRepository.save(user);
+
+        user = new User();
+        user.setEmail("user@gmail.com");
+        user.setPassword(passwordEncoder.encode("1234"));
+        user.setRole(UserRole.USER);
+        user.setName("이메일용");
+        user.setBirthday("2020-02-02");
+        user.setPhoneNumber("000-4444-4444");
+        user.setGender("남성");
+        userRepository.save(user);
     }
 
     @Transactional
