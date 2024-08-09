@@ -4,6 +4,7 @@ package io.camp.campsite.service;
 import io.camp.campsite.model.dto.SeasonDto;
 import io.camp.campsite.model.entity.Campsite;
 import io.camp.campsite.model.entity.Season;
+import io.camp.campsite.model.entity.SeasonType;
 import io.camp.campsite.repository.CampSiteRepository;
 import io.camp.campsite.repository.SeasonRepository;
 import io.camp.common.exception.Campsite.CampsiteNotFoundException;
@@ -11,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -49,7 +52,15 @@ public class SeasonService {
         return seasonSeq;
     }
 
-
-
-
+    public SeasonType getSeasonTypeByDateRange(LocalDateTime start, LocalDateTime end, Long campsiteId) {
+        List<SeasonDto> seasonByCampsite = findSeasonByCampsiteSeq(campsiteId);
+        for (SeasonDto season : seasonByCampsite) {
+            LocalDateTime sStart = season.getStart().atTime(0, 0, 0);
+            LocalDateTime sEnd = season.getEnd().atTime(23, 59, 59);
+            if (sStart.isAfter(start) &&  sEnd.isBefore(end)) {
+                return season.getType();
+            }
+        }
+        return SeasonType.NORMAL;
+    }
 }

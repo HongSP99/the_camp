@@ -38,4 +38,9 @@ public class SiteService {
                 .map(SiteDto::fromEntity)
                 .collect(Collectors.toList());
     }
+
+    public Site getSiteBySeq(Long siteSeq){
+        return siteRepository.findById(siteSeq)
+                .orElseThrow(() -> new RuntimeException("site를 찾을 수 없습니다"));
+    }
 }

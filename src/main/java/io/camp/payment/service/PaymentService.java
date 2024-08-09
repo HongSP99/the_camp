@@ -2,31 +2,115 @@ package io.camp.payment.service;
 
 
 import com.google.gson.Gson;
+import io.camp.campsite.model.dto.ZoneDto;
+import io.camp.campsite.model.entity.SeasonType;
+import io.camp.campsite.model.entity.Site;
+import io.camp.campsite.model.entity.Zone;
+import io.camp.campsite.service.SeasonService;
+import io.camp.campsite.service.SiteService;
+import io.camp.campsite.service.ZoneService;
 import io.camp.common.exception.ExceptionCode;
 import io.camp.common.exception.payment.PaymentException;
 import io.camp.payment.model.Payment;
 import io.camp.payment.model.PaymentCancellation;
 import io.camp.payment.model.PaymentType;
+import io.camp.payment.model.dto.PaymentCancelPostDto;
 import io.camp.payment.model.dto.PaymentPostDto;
 import io.camp.payment.repository.PaymentCancellationRepository;
 import io.camp.payment.repository.PaymentRepository;
 import io.camp.reservation.model.Reservation;
+import io.camp.reservation.model.dto.ReservationPostDto;
 import io.camp.reservation.service.ReservationService;
+import io.camp.user.jwt.JwtUserDetails;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.temporal.ChronoUnit;
 
+
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PaymentService {
     private final PaymentRepository paymentRepository;
     private final PaymentCancellationRepository paymentCancellationRepository;
     private final ReservationService reservationService;
+    private final ZoneService zoneService;
+    private final SeasonService seasonService;
+    private final SiteService siteService;
 
-    public void paymentCancel(PaymentPostDto paymentPostDto, String json) {
-        PaymentCancellation paymentCancellation = jsonToPaymentCancellation(json, paymentPostDto);
+    private static ReservationPostDto getReservationPostDto(PaymentPostDto paymentPostDto, int reservationTotalPrice) {
+        ReservationPostDto reservationPostDto = new ReservationPostDto();
+        reservationPostDto.setSiteSeq(paymentPostDto.getSiteSeq());
+        reservationPostDto.setReserveStartDate(paymentPostDto.getReserveStartDate());
+        reservationPostDto.setReserveEndDate(paymentPostDto.getReserveEndDate());
+        reservationPostDto.setAdults(paymentPostDto.getAdults());
+        reservationPostDto.setChildren(paymentPostDto.getChildren());
+        reservationPostDto.setTotalPrice(reservationTotalPrice);
+        return reservationPostDto;
+    }
+
+    public int calculationTotalPrice(PaymentPostDto dto){
+        Site site = siteService.getSiteBySeq(dto.getSiteSeq());
+        Long zoneSeq = site.getZone().getSeq();
+        ZoneDto zone = zoneService.getZone(zoneSeq);
+        Long campsiteSeq = zone.getCampSite();
+        SeasonType seasonType =
+                seasonService.getSeasonTypeByDateRange(dto.getReserveStartDate(),
+                        dto.getReserveEndDate(),
+                        campsiteSeq
+                );
+
+        LocalDate startDay = dto.getReserveStartDate().toLocalDate();
+        LocalDate endDay = dto.getReserveEndDate().toLocalDate();
+
+        Period period = Period.between(startDay, endDay);
+        int dayDiff = period.getDays();
+
+        int seasonPrice = 0;
+        if(seasonType.equals(SeasonType.BEST_PEAK)){
+            seasonPrice = zone.getBestPeakSeasonPrice() * dayDiff;
+        } else if(seasonType.equals(SeasonType.PEAK)){
+            seasonPrice = zone.getPeakSeasonPrice() * dayDiff;
+        } else {
+            seasonPrice = zone.getOffSeasonPrice() * dayDiff;
+        }
+
+        if(dto.getAdults() > 2){
+            seasonPrice += (dto.getAdults() - 2) * 10000;
+        }
+
+        return seasonPrice;
+    }
+
+    @Transactional(readOnly = false)
+    public void paymentSave(PaymentPostDto paymentPostDto, String json, JwtUserDetails jwtUserDetails) {
+        Payment payment = new Payment();
+        payment.setPaymentId(paymentPostDto.getPaymentId());
+        jsonToPayment(json, "", payment);
+
+        int reservationTotalPrice = calculationTotalPrice(paymentPostDto);
+        log.info("reservationTotalPrice (계산 값) : {}", reservationTotalPrice);
+        log.info("paymentAmountTotal (클라이언트 값) : {}", payment.getAmountTotal());
+
+        if (reservationTotalPrice != payment.getAmountTotal()) {
+            throw new PaymentException(ExceptionCode.PAYMENT_NOT_EQUAL_RESERVATION);
+        }
+
+        ReservationPostDto reservationPostDto = getReservationPostDto(paymentPostDto, reservationTotalPrice);
+        Reservation reservation = reservationService.createReservationEntity(reservationPostDto);
+        payment.setReservation(reservation);
+        paymentRepository.save(payment);
+    }
+
+    public void paymentCancel(PaymentCancelPostDto paymentCancelPostDto, String json, JwtUserDetails jwtUserDetails) {
+        PaymentCancellation paymentCancellation = jsonToPaymentCancellation(json, paymentCancelPostDto);
         Payment payment = paymentRepository.qFindByPaymentId(paymentCancellation.getPaymentId());
         paymentCancellation.setPayment(payment);
 
@@ -37,27 +121,11 @@ public class PaymentService {
         paymentCancellationRepository.save(paymentCancellation);
     }
 
-    @Transactional(readOnly = false)
-    public void paymentSave(PaymentPostDto paymentPostDto, String json) {
-        Payment payment = new Payment();
-        payment.setPaymentId(paymentPostDto.getPaymentId());
-        jsonToPayment(json, "", payment);
-
-        Reservation findReservation = reservationService.findReservation(paymentPostDto.getReservationId());
-
-        if (findReservation.getTotalPrice() != payment.getAmountTotal()) {
-            throw new PaymentException(ExceptionCode.PAYMENT_NOT_EQUAL_RESERVATION);
-        }
-
-        payment.setReservation(findReservation);
-        paymentRepository.save(payment);
-    }
-
-    private PaymentCancellation jsonToPaymentCancellation(String json, PaymentPostDto paymentPostDto) {
+    private PaymentCancellation jsonToPaymentCancellation(String json, PaymentCancelPostDto paymentCancelPostDto) {
         json = new JSONObject(json).getJSONObject("cancellation").toString();
         Gson gson = new Gson();
         PaymentCancellation paymentCancellation = gson.fromJson(json, PaymentCancellation.class);
-        paymentCancellation.setPaymentId(paymentPostDto.getPaymentId());
+        paymentCancellation.setPaymentId(paymentCancelPostDto.getPaymentId());
         return paymentCancellation;
     }
 
