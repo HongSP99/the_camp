@@ -31,6 +31,11 @@ public class SeasonService {
     @Transactional
     public SeasonDto insertSeason(SeasonDto seasonDto){
 
+        if(seasonDto.getStart().isAfter(seasonDto.getEnd())){
+            throw new RuntimeException("시작날짜가 끝날짜 이후입니다.");
+        }
+
+
         Campsite campsite = campSiteRepository.findById(seasonDto.getCampsite())
                 .orElseThrow(() -> new CampsiteNotFoundException("해당 캠핑장이 존재하지 않습니다."));
         Season season = seasonDto.toEntity(campsite);
