@@ -44,6 +44,7 @@ public class SecurityConfig {
                         .requestMatchers("/", "/join", "/login", "/test","/reset-password").permitAll()
                         .requestMatchers("/api/user/**").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/logout").authenticated()
                         .requestMatchers("/reissue").permitAll()
                         .anyRequest().permitAll()
 

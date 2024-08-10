@@ -10,14 +10,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Date;
 
-@Controller
-@ResponseBody
+@RestController
 public class ReissueController {
 
     private final JwtTokenUtil jwtTokenUtil;
@@ -98,6 +97,40 @@ public class ReissueController {
         response.addCookie(createCookie("refresh", newRefresh));
         return new ResponseEntity<>(HttpStatus.OK);
     }
+    @GetMapping("/api/auth")
+    public ResponseEntity<?> checkAuth(HttpServletRequest request) {
+        String refresh = null;
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("refresh")) {
+                    refresh = cookie.getValue();
+                }
+            }
+        }
+
+        if (refresh == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("No refresh token");
+        }
+
+        try {
+            jwtTokenUtil.isExpired(refresh);
+        } catch (ExpiredJwtException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Refresh token expired");
+        }
+
+        String category = jwtTokenUtil.getCategory(refresh);
+        if (!category.equals("refresh")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid refresh token");
+        }
+
+        Boolean isExist = refreshRepository.existsByRefresh(refresh);
+        if (!isExist) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid refresh token");
+        }
+
+        return ResponseEntity.ok().body("Authenticated");
+    }
 
     private Cookie createCookie(String key, String value) {
 
@@ -127,6 +160,8 @@ public class ReissueController {
 
         refreshRepository.save(refreshEntity);
     }
+
+
 
 
 }
