@@ -3,7 +3,6 @@ package io.camp.payment.model;
 
 public enum PaymentType {
     paymentId,
-    amount,
     amountTotal,
     amountTaxFree,
     amountCancelledTaxFree,
@@ -12,15 +11,10 @@ public enum PaymentType {
     amountDiscount,
     amountCancelled,
     amountSupply,
-    pgResponse,
-    method,
-    methodEasyPayMethod,
-    methodEasyPayMethodInstallment,
     methodEasyPayMethodInstallmentMonth,
     methodEasyPayMethodInstallmentIsInterestFree,
     methodEasyPayMethodType,
     methodEasyPayMethodApprovalNumber,
-    methodEasyPayMethodCard,
     methodEasyPayMethodCardOwnerType,
     methodEasyPayMethodCardNumber,
     methodEasyPayMethodCardBin,
@@ -32,7 +26,6 @@ public enum PaymentType {
     methodProvider,
     methodType,
     pgTxId,
-    channel,
     channelPgProvider,
     channelName,
     channelId,
@@ -54,9 +47,9 @@ public enum PaymentType {
     status,
     updatedAt,
     orderName,
-    customer,
     customerPhoneNumber,
     customerName,
     customerId,
     customerEmail,
+    pgResponse
 }
