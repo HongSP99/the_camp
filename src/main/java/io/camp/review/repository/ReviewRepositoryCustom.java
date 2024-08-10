@@ -10,5 +10,6 @@ public interface ReviewRepositoryCustom {
     Page<ReviewDto> getAllReviewSort(Pageable pageable);
     ReviewDto getCampsiteReview(Long reviewId);
     long updateReview(Long reviewId, String content);
+    long deleteReview(Long reviewId);
     LikeReviewDto getLikeCount(Long reviewId);
 }

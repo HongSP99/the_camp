@@ -25,6 +25,8 @@ public class Review extends BaseEntity {
     @Column(name = "content", nullable = false)
     private String content;
 
+    private boolean isDeleted = false;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;

@@ -40,7 +40,7 @@ public class UserController {
         return new ResponseEntity<>(roleGetDto, HttpStatus.OK);
     }
 
-    @GetMapping("/api/user/payment")
+    @GetMapping("/api/user/data")
     public ResponseEntity<UserPaymentGetDto> getUserPayment(@AuthenticationPrincipal JwtUserDetails jwtUserDetails) {
         UserPaymentGetDto userPaymentGetDto = userService.getUserPayment(jwtUserDetails);
         return new ResponseEntity<>(userPaymentGetDto, HttpStatus.OK);
