@@ -1,5 +1,9 @@
 package io.camp.reservation.repository;
 
-public interface ReservationRepositoryCustom {
+import io.camp.campsite.model.entity.Zone;
+import io.camp.reservation.model.QReservation;
+import io.camp.reservation.model.dto.ReservationExistenceDto;
 
+public interface ReservationRepositoryCustom {
+    boolean checkReservationExistence(ReservationExistenceDto dto);
 }
