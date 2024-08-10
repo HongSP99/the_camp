@@ -40,6 +40,7 @@ public enum ExceptionCode {
     AUTHORIZATION_TOKEN_EXPIRED(401, "인증 토큰이 만료되었습니다."),
     UNSUPPORTED_TOKEN_TYPE(401, "지원되지 않는 토큰 유형입니다."),
     INVALID_AUTHORIZATION_TOKEN(401, "유효하지 않은 인증 토큰입니다."),
+    TOKEN_NOT_FOUND(404,"토큰이 존재하지 않습니다."),
 
     //refresh 토큰
     INVALID_REFRESH_TOKEN(400, "유효하지 않은 갱신 토큰입니다."),
