@@ -11,11 +11,13 @@ import lombok.*;
 @Builder
 public class SiteDto {
 
+    private Long seq;
     private String title;
 
     public static SiteDto fromEntity(Site site){
         SiteDto dto = new SiteDto();
 
+        dto.setSeq(site.getSeq());
         dto.setTitle(site.getTitle());
 
         return dto;

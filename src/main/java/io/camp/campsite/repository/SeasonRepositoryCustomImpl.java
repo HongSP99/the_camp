@@ -4,6 +4,7 @@ package io.camp.campsite.repository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import io.camp.campsite.model.dto.SiteDto;
 import io.camp.campsite.model.entity.*;
+import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -25,7 +26,13 @@ public class SeasonRepositoryCustomImpl  implements  SeasonRepositoryCustom{
 
     }
 
+    public SeasonType findSeasonTypeByDateRange(LocalDate startDay, LocalDate endDay) {
+        QSeason season = QSeason.season;
 
-
-
+        return queryFactory.select(season.type)
+                .from(season)
+                .where(season.start.loe(startDay)
+                        .and(season.end.goe(endDay)))
+                .fetchOne();
+    }
 }
