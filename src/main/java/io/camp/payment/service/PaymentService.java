@@ -164,12 +164,12 @@ public class PaymentService {
                 } else {
                     if (keyName.equals("")) {
                         String setKeyName = key;
-                        payment.setPaymentInstanceVariable(PaymentType.valueOf(setKeyName), obj.optJSONObject(key).toString());
+                        //payment.setPaymentInstanceVariable(PaymentType.valueOf(setKeyName), obj.optJSONObject(key).toString());
                         jsonToPayment(obj.getJSONObject(key).toString(), key, payment);
                     } else {
                         if (obj.optJSONObject(key) != null) {
                             String setKeyName = keyName + key.substring(0, 1).toUpperCase() + key.substring(1);
-                            payment.setPaymentInstanceVariable(PaymentType.valueOf(setKeyName), obj.optJSONObject(key).toString());
+                            //payment.setPaymentInstanceVariable(PaymentType.valueOf(setKeyName), obj.optJSONObject(key).toString());
                         } else {
                             String setKeyName = keyName;
                             payment.setPaymentInstanceVariable(PaymentType.valueOf(setKeyName), obj.optJSONObject(key).toString());
