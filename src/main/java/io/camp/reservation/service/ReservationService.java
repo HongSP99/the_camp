@@ -1,19 +1,27 @@
 package io.camp.reservation.service;
 
+import io.camp.campsite.model.entity.SeasonType;
 import io.camp.campsite.model.entity.Site;
+import io.camp.campsite.model.entity.Zone;
 import io.camp.campsite.repository.SiteRepository;
+import io.camp.campsite.repository.ZoneRepository;
+import io.camp.campsite.service.SeasonService;
+import io.camp.campsite.service.ZoneService;
 import io.camp.common.exception.ExceptionCode;
 import io.camp.common.exception.reservation.ReservationException;
 import io.camp.reservation.mapper.ReservationMapper;
 import io.camp.reservation.model.Reservation;
 import io.camp.reservation.model.ReservationState;
 import io.camp.reservation.model.dto.ReservationDto;
+import io.camp.reservation.model.dto.ReservationExistenceDto;
 import io.camp.reservation.model.dto.ReservationPostDto;
 import io.camp.reservation.repository.ReservationRepository;
 import io.camp.user.model.User;
 import io.camp.user.service.UserService;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -39,6 +47,7 @@ public class ReservationService {
                 .orElseThrow(() -> new IllegalArgumentException("캠핑장을 찾을 수 없습니다."));
         log.info("campsite 찾기 성공");
         log.info(requestDto.toString());
+
         Reservation reservation = mapper.reservationPostDtoToReservation(requestDto);
         log.info("예약 생성 성공");
         reservation.setUser(user);
@@ -53,15 +62,15 @@ public class ReservationService {
             throw new ReservationException(ExceptionCode.RESERVATION_NOT_FOUND);
         }
 
-        return ReservationDto.fromEntity(reservation);
+        return ReservationDto.fromEntity(savedReservation);
     }
 
     //예약 취소
     public void cancelReservation(Long reservationSeq){
         Reservation reservation = findReservation(reservationSeq);
 
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime ReservationStartDate = reservation.getReserveStartDate();
+        LocalDate now = LocalDate.now();
+        LocalDate ReservationStartDate = reservation.getReserveStartDate();
 
         long DayUntilReservationStart = ChronoUnit.DAYS.between(now, ReservationStartDate);
 
@@ -73,7 +82,7 @@ public class ReservationService {
         reservationRepository.save(reservation);
     }
 
-    //유저 예약 내역
+
     public Reservation findReservation(long reservationId) {
         Optional<Reservation> optionalReservation = reservationRepository.findById(reservationId);
         Reservation findReservation = optionalReservation.orElseThrow(() ->
@@ -82,12 +91,18 @@ public class ReservationService {
         return findReservation;
     }
 
+    //유저 예약 내역
     public List<ReservationDto> findReservationsByUserId(Long userSeq){
         List<Reservation> reservations = reservationRepository.findAll();
         return reservations.stream()
                 .filter(reservation -> reservation.getUser().getSeq().equals(userSeq))
                 .map(ReservationDto::fromEntity)
                 .collect(Collectors.toList());
+    }
+
+    //예약 있는지 각 사이트 마다 확인
+    public boolean checkReservationExistence(ReservationExistenceDto existenceDto){
+        return reservationRepository.checkReservationExistence(existenceDto);
     }
 
     public Reservation createReservationEntity(ReservationPostDto requestDto){
@@ -115,13 +130,27 @@ public class ReservationService {
         return reservation;
     }
 
-    //TODO : 해당 존에 예약이 있는지 확인하는 기능 구현
-//    public boolean checkReservationExistence(ReservationExistenceDto existenceDto){
-//        List<ReservationState> status = Arrays.asList(
-//                ReservationState.RESERVATION_DONE,
-//                ReservationState.NO_CANCEL
-//        );
+
+    //가격 검증
+//    public int calculationTotalPrice(Long zoneSeq, int adults, LocalDate start, LocalDate end){
+//        //어른 기본 2명에서 1명 추가 당 10,000원, season별로 가격이 다름.
+//        Zone zone = zoneService.findZoneById(zoneSeq);
 //
-//        return true;
+//        SeasonType seasonType = seasonService.getSeasonTypeByDateRange(start, end);
+//
+//        int seasonPrice;
+//        if(seasonType.equals(SeasonType.BEST_PEAK)){
+//            seasonPrice = zone.getBestPeakSeasonPrice();
+//        } else if(seasonType.equals(SeasonType.PEAK)){
+//            seasonPrice = zone.getPeakSeasonPrice();
+//        } else {
+//            seasonPrice = zone.getOffSeasonPrice();
+//        }
+//
+//        if(adults > 2){
+//            seasonPrice += (adults - 2) * 10000;
+//        }
+//
+//        return seasonPrice;
 //    }
 }

@@ -2,6 +2,7 @@ package io.camp.reservation.model.dto;
 
 import io.camp.reservation.model.Reservation;
 import io.camp.reservation.model.ReservationState;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,8 +12,8 @@ import lombok.Setter;
 @Setter
 public class ReservationDto {
     private Long ReservationId;
-    private LocalDateTime reservationStartDate;
-    private LocalDateTime reservationEndDate;
+    private LocalDate reservationStartDate;
+    private LocalDate reservationEndDate;
     private int adults;
     private int children;
     private int totalPrice;

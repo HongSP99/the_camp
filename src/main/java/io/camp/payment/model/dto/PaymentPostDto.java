@@ -1,5 +1,6 @@
 package io.camp.payment.model.dto;
 
+import java.time.LocalDate;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,8 +14,8 @@ public class PaymentPostDto {
     //받아야할 예약정보
     private Long campsiteSeq;
     private Long siteSeq;
-    private LocalDateTime reserveStartDate;
-    private LocalDateTime reserveEndDate;
+    private LocalDate reserveStartDate;
+    private LocalDate reserveEndDate;
     private int adults;
     private int children;
     //받아야할 예약정보

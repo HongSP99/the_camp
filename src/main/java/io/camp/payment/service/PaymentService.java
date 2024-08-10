@@ -72,8 +72,8 @@ public class PaymentService {
                         campsiteSeq
                 );
 
-        LocalDate startDay = dto.getReserveStartDate().toLocalDate();
-        LocalDate endDay = dto.getReserveEndDate().toLocalDate();
+        LocalDate startDay = dto.getReserveStartDate();
+        LocalDate endDay = dto.getReserveEndDate();
 
         Period period = Period.between(startDay, endDay);
         int dayDiff = period.getDays();

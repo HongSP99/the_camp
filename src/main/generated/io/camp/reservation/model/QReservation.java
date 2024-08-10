@@ -38,9 +38,9 @@ public class QReservation extends EntityPathBase<Reservation> {
 
     public final EnumPath<ReservationState> reservationState = createEnum("reservationState", ReservationState.class);
 
-    public final DateTimePath<java.time.LocalDateTime> reserveEndDate = createDateTime("reserveEndDate", java.time.LocalDateTime.class);
+    public final DatePath<java.time.LocalDate> reserveEndDate = createDate("reserveEndDate", java.time.LocalDate.class);
 
-    public final DateTimePath<java.time.LocalDateTime> reserveStartDate = createDateTime("reserveStartDate", java.time.LocalDateTime.class);
+    public final DatePath<java.time.LocalDate> reserveStartDate = createDate("reserveStartDate", java.time.LocalDate.class);
 
     public final io.camp.campsite.model.entity.QSite site;
 

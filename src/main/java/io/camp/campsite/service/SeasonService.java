@@ -63,11 +63,11 @@ public class SeasonService {
         return seasonSeq;
     }
 
-    public SeasonType getSeasonTypeByDateRange(LocalDateTime start, LocalDateTime end, Long campsiteId) {
+    public SeasonType getSeasonTypeByDateRange(LocalDate start, LocalDate end, Long campsiteId) {
         List<SeasonDto> seasonByCampsite = findSeasonByCampsiteSeq(campsiteId);
         for (SeasonDto season : seasonByCampsite) {
-            LocalDateTime sStart = season.getStart().atTime(0, 0, 0);
-            LocalDateTime sEnd = season.getEnd().atTime(23, 59, 59);
+            LocalDate sStart = season.getStart();
+            LocalDate sEnd = season.getEnd();
 
             if (start.isAfter(sStart) && end.isBefore(sEnd)) {
                 return season.getType();

@@ -4,6 +4,7 @@ import io.camp.common.dto.SingleResponseDto;
 import io.camp.reservation.mapper.ReservationMapper;
 import io.camp.reservation.model.Reservation;
 import io.camp.reservation.model.dto.ReservationDto;
+import io.camp.reservation.model.dto.ReservationExistenceDto;
 import io.camp.reservation.model.dto.ReservationPostDto;
 import io.camp.reservation.model.dto.ReservationResponseDto;
 import io.camp.reservation.service.ReservationService;
@@ -15,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -40,7 +42,7 @@ public class ReservationController {
 
     //특정 예약 상세 조회
     @GetMapping("/{reservationId}")
-    public ResponseEntity<SingleResponseDto<?>> getReservation(@PathVariable("reservationId") Long reservationId){
+    public ResponseEntity<SingleResponseDto<ReservationResponseDto>> getReservation(@PathVariable("reservationId") Long reservationId){
         Reservation reservation = reservationService.findReservation(reservationId);
 
         ReservationResponseDto responseDto = mapper.reservationToReservationResponseDto(reservation);
@@ -58,10 +60,23 @@ public class ReservationController {
     }
 
     //예약 수정
-    @PostMapping("/cancel/{reservationSeq}")
+    @PatchMapping("/cancel/{reservationSeq}")
     public ResponseEntity<Void> cancelReservation(@PathVariable("reservationSeq") Long reservationSeq){
         reservationService.cancelReservation(reservationSeq);
 
         return ResponseEntity.ok().build();
+    }
+
+    //예약이 해당 사이트에 있는지 확인
+    @PostMapping("/existence")
+    public ResponseEntity<SingleResponseDto<ReservationExistenceDto>> checkReservationExistence(@RequestBody ReservationExistenceDto existenceDto){
+        log.info("체크 시작");
+        boolean existence = reservationService.checkReservationExistence(existenceDto);
+        log.info("체크 끝");
+        existenceDto.setExistence(existence);
+        log.info(existenceDto.toString());
+
+        return new ResponseEntity<>(
+                new SingleResponseDto<>(existenceDto), HttpStatus.OK);
     }
 }
