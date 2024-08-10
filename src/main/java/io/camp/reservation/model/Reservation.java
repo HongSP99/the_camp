@@ -8,6 +8,7 @@ import io.camp.payment.model.Payment;
 import io.camp.user.model.User;
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,10 +27,10 @@ public class Reservation extends BaseEntity {
     private Long id;
 
     @Column(name = "reserve_start_date", nullable = false)
-    private LocalDateTime reserveStartDate;
+    private LocalDate reserveStartDate;
 
     @Column(name = "reserve_end_date", nullable = false)
-    private LocalDateTime reserveEndDate;
+    private LocalDate reserveEndDate;
 
     @Column(name = "adults")
     private int adults;
@@ -49,7 +50,7 @@ public class Reservation extends BaseEntity {
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "campsite_seq", referencedColumnName = "seq", columnDefinition = "BIGINT", nullable = false)
+    @JoinColumn(name = "site_seq", referencedColumnName = "seq", columnDefinition = "BIGINT", nullable = false)
     private Site site;
 
 //    @OneToOne(mappedBy = "reservation")

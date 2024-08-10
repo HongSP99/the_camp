@@ -5,6 +5,7 @@ import io.camp.campsite.model.entity.Site;
 import io.camp.campsite.model.entity.Zone;
 import io.camp.reservation.model.ReservationState;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -15,8 +16,8 @@ import lombok.Setter;
 public class ReservationResponseDto {
     private Long reservationId;
 
-    private LocalDateTime reserveStartDate;
-    private LocalDateTime reserveEndDate;
+    private LocalDate reserveStartDate;
+    private LocalDate reserveEndDate;
     private int adults;
     private int children;
     private int totalPrice;
