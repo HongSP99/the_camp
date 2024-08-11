@@ -5,6 +5,7 @@ import io.camp.user.model.User;
 import io.camp.user.model.dto.*;
 import io.camp.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -104,5 +105,12 @@ public class UserController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
+    }
+
+    @GetMapping("/user/reservation/list")
+    public ResponseEntity<Page<UserReservationDto>> userReservationList(@AuthenticationPrincipal JwtUserDetails jwtUserDetails,
+                                                        @RequestParam(value = "page", defaultValue = "0") int page,
+                                                        @RequestParam(value = "size", defaultValue = "6") int size) {
+        return ResponseEntity.ok(userService.userReservationList(page, size, jwtUserDetails));
     }
 }

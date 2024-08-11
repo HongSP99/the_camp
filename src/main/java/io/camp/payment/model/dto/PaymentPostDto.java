@@ -18,5 +18,6 @@ public class PaymentPostDto {
     private LocalDate reserveEndDate;
     private int adults;
     private int children;
+    private String campsiteName;
     //받아야할 예약정보
 }

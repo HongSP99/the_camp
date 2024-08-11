@@ -3,9 +3,13 @@ package io.camp.payment.model.dto;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
+
 @Getter
 @Setter
 public class PaymentCancelPostDto {
     private String paymentId;
-    private String reason;
+    private Long reservationId;
+    private LocalDate reserveStartDate;
+    private String reason = "예약 취소";
 }

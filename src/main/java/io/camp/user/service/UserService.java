@@ -9,10 +9,15 @@ import io.camp.user.model.UserRole;
 import io.camp.user.model.dto.JoinDto;
 import io.camp.user.model.dto.RoleGetDto;
 import io.camp.user.model.dto.UserPaymentGetDto;
+import io.camp.user.model.dto.UserReservationDto;
 import io.camp.user.repository.UserRepository;
 import jakarta.annotation.PostConstruct;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -180,6 +185,15 @@ public class UserService {
         userRepository.save(user);
 
         mailService.sendTemporaryPassword(email, tempPassword);
+    }
+
+    public Page<UserReservationDto> userReservationList(int page, int size, JwtUserDetails jwtUserDetails) {
+        Pageable pageable = PageRequest.of(page, size);
+        User user = jwtUserDetails.getUser();
+        if (user == null) {
+            throw new CustomException(ExceptionCode.UNREGISTERED_EMAIL);
+        }
+        return userRepository.userGetReservations(user, pageable);
     }
 
 }

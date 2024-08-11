@@ -21,6 +21,7 @@ public class Payment extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
     private String paymentId;
+    private String campsiteName;
     private int amountTotal;
     private String amountTaxFree;
     private String amountCancelledTaxFree;
@@ -69,6 +70,7 @@ public class Payment extends BaseEntity {
     private String customerName;
     private String customerId;
     private String customerEmail;
+    private boolean isDeleted = false;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_seq")

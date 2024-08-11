@@ -65,6 +65,9 @@ public class PaymentController {
     @PostMapping("/payment/cancel")
     public ResponseEntity cancelPayment(@RequestBody PaymentCancelPostDto paymentCancelPostDto,
                                         @AuthenticationPrincipal JwtUserDetails jwtUserDetails) {
+        boolean isCancel = paymentService.beforePaymentCancelCheck(paymentCancelPostDto);
+        if (!isCancel)
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
         try {
             URL url = new URL("https://api.portone.io/payments/"+ paymentCancelPostDto.getPaymentId() +"/cancel");
             HttpURLConnection conn = (HttpURLConnection)url.openConnection();
@@ -86,7 +89,6 @@ public class PaymentController {
             BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             StringBuilder sb = new StringBuilder(br.readLine());
             String json = sb.toString();
-            System.out.println(json);
             paymentService.paymentCancel(paymentCancelPostDto, json, jwtUserDetails);
         } catch (Exception e) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
