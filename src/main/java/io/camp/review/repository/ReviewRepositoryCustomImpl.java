@@ -54,7 +54,8 @@ public class ReviewRepositoryCustomImpl implements ReviewRepositoryCustom {
                         like.isLike.when(true).then(1).otherwise(0).sum().as("likeCount"),
                         review.campsite.facltNm.as("campName"),
                         review.user.email.as("email"),
-                        review.user.seq.as("userSeq")
+                        review.user.seq.as("userSeq"),
+                        campsite.seq.as("campsiteSeq")
                 ))
                 .from(campsite)
                 .join(review)
@@ -83,7 +84,8 @@ public class ReviewRepositoryCustomImpl implements ReviewRepositoryCustom {
                         like.isLike.when(true).then(1).otherwise(0).sum().as("likeCount"),
                         review.campsite.facltNm.as("campName"),
                         review.user.email.as("email"),
-                        review.user.seq.as("userSeq")
+                        review.user.seq.as("userSeq"),
+                        campsite.seq.as("campsiteSeq")
                 ))
                 .from(campsite)
                 .join(review)
@@ -111,7 +113,8 @@ public class ReviewRepositoryCustomImpl implements ReviewRepositoryCustom {
                         like.isLike.when(true).then(1).otherwise(0).sum().as("likeCount"),
                         review.campsite.facltNm.as("campName"),
                         review.user.email.as("email"),
-                        review.user.seq.as("userSeq")
+                        review.user.seq.as("userSeq"),
+                        campsite.seq.as("campsiteSeq")
                 ))
                 .from(campsite)
                 .join(review)

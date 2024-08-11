@@ -12,8 +12,9 @@ public class ReviewDto {
     private String campName;
     private String email;
     private Long userSeq;
+    private Long campsiteSeq;
 
-    public ReviewDto(Long id, String content, String userName, int likeCount, String campName, String email, Long userSeq) {
+    public ReviewDto(Long id, String content, String userName, int likeCount, String campName, String email, Long userSeq, Long campsiteSeq) {
         this.id = id;
         this.content = content;
         this.userName = userName;
@@ -21,6 +22,7 @@ public class ReviewDto {
         this.campName = campName;
         this.email = email;
         this.userSeq = userSeq;
+        this.campsiteSeq = campsiteSeq;
     }
 }
 
