@@ -3,7 +3,7 @@ package io.camp.user.controller;
 
 import io.camp.common.exception.ExceptionCode;
 import io.camp.common.exception.user.VerifyCodeNotFoundException;
-import io.camp.user.model.response.MailResponse;
+import io.camp.user.model.email.response.MailResponse;
 import io.camp.user.model.email.AuthCodeDto;
 import io.camp.user.service.MailService;
 import io.camp.user.service.UserService;

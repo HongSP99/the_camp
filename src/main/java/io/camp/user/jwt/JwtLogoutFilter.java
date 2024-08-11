@@ -80,11 +80,14 @@ public class JwtLogoutFilter extends GenericFilterBean {
 
         refreshRepository.deleteByRefresh(refresh);
 
-        Cookie cookie = new Cookie("refresh", null);
-        cookie.setMaxAge(0);
-        cookie.setPath("/");
+        // Create a cookie with the same properties as the one you want to delete
+        Cookie cookie = new Cookie("refresh", "");
+        cookie.setMaxAge(0); // 쿠키 만료 시간 설정
+        cookie.setPath("/"); // 쿠키 경로 설정 (설정한 경로와 일치해야 함)
+        cookie.setHttpOnly(true); // HttpOnly 설정
+        cookie.setSecure(false); // Secure 설정 (HTTPS를 사용하는 경우 true로 설정)
         response.addCookie(cookie);
-        response.setStatus(HttpServletResponse.SC_OK);
     }
+
 
 }
