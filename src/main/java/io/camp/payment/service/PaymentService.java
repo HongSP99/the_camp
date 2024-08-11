@@ -20,6 +20,7 @@ import io.camp.payment.repository.PaymentCancellationRepository;
 import io.camp.payment.repository.PaymentRepository;
 import io.camp.reservation.model.Reservation;
 import io.camp.reservation.model.dto.ReservationPostDto;
+import io.camp.reservation.repository.ReservationRepository;
 import io.camp.reservation.service.ReservationService;
 import io.camp.user.jwt.JwtUserDetails;
 import io.camp.user.model.User;
@@ -41,6 +42,7 @@ import java.time.temporal.ChronoUnit;
 public class PaymentService {
     private final PaymentRepository paymentRepository;
     private final PaymentCancellationRepository paymentCancellationRepository;
+    private final ReservationRepository reservationRepository;
     private final ReservationService reservationService;
     private final ZoneService zoneService;
     private final SeasonService seasonService;
@@ -101,11 +103,13 @@ public class PaymentService {
     public void paymentSave(PaymentPostDto paymentPostDto, String json, JwtUserDetails jwtUserDetails) {
         Payment payment = new Payment();
         payment.setPaymentId(paymentPostDto.getPaymentId());
+        payment.setCampsiteName(paymentPostDto.getCampsiteName());
         jsonToPayment(json, "", payment);
 
         int reservationTotalPrice = calculationTotalPrice(paymentPostDto);
         log.info("reservationTotalPrice (계산 값) : {}", reservationTotalPrice);
         log.info("paymentAmountTotal (클라이언트 값) : {}", payment.getAmountTotal());
+        log.info("캠핑장 명 : {}", payment.getCampsiteName());
 
         if (reservationTotalPrice != payment.getAmountTotal()) {
             throw new PaymentException(ExceptionCode.PAYMENT_NOT_EQUAL_RESERVATION);
@@ -125,23 +129,50 @@ public class PaymentService {
         paymentRepository.save(payment);
     }
 
+    public boolean beforePaymentCancelCheck(PaymentCancelPostDto paymentCancelPostDto) {
+        LocalDate reserveCancelDate = LocalDate.now();
+        LocalDate reserveStartDate = paymentCancelPostDto.getReserveStartDate();
+
+        log.info("reserveCancelDate : {}", reserveCancelDate);
+        log.info("reserveStartDate : {}", reserveStartDate);
+        if (reserveCancelDate.isEqual(reserveStartDate) || reserveCancelDate.isAfter(reserveStartDate)) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    @Transactional
     public void paymentCancel(PaymentCancelPostDto paymentCancelPostDto, String json, JwtUserDetails jwtUserDetails) {
         PaymentCancellation paymentCancellation = jsonToPaymentCancellation(json, paymentCancelPostDto);
+
         Payment payment = paymentRepository.qFindByPaymentId(paymentCancellation.getPaymentId());
-        paymentCancellation.setPayment(payment);
+        payment.setDeleted(true);
+        paymentRepository.save(payment);
+
+        reservationService.cancelReservation(paymentCancelPostDto.getReservationId());
 
         if (payment.getAmountTotal() != paymentCancellation.getTotalAmount()) {
             throw new PaymentException(ExceptionCode.PAYMENT_NOT_EQUAL_CANCEL);
         }
 
+        paymentCancellation.setPayment(payment);
         paymentCancellationRepository.save(paymentCancellation);
     }
 
     private PaymentCancellation jsonToPaymentCancellation(String json, PaymentCancelPostDto paymentCancelPostDto) {
-        json = new JSONObject(json).getJSONObject("cancellation").toString();
-        Gson gson = new Gson();
-        PaymentCancellation paymentCancellation = gson.fromJson(json, PaymentCancellation.class);
+        PaymentCancellation paymentCancellation = new PaymentCancellation();
+        JSONObject cancellation = new JSONObject(json).getJSONObject("cancellation");
         paymentCancellation.setPaymentId(paymentCancelPostDto.getPaymentId());
+        paymentCancellation.setStatus(cancellation.getString("status"));
+        paymentCancellation.setId(cancellation.getString("id"));
+        paymentCancellation.setPgCancellationId(cancellation.getString("pgCancellationId"));
+        paymentCancellation.setTotalAmount(cancellation.getInt("totalAmount"));
+        paymentCancellation.setTaxFreeAmount(cancellation.getInt("taxFreeAmount"));
+        paymentCancellation.setVatAmount(cancellation.getInt("vatAmount"));
+        paymentCancellation.setReason(cancellation.getString("reason"));
+        paymentCancellation.setCancelledAt(cancellation.getString("cancelledAt"));
+        paymentCancellation.setRequestedAt(cancellation.getString("requestedAt"));
         return paymentCancellation;
     }
 

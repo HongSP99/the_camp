@@ -40,6 +40,8 @@ public class QPayment extends EntityPathBase<Payment> {
 
     public final StringPath amountVat = createString("amountVat");
 
+    public final StringPath campsiteName = createString("campsiteName");
+
     public final StringPath channelId = createString("channelId");
 
     public final StringPath channelKey = createString("channelKey");
@@ -68,6 +70,8 @@ public class QPayment extends EntityPathBase<Payment> {
     public final StringPath id = createString("id");
 
     public final StringPath isCulturalExpense = createString("isCulturalExpense");
+
+    public final BooleanPath isDeleted = createBoolean("isDeleted");
 
     public final StringPath merchantId = createString("merchantId");
 
