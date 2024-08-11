@@ -108,8 +108,7 @@ public class ReviewService {
         if (reviewDto.getUserSeq() != user.getSeq()) {
             throw new RuntimeException("작성자가 아닙니다.");
         }
-
-        reviewRepository.deleteById(reviewId);
+        reviewRepository.deleteReview(reviewId);
     }
 
     //리뷰 좋아요

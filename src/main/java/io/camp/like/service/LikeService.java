@@ -24,7 +24,7 @@ public class LikeService {
 
     public boolean isLike(Long reviewId, User user) {
         Like isLike = likeRepository.reviewLikeUser(reviewId, user);
-        Review review = reviewRepository.findById((long) reviewId)
+        Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new RuntimeException("리뷰를 찾을 수 없어요"));
 
         if (isLike == null) {

@@ -8,7 +8,7 @@ import io.camp.user.model.User;
 import io.camp.user.model.UserRole;
 import io.camp.user.model.dto.JoinDto;
 import io.camp.user.model.dto.RoleGetDto;
-import io.camp.user.model.dto.UserPaymentGetDto;
+import io.camp.user.model.dto.UserDataGetDto;
 import io.camp.user.model.dto.UserReservationDto;
 import io.camp.user.repository.UserRepository;
 import jakarta.annotation.PostConstruct;
@@ -17,7 +17,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -159,19 +158,21 @@ public class UserService {
         return roleGetDto;
     }
 
-    public UserPaymentGetDto getUserPayment(JwtUserDetails jwtUserDetails) {
-        UserPaymentGetDto userPaymentGetDto = new UserPaymentGetDto();
+    public UserDataGetDto getUserData(JwtUserDetails jwtUserDetails) {
+        UserDataGetDto userDataGetDto = new UserDataGetDto();
 
         if (jwtUserDetails == null) {
             throw  new CustomException(ExceptionCode.USER_NOT_FOUND);
         }
 
         User user = jwtUserDetails.getUser();
-        userPaymentGetDto.setEmail(user.getEmail());
-        userPaymentGetDto.setFullName(user.getName());
-        userPaymentGetDto.setPhoneNumber(user.getPhoneNumber());
 
-        return userPaymentGetDto;
+        userDataGetDto.setSeq(user.getSeq());
+        userDataGetDto.setEmail(user.getEmail());
+        userDataGetDto.setFullName(user.getName());
+        userDataGetDto.setPhoneNumber(user.getPhoneNumber());
+
+        return userDataGetDto;
     }
     @Transactional
     public void resetPassword(String email) throws MessagingException {

@@ -62,7 +62,7 @@ public class ReviewRepositoryCustomImpl implements ReviewRepositoryCustom {
                 .leftJoin(like)
                 .on(review.id.eq(like.review.id))
                 .groupBy(campsite.seq, review.id)
-                .where(campsite.seq.eq(campsiteId))
+                .where(campsite.seq.eq(campsiteId).and(review.isDeleted.eq(false)))
                 .orderBy(reviewSort(pageable))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -92,6 +92,7 @@ public class ReviewRepositoryCustomImpl implements ReviewRepositoryCustom {
                 .on(review.id.eq(like.review.id))
                 .groupBy(campsite.seq, review.id)
                 .orderBy(reviewSort(pageable))
+                .where(review.isDeleted.eq(false))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetchResults();
@@ -120,7 +121,7 @@ public class ReviewRepositoryCustomImpl implements ReviewRepositoryCustom {
                 .leftJoin(like)
                 .on(review.id.eq(like.review.id))
                 .groupBy(campsite.seq, review.id)
-                .where(review.id.eq(reviewId))
+                .where(review.id.eq(reviewId).and(review.isDeleted.eq(false)))
                 .fetchOne();
     }
 
@@ -129,6 +130,15 @@ public class ReviewRepositoryCustomImpl implements ReviewRepositoryCustom {
         return jpaQueryFactory
                 .update(review)
                 .set(review.content, content)
+                .where(review.id.eq(reviewId))
+                .execute();
+    }
+
+    @Override
+    public long deleteReview(Long reviewId) {
+        return jpaQueryFactory
+                .update(review)
+                .set(review.isDeleted, true)
                 .where(review.id.eq(reviewId))
                 .execute();
     }
@@ -145,6 +155,7 @@ public class ReviewRepositoryCustomImpl implements ReviewRepositoryCustom {
                                 , "likeCount")
                 ))
                 .from(review)
+                .where(review.id.eq(reviewId).and(review.isDeleted.eq(false)))
                 .fetchOne();
     }
 }

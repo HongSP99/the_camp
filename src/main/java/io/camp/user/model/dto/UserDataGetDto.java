@@ -5,7 +5,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class UserPaymentGetDto {
+public class UserDataGetDto {
+    private Long seq;
     private String email;
     private String fullName;
     private String phoneNumber;

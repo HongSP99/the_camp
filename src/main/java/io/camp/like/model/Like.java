@@ -25,7 +25,7 @@ public class Like {
     private boolean isLike;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "user_id", unique = true)
+    @JoinColumn(name = "user_id")
     private User user;
 
     @ManyToOne(fetch = LAZY)
