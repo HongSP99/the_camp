@@ -9,6 +9,9 @@ import java.util.Arrays;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -42,5 +45,22 @@ public class ReservationRepositoryCustomImpl implements ReservationRepositoryCus
         log.info("Existing Reservation: " + (existingReservation != null ? existingReservation.toString() : "None")); // 결과 로깅
 
         return existingReservation != null;
+    }
+
+    @Override
+    public Page<Reservation> findAllReservationWithPaging(Pageable pageable) {
+        QReservation reservation = QReservation.reservation;
+       List<Reservation> fetch = jpaQueryFactory.selectFrom(reservation)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+               .fetch();
+
+
+       Long total = jpaQueryFactory.select(reservation.count())
+               .from(reservation)
+               .fetchOne();
+
+
+        return new PageImpl<>(fetch,pageable,total);
     }
 }
