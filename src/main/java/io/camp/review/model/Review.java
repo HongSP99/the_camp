@@ -37,4 +37,6 @@ public class Review extends BaseEntity {
 
     @OneToMany(mappedBy = "review")
     private List<Like> likes;
+
+
 }

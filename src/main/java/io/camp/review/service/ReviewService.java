@@ -1,5 +1,7 @@
 package io.camp.review.service;
 
+import com.amazonaws.services.s3.AmazonS3;
+import io.camp.S3.service.S3Service;
 import io.camp.campsite.model.entity.Campsite;
 import io.camp.campsite.repository.CampSiteRepository;
 import io.camp.exception.review.ReviewNotFoundException;
@@ -22,6 +24,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static io.camp.user.model.QUser.user;
 
@@ -32,6 +37,7 @@ public class ReviewService {
     private final UserService authService;
     private final CampSiteRepository campSiteRepository;
     private final LikeService likeService;
+    private final S3Service s3Service;
 
     //리뷰 생성
     public ReviewDto createReview(Long campsiteId, CreateReviewDto createReviewDto, JwtUserDetails jwtUserDetails) {
@@ -118,6 +124,12 @@ public class ReviewService {
         likeService.isLike(reviewId, user);
     }
 
+    public List<String> generatePresignedUrls(int count) {
+        List<String> fileNames = IntStream.range(0, count)
+                .mapToObj(i -> UUID.randomUUID().toString())
+                .collect(Collectors.toList());
+        return s3Service.generatePresignedUrls("the-camp", fileNames);
+    }
 
     //dto 전환
     public ReviewDto convertToDto(Review review) {

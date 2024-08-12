@@ -14,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/reviews")
 @RequiredArgsConstructor
@@ -67,5 +69,16 @@ public class ReviewController {
                                            @AuthenticationPrincipal JwtUserDetails jwtUserDetails) {
         reviewService.likeReview(reviewId, jwtUserDetails);
         return ResponseEntity.ok().build();
+    }
+
+
+    @GetMapping("/presigned-urls")
+    public ResponseEntity<?> getPresignedUrls(@RequestParam("count") int count) {
+        try {
+            List<String> presignedUrls = reviewService.generatePresignedUrls(count);
+            return ResponseEntity.ok(presignedUrls);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }

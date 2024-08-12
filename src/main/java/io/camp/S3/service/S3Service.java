@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Service
 @RequiredArgsConstructor
@@ -25,42 +26,46 @@ public class S3Service {
     @Value("${cloud.aws.s3.bucketName}")
     private String defaultBucketName;
 
+
     public List<String> uploadFiles(List<MultipartFile> multipartFiles) {
         return multipartFiles.stream()
-                .map(this::uploadFile)
+                .map(file -> {
+                    String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
+                    ObjectMetadata metadata = new ObjectMetadata();
+                    metadata.setContentLength(file.getSize());
+                    metadata.setContentType(file.getContentType());
+
+                    try {
+                        amazonS3.putObject(defaultBucketName, fileName, file.getInputStream(), metadata);
+                        return amazonS3.getUrl(defaultBucketName, fileName).toString();
+                    } catch (IOException e) {
+                        throw new RuntimeException("Failed to upload file", e);
+                    }
+                })
                 .collect(Collectors.toList());
     }
 
-
-    private String uploadFile(MultipartFile file) {
-        String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
-        ObjectMetadata metadata = new ObjectMetadata();
-        metadata.setContentLength(file.getSize());
-        metadata.setContentType(file.getContentType());
-
-        try {
-            amazonS3.putObject(defaultBucketName, fileName, file.getInputStream(), metadata);
-            return amazonS3.getUrl(defaultBucketName, fileName).toString();
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to upload file", e);
-        }
+    //삭제
+    public void deleteFile(String fileName) {
+        amazonS3.deleteObject(defaultBucketName, fileName);
     }
 
+
+    //presignedurl 생성
     public List<String> generatePresignedUrls(String bucketName, List<String> objectKeys) {
         return objectKeys.stream()
-                .map(key -> generatePresignedUrl(bucketName, key))
+                .map(objectKey -> {
+                    Date expiration = new Date(System.currentTimeMillis() + 3600000); // 1시간동안 유효
+                    GeneratePresignedUrlRequest generatePresignedUrlRequest = new GeneratePresignedUrlRequest(bucketName, objectKey)
+                            .withMethod(HttpMethod.PUT)
+                            .withExpiration(expiration);
+                    return amazonS3.generatePresignedUrl(generatePresignedUrlRequest).toString();
+                })
                 .collect(Collectors.toList());
     }
 
 
-    private String generatePresignedUrl(String bucketName, String objectKey) {
-        Date expiration = new Date(System.currentTimeMillis() + 3600000); // 1 hour
 
-        GeneratePresignedUrlRequest generatePresignedUrlRequest = new GeneratePresignedUrlRequest(bucketName, objectKey)
-                .withMethod(HttpMethod.PUT)
-                .withExpiration(expiration);
 
-        URL url = amazonS3.generatePresignedUrl(generatePresignedUrlRequest);
-        return url.toString();
-    }
+
 }
