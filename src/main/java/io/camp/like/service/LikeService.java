@@ -1,6 +1,8 @@
 package io.camp.like.service;
 
+import io.camp.common.exception.ExceptionCode;
 import io.camp.common.exception.review.ReviewNotFoundException;
+import io.camp.common.exception.user.CustomException;
 import io.camp.common.exception.user.UserNotFoundException;
 import io.camp.like.model.Like;
 import io.camp.like.model.dto.LikeRequestDTO;
@@ -47,7 +49,7 @@ public class LikeService {
         }
     }
 
-    public void createLike(LikeRequestDTO likeRequestDTO) throws Exception {
+    public void createLike(LikeRequestDTO likeRequestDTO) throws CustomException {
         User user = userRepository.findById(likeRequestDTO.getUserId())
                 .orElseThrow(() -> new UserNotFoundException(likeRequestDTO.getUserId()));
         Review review = reviewRepository.findById(likeRequestDTO.getReviewId())

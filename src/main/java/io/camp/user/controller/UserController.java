@@ -38,12 +38,14 @@ public class UserController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "로그인 성공"),
             @ApiResponse(responseCode = "401", description = "권한 없음 - 잘못된 자격 증명"),
-            @ApiResponse(responseCode = "500", description = "비밀 번호나 이메일이 틀림")
-
+            @ApiResponse(responseCode = "404", description = "등록되지 않은 이메일"),
+            @ApiResponse(responseCode = "500", description = "서버 내부 오류")
     })
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginDto loginDto) {
+
         return new ResponseEntity<>(HttpStatus.OK);
+
     }
 
     @Operation(summary = "토큰 로그인 테스트", description = "토큰 기반 로그인이 제대로 작동하는지 테스트")
@@ -68,7 +70,7 @@ public class UserController {
         return new ResponseEntity<>(roleGetDto, HttpStatus.OK);
     }
 
-    @GetMapping("/api/user/data")
+    @GetMapping("/user/data")
     public ResponseEntity<UserDataGetDto> getUserData(@AuthenticationPrincipal JwtUserDetails jwtUserDetails) {
         UserDataGetDto userDataGetDto = userService.getUserData(jwtUserDetails);
         return new ResponseEntity<>(userDataGetDto, HttpStatus.OK);
@@ -80,7 +82,7 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "사용자 프로필 조회 성공"),
             @ApiResponse(responseCode = "404", description = "사용자를 찾을 수 없음")
     })
-    @GetMapping("/api/user/profile")
+    @GetMapping("/user/profile")
     public ResponseEntity<User> getUserProfile(@AuthenticationPrincipal JwtUserDetails userDetails) {
         User user = userDetails.getUser();
 
@@ -106,7 +108,7 @@ public class UserController {
         }
     }
 
-    @GetMapping("/user/reservation/list")
+    @GetMapping("/user/reservation")
     public ResponseEntity<Page<UserReservationDto>> userReservationList(@AuthenticationPrincipal JwtUserDetails jwtUserDetails,
                                                         @RequestParam(value = "page", defaultValue = "0") int page,
                                                         @RequestParam(value = "size", defaultValue = "6") int size) {

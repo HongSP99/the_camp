@@ -4,10 +4,7 @@ package io.camp.common.exception;
 import io.camp.common.exception.Campsite.SeasonAlreadyExsistException;
 import io.camp.common.exception.payment.PaymentException;
 import io.camp.common.exception.reservation.ReservationException;
-import io.camp.common.exception.user.AuthorizationException;
-import io.camp.common.exception.user.MailSendFailedException;
-import io.camp.common.exception.user.UserAnonymousException;
-import io.camp.common.exception.user.VerifyCodeNotFoundException;
+import io.camp.common.exception.user.*;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -56,6 +53,11 @@ public class GlobalExceptionHandler {
         final ErrorResponse response = ErrorResponse.of(HttpStatus.METHOD_NOT_ALLOWED);
 
         return response;
+    }
+    @ExceptionHandler(CustomException.class)
+    public ResponseEntity<ErrorResponse> handleCustomException(CustomException ex) {
+        ErrorResponse response = ErrorResponse.of(ex.getExceptionCode());
+        return new ResponseEntity<>(response, HttpStatus.valueOf(ex.getExceptionCode().getStatus()));
     }
 
     //JSON 형식에 오류가 있을 경우

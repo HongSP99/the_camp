@@ -2,6 +2,7 @@ package io.camp.user.controller;
 
 
 import io.camp.common.exception.ExceptionCode;
+import io.camp.common.exception.user.MailSendFailedException;
 import io.camp.common.exception.user.VerifyCodeNotFoundException;
 import io.camp.user.model.email.response.MailResponse;
 import io.camp.user.model.email.AuthCodeDto;
@@ -37,7 +38,7 @@ public class MailController {
             mailService.saveAuthCode(email, number);
             return ResponseEntity.ok(MailResponse.success("인증 메일이 발송되었습니다."));
         } catch (Exception e) {
-            return ResponseEntity.status(500).body(MailResponse.error(ExceptionCode.MAIL_SEND_FAILED));
+            throw new MailSendFailedException(ExceptionCode.MAIL_SEND_FAILED);
         }
     }
     @Operation(summary = "사용자 인증 코드 인증", description = "입력한 이메일로 보낸 인증코드를 인증하는 api")

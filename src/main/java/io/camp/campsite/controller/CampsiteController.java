@@ -54,7 +54,7 @@ public class CampsiteController {
         return itemArray.toString();
     }
 
-    @GetMapping("/searchCampsites")
+    @GetMapping("/")
     public Page<CampSiteDto> searchCampsites(
             @RequestParam(value = "query" , defaultValue = "") String query,
             @RequestParam(value = "page", defaultValue = "0") int page,
