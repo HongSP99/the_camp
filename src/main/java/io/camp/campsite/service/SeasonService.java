@@ -80,7 +80,7 @@ public class SeasonService {
             log.info("start : " + start.toString());
             log.info("end : " + end.toString());
 
-            if (end.isAfter(sStart) && end.isBefore(sEnd)) {
+            if ((end.isEqual(sStart) || end.isAfter(sStart)) && (end.isEqual(sEnd) || end.isBefore(sEnd))) {
                 return season.getType();
             }
         }

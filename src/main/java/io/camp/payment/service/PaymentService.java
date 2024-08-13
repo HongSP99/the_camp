@@ -11,6 +11,7 @@ import io.camp.campsite.service.SiteService;
 import io.camp.campsite.service.ZoneService;
 import io.camp.common.exception.ExceptionCode;
 import io.camp.common.exception.payment.PaymentException;
+import io.camp.common.exception.reservation.ReservationException;
 import io.camp.payment.model.Payment;
 import io.camp.payment.model.PaymentCancellation;
 import io.camp.payment.model.PaymentType;
@@ -120,9 +121,7 @@ public class PaymentService {
         payment.setReservation(reservation);
 
         User user = jwtUserDetails.getUser();
-        if (user == null || !payment.getCustomerEmail().equals(user.getEmail())
-                && !payment.getCustomerName().equals(user.getName())
-                && !payment.getCustomerPhoneNumber().equals(user.getPhoneNumber())) {
+        if (user == null || !payment.getCustomerEmail().equals(user.getEmail())) {
             throw new PaymentException(ExceptionCode.USER_INVALID);
         };
         payment.setUser(user);
@@ -130,16 +129,16 @@ public class PaymentService {
     }
 
     public boolean beforePaymentCancelCheck(PaymentCancelPostDto paymentCancelPostDto) {
-        LocalDate reserveCancelDate = LocalDate.now();
-        LocalDate reserveStartDate = paymentCancelPostDto.getReserveStartDate();
+        LocalDate now = LocalDate.now();
+        LocalDate ReservationStartDate = paymentCancelPostDto.getReserveStartDate();
 
-        log.info("reserveCancelDate : {}", reserveCancelDate);
-        log.info("reserveStartDate : {}", reserveStartDate);
-        if (reserveCancelDate.isEqual(reserveStartDate) || reserveCancelDate.isAfter(reserveStartDate)) {
+        long DayUntilReservationStart = ChronoUnit.DAYS.between(now, ReservationStartDate);
+
+        if (DayUntilReservationStart <= 1) {
+            log.info("예약은 하루 전에는 예약을 취소 할 수 없습니다.");
             return false;
-        } else {
-            return true;
         }
+        return true;
     }
 
     @Transactional
