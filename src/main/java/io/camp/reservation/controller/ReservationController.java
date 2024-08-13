@@ -10,6 +10,9 @@ import io.camp.reservation.model.dto.ReservationResponseDto;
 import io.camp.reservation.service.ReservationService;
 import io.camp.user.jwt.JwtUserDetails;
 import java.util.List;
+
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -25,6 +28,8 @@ import org.springframework.web.bind.annotation.*;
 public class ReservationController {
     private final ReservationService reservationService;
     private final ReservationMapper mapper;
+
+
 
     //예약 생성
     @PostMapping()
@@ -80,6 +85,13 @@ public class ReservationController {
                                                                @RequestParam(value = "size", defaultValue = "10") int size){
         Page<ReservationResponseDto> dtos = reservationService.findAllReservationsWithPaging(page,size);
         return ResponseEntity.ok(dtos);
+    }
+
+    @PatchMapping("/")
+    public ResponseEntity<ReservationResponseDto> updateReservation(@RequestBody ReservationResponseDto dto){
+        System.out.println("patch");
+        reservationService.updateReservation(dto);
+        return ResponseEntity.ok(dto);
     }
 
 }
