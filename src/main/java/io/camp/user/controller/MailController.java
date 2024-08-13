@@ -31,7 +31,7 @@ public class MailController {
             @ApiResponse(responseCode = "500", description = "서버 에러")
     })
     @PostMapping("/mailSend")
-    public ResponseEntity<MailResponse> mailSend(@RequestParam String email) {
+    public ResponseEntity<MailResponse> mailSend(@RequestParam("email") String email) {
         try {
             int number = mailService.sendMail(email);
             mailService.saveAuthCode(email, number);
@@ -71,7 +71,7 @@ public class MailController {
             @ApiResponse(responseCode = "500", description = "임시 비밀번호 전송 실패")
     })
     @PostMapping("/reset-password")
-    public ResponseEntity<MailResponse> resetPassword(@RequestParam String email) {
+    public ResponseEntity<MailResponse> resetPassword(@RequestParam("email") String email) {
         try {
             userService.resetPassword(email);
             return ResponseEntity.ok(MailResponse.success("임시 비밀번호가 이메일로 발송되었습니다."));
