@@ -20,8 +20,6 @@ public class RefreshEntity {
 
     private String expiration;
 
-    private  String password;
-
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
