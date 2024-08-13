@@ -62,13 +62,13 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "역할 조회 성공"),
             @ApiResponse(responseCode = "404", description = "사용자 없음")
     })
-    @GetMapping("/api/role")
+    @GetMapping("/user/role")
     public ResponseEntity<RoleGetDto> getRole(@AuthenticationPrincipal JwtUserDetails jwtUserDetails) {
         RoleGetDto roleGetDto = userService.verifyRole(jwtUserDetails);
         return new ResponseEntity<>(roleGetDto, HttpStatus.OK);
     }
 
-    @GetMapping("/api/user/data")
+    @GetMapping("/user")
     public ResponseEntity<UserDataGetDto> getUserData(@AuthenticationPrincipal JwtUserDetails jwtUserDetails) {
         UserDataGetDto userDataGetDto = userService.getUserData(jwtUserDetails);
         return new ResponseEntity<>(userDataGetDto, HttpStatus.OK);
@@ -80,7 +80,7 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "사용자 프로필 조회 성공"),
             @ApiResponse(responseCode = "404", description = "사용자를 찾을 수 없음")
     })
-    @GetMapping("/api/user/profile")
+    @GetMapping("/user/profile")
     public ResponseEntity<User> getUserProfile(@AuthenticationPrincipal JwtUserDetails userDetails) {
         User user = userDetails.getUser();
 
@@ -106,7 +106,7 @@ public class UserController {
         }
     }
 
-    @GetMapping("/user/reservation/list")
+    @GetMapping("/user/reservation")
     public ResponseEntity<Page<UserReservationDto>> userReservationList(@AuthenticationPrincipal JwtUserDetails jwtUserDetails,
                                                         @RequestParam(value = "page", defaultValue = "0") int page,
                                                         @RequestParam(value = "size", defaultValue = "6") int size) {
