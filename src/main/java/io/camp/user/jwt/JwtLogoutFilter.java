@@ -92,7 +92,6 @@ public class JwtLogoutFilter extends GenericFilterBean {
             }
         }
 
-        // 원래의 쿠키 삭제 이후 계속 진행
-        filterChain.doFilter(request, response);
+
     }
 }
