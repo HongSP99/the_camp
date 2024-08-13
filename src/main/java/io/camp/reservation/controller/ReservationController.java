@@ -31,6 +31,7 @@ public class ReservationController {
 
 
 
+
     //예약 생성
     @PostMapping()
     public ResponseEntity<ReservationDto> createReservation(@RequestBody ReservationPostDto postDto){
@@ -87,8 +88,8 @@ public class ReservationController {
         return ResponseEntity.ok(dtos);
     }
 
-    @PatchMapping("/")
-    public ResponseEntity<ReservationResponseDto> updateReservation(@RequestBody ReservationResponseDto dto){
+    @PatchMapping
+    public ResponseEntity<ReservationDto> updateReservation(@RequestBody ReservationDto dto){
         System.out.println("patch");
         reservationService.updateReservation(dto);
         return ResponseEntity.ok(dto);

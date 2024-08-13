@@ -170,11 +170,9 @@ public class ReservationService {
     }
 
     @Transactional
-    public ReservationResponseDto updateReservation(ReservationResponseDto dto){
+    public ReservationDto updateReservation(ReservationDto dto){
         Reservation reservation = reservationRepository.findById(dto.getReservationId()).get();
         reservation.setReservationState(dto.getReservationState());
-        reservation.setReserveEndDate(dto.getReserveEndDate());
-        reservation.setReserveStartDate(dto.getReserveStartDate());
         reservation.setAdults(dto.getAdults());
         reservation.setChildren(dto.getChildren());
         reservation.setTotalPrice(dto.getTotalPrice());
