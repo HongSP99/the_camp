@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
@@ -35,12 +36,19 @@ public class Inventory {
     @Column(name = "count")
     private int count;
 
+    @Column(name = "isUse")
+    @Builder.Default
+    private boolean isUse = false;
+
     public InventoryDto toDto(){
      return  InventoryDto.builder().seq(seq)
                 .userEmail(user.getEmail())
                 .couponSeq(coupon.getSeq())
-                .exprireDate(expireDate)
+                .couponName(coupon.getName())
+                .couponType(coupon.getType())
+                .expireDate(expireDate)
                 .count(count)
+                .isUse(isUse)
                 .build();
     }
 

@@ -66,10 +66,7 @@ public class PaymentController {
     public ResponseEntity cancelPayment(@RequestBody PaymentCancelPostDto paymentCancelPostDto,
                                         @AuthenticationPrincipal JwtUserDetails jwtUserDetails) {
 
-        boolean cancelCheck = paymentService.beforePaymentCancelCheck(paymentCancelPostDto);
-        if (!cancelCheck) {
-            return new ResponseEntity("예약은 하루 전에는 예약을 취소 할 수 없습니다.", HttpStatus.NOT_ACCEPTABLE);
-        }
+        paymentService.beforePaymentCancelCheck(paymentCancelPostDto);
 
         try {
             URL url = new URL("https://api.portone.io/payments/"+ paymentCancelPostDto.getPaymentId() +"/cancel");

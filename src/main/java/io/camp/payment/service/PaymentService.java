@@ -128,7 +128,7 @@ public class PaymentService {
         paymentRepository.save(payment);
     }
 
-    public boolean beforePaymentCancelCheck(PaymentCancelPostDto paymentCancelPostDto) {
+    public void beforePaymentCancelCheck(PaymentCancelPostDto paymentCancelPostDto) {
         LocalDate now = LocalDate.now();
         LocalDate ReservationStartDate = paymentCancelPostDto.getReserveStartDate();
 
@@ -136,9 +136,8 @@ public class PaymentService {
 
         if (DayUntilReservationStart <= 1) {
             log.info("예약은 하루 전에는 예약을 취소 할 수 없습니다.");
-            return false;
+            throw new ReservationException(ExceptionCode.RESERVATION_CANNOT_BE_CANCELLED);
         }
-        return true;
     }
 
     @Transactional

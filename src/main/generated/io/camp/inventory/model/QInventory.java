@@ -28,6 +28,8 @@ public class QInventory extends EntityPathBase<Inventory> {
 
     public final DatePath<java.time.LocalDate> expireDate = createDate("expireDate", java.time.LocalDate.class);
 
+    public final BooleanPath isUse = createBoolean("isUse");
+
     public final NumberPath<Long> seq = createNumber("seq", Long.class);
 
     public final io.camp.user.model.QUser user;

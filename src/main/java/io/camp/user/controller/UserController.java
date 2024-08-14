@@ -1,5 +1,7 @@
 package io.camp.user.controller;
 
+import io.camp.inventory.model.dto.InventoryDto;
+import io.camp.inventory.service.InventoryService;
 import io.camp.user.jwt.JwtUserDetails;
 import io.camp.user.model.User;
 import io.camp.user.model.dto.*;
@@ -9,17 +11,21 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
+    private final InventoryService inventoryService;
 
     @Operation(summary = "회원 가입", description = "입력한 정보를 통해 새 사용자를 등록")
     @ApiResponses(value = {
@@ -91,6 +97,12 @@ public class UserController {
         }
 
         return ResponseEntity.ok(user);
+    }
+
+    @GetMapping("/user/inventory")
+    public ResponseEntity<List<InventoryDto>> findInventoryByUser(@AuthenticationPrincipal UserDetails userDetails){
+        List<InventoryDto> dtos = inventoryService.findInventoriesByUserEmail(userDetails.getUsername());
+        return ResponseEntity.ok(dtos);
     }
 
     @Operation(summary = "비밀번호 업데이트", description = "현재 사용자의 비밀번호를 업데이트")
