@@ -32,12 +32,11 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "회원 가입 성공"),
             @ApiResponse(responseCode = "400", description = "잘못된 요청"),
             @ApiResponse(responseCode = "409", description = "회원 가입 실패 - 이메일 중복")
-
     })
     @PostMapping("/join")
     public ResponseEntity<?> join(@RequestBody JoinDto joinDto) {
         userService.join(joinDto);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "로그인", description = "자격 증명으로 사용자를 로그인")
@@ -49,9 +48,7 @@ public class UserController {
     })
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginDto loginDto) {
-
-        return new ResponseEntity<>(HttpStatus.OK);
-
+        return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "토큰 로그인 테스트", description = "토큰 기반 로그인이 제대로 작동하는지 테스트")
@@ -62,7 +59,7 @@ public class UserController {
     @GetMapping("/test")
     public ResponseEntity<?> testTokenLoginUser() {
         userService.testTokenLoginUser();
-        return new ResponseEntity<>(HttpStatus.OK);
+        return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "사용자 역할 조회", description = "현재 인증된 사용자의 역할을 조회")
@@ -73,17 +70,16 @@ public class UserController {
     @GetMapping("/user/role")
     public ResponseEntity<RoleGetDto> getRole(@AuthenticationPrincipal JwtUserDetails jwtUserDetails) {
         RoleGetDto roleGetDto = userService.verifyRole(jwtUserDetails);
-        return new ResponseEntity<>(roleGetDto, HttpStatus.OK);
+        return ResponseEntity.ok(roleGetDto);
     }
 
     @GetMapping("/user")
     public ResponseEntity<UserDataGetDto> getUserData(@AuthenticationPrincipal JwtUserDetails jwtUserDetails) {
         UserDataGetDto userDataGetDto = userService.getUserData(jwtUserDetails);
-        return new ResponseEntity<>(userDataGetDto, HttpStatus.OK);
+        return ResponseEntity.ok(userDataGetDto);
     }
 
-
-    @Operation(summary = "사용자 프로필 조회", description = " 현재 로그인 중인 사용자의 프로필을 조회")
+    @Operation(summary = "사용자 프로필 조회", description = "현재 로그인 중인 사용자의 프로필을 조회")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "사용자 프로필 조회 성공"),
             @ApiResponse(responseCode = "404", description = "사용자를 찾을 수 없음")
@@ -91,11 +87,9 @@ public class UserController {
     @GetMapping("/user/profile")
     public ResponseEntity<User> getUserProfile(@AuthenticationPrincipal JwtUserDetails userDetails) {
         User user = userDetails.getUser();
-
         if (user == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-
         return ResponseEntity.ok(user);
     }
 
@@ -112,18 +106,14 @@ public class UserController {
     })
     @PostMapping("/update-password")
     public ResponseEntity<?> updatePassword(@RequestBody PasswordDto updatePasswordDto) {
-        try {
-            userService.updatePassword(updatePasswordDto.getCurrentPassword(), updatePasswordDto.getNewPassword());
-            return ResponseEntity.ok("비밀번호가 성공적으로 변경되었습니다.");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
+        userService.updatePassword(updatePasswordDto.getCurrentPassword(), updatePasswordDto.getNewPassword());
+        return ResponseEntity.ok("비밀번호가 성공적으로 변경되었습니다.");
     }
 
     @GetMapping("/user/reservation")
     public ResponseEntity<Page<UserReservationDto>> userReservationList(@AuthenticationPrincipal JwtUserDetails jwtUserDetails,
-                                                        @RequestParam(value = "page", defaultValue = "0") int page,
-                                                        @RequestParam(value = "size", defaultValue = "6") int size) {
+                                                                        @RequestParam(value = "page", defaultValue = "0") int page,
+                                                                        @RequestParam(value = "size", defaultValue = "6") int size) {
         return ResponseEntity.ok(userService.userReservationList(page, size, jwtUserDetails));
     }
 }

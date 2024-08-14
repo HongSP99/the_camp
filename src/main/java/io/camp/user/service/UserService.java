@@ -1,6 +1,5 @@
 package io.camp.user.service;
 
-
 import io.camp.common.exception.ExceptionCode;
 import io.camp.common.exception.user.CustomException;
 import io.camp.inventory.service.InventoryService;
@@ -41,7 +40,6 @@ public class UserService {
         }
         return userRepository.findByEmail(email);
     }
-
 
     public void testTokenLoginUser() {
         User user = getVerifiyLoginCurrentUser();
@@ -141,7 +139,6 @@ public class UserService {
         userRepository.save(user);
     }
 
-
     public RoleGetDto verifyRole(JwtUserDetails jwtUserDetails) {
         RoleGetDto roleGetDto = new RoleGetDto();
 
@@ -154,10 +151,8 @@ public class UserService {
 
         if (user.getRole() == UserRole.USER) {
             roleGetDto.setRole(UserRole.USER.getKey());
-            return roleGetDto;
         } else if (user.getRole() == UserRole.ADMIN) {
             roleGetDto.setRole(UserRole.ADMIN.getKey());
-            return roleGetDto;
         }
         return roleGetDto;
     }
@@ -166,7 +161,7 @@ public class UserService {
         UserDataGetDto userDataGetDto = new UserDataGetDto();
 
         if (jwtUserDetails == null) {
-            throw  new CustomException(ExceptionCode.USER_NOT_FOUND);
+            throw new CustomException(ExceptionCode.USER_NOT_FOUND);
         }
 
         User user = jwtUserDetails.getUser();
@@ -178,6 +173,7 @@ public class UserService {
 
         return userDataGetDto;
     }
+
     @Transactional
     public void resetPassword(String email) throws MessagingException {
         User user = userRepository.findByEmail(email);
@@ -200,5 +196,4 @@ public class UserService {
         }
         return userRepository.userGetReservations(user, pageable);
     }
-
 }
