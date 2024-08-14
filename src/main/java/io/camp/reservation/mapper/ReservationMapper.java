@@ -29,6 +29,7 @@ public interface ReservationMapper {
         responseDto.setZoneName(reservation.getSite().getZone());
         responseDto.setSiteNumber(reservation.getSite());
         responseDto.setCreatedAt(reservation.getCreatedAt());
+        responseDto.setTotalPrice(reservation.getTotalPrice());
 
         return responseDto;
     }

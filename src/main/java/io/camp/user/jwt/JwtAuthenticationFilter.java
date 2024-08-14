@@ -54,7 +54,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException, ServletException {
         JwtUserDetails jwtUserDetails = (JwtUserDetails) authentication.getPrincipal();
         String username = jwtUserDetails.getUsername();
-        String password = jwtUserDetails.getPassword();
         String role = jwtUserDetails.getRole().getKey();
         String name = jwtUserDetails.getName();
         String birthday = jwtUserDetails.getBirthDay();
@@ -79,8 +78,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     }
 
     @Override
-    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException {
-        throw new CustomException(ExceptionCode.UNAUTHORIZED_REQUEST);
+    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws CustomException {
+        throw new CustomException(ExceptionCode.USER_NOT_FOUND);
     }
 
     private void addRefreshEntity(String username, String refresh, String name, String birthday, String phoneNumber, String gender, Long seq,UserRole role, Long expiredMs ) {

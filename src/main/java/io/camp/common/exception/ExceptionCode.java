@@ -58,7 +58,11 @@ public enum ExceptionCode {
     EMAIL_ALREADY_EXISTS(409, "이미 존재하는 이메일입니다."),
     INVALID_PASSWORD(400, "잘못된 비밀번호입니다."),
     UNREGISTERED_EMAIL(404, "등록되지 않은 이메일입니다."),
-    USER_INVALID(400,"유효한 사용자가 아닙니다.");
+    USER_INVALID(400,"유효한 사용자가 아닙니다."),
+
+
+    //리뷰
+    REVIEW_NOT_AUTHOR(400, "작성자가 아닙니다");
 
 
     @Getter

@@ -20,8 +20,9 @@ public class CouponController {
 
     @GetMapping
     public Page<Coupon> getAllCoupons(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(name = "page",defaultValue = "0") int page,
+            @RequestParam(name = "size",defaultValue = "10") int size) {
+        System.out.println("hello");
         Pageable pageable = PageRequest.of(page, size);
         return couponService.getAllCoupons(pageable);
     }

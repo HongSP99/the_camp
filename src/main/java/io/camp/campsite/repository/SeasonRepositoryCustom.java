@@ -16,4 +16,6 @@ public interface SeasonRepositoryCustom {
     Long findDuplicatedSeason(long campsiteSeq, LocalDate start, LocalDate end);
 
     SeasonType findSeasonTypeByDateRange(LocalDate startDate, LocalDate endDate);
+
+    List<SeasonType> findSeasonTypeByReservationEndDate(LocalDate startDate, LocalDate endDate, Long campSiteSeq);
 }

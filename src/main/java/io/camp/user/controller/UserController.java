@@ -64,13 +64,13 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "역할 조회 성공"),
             @ApiResponse(responseCode = "404", description = "사용자 없음")
     })
-    @GetMapping("/api/role")
+    @GetMapping("/user/role")
     public ResponseEntity<RoleGetDto> getRole(@AuthenticationPrincipal JwtUserDetails jwtUserDetails) {
         RoleGetDto roleGetDto = userService.verifyRole(jwtUserDetails);
         return new ResponseEntity<>(roleGetDto, HttpStatus.OK);
     }
 
-    @GetMapping("/user/data")
+    @GetMapping("/user")
     public ResponseEntity<UserDataGetDto> getUserData(@AuthenticationPrincipal JwtUserDetails jwtUserDetails) {
         UserDataGetDto userDataGetDto = userService.getUserData(jwtUserDetails);
         return new ResponseEntity<>(userDataGetDto, HttpStatus.OK);

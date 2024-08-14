@@ -15,6 +15,7 @@ import io.camp.reservation.model.ReservationState;
 import io.camp.reservation.model.dto.ReservationDto;
 import io.camp.reservation.model.dto.ReservationExistenceDto;
 import io.camp.reservation.model.dto.ReservationPostDto;
+import io.camp.reservation.model.dto.ReservationResponseDto;
 import io.camp.reservation.repository.ReservationRepository;
 import io.camp.user.model.User;
 import io.camp.user.service.UserService;
@@ -27,7 +28,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -153,4 +158,24 @@ public class ReservationService {
 //
 //        return seasonPrice;
 //    }
+
+
+
+    public Page<ReservationResponseDto> findAllReservationsWithPaging(int page,int size){
+        Page<Reservation> reservations = reservationRepository.findAllReservationWithPaging(PageRequest.of(page , size));
+        List<ReservationResponseDto> dtos = reservations.getContent().stream().map(mapper::reservationToReservationResponseDto)
+                .toList();
+
+        return new PageImpl<>(dtos,reservations.getPageable(), reservations.getTotalElements());
+    }
+
+    @Transactional
+    public ReservationDto updateReservation(ReservationDto dto){
+        Reservation reservation = reservationRepository.findById(dto.getReservationId()).get();
+        reservation.setReservationState(dto.getReservationState());
+        reservation.setAdults(dto.getAdults());
+        reservation.setChildren(dto.getChildren());
+        reservation.setTotalPrice(dto.getTotalPrice());
+        return dto;
+    }
 }
