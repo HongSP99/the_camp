@@ -3,6 +3,7 @@ package io.camp.user.service;
 
 import io.camp.common.exception.ExceptionCode;
 import io.camp.common.exception.user.CustomException;
+import io.camp.inventory.service.InventoryService;
 import io.camp.user.jwt.JwtUserDetails;
 import io.camp.user.model.User;
 import io.camp.user.model.UserRole;
@@ -30,6 +31,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final MailService mailService;
+    private final InventoryService inventoryService;
 
     public User getVerifiyLoginCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -125,6 +127,8 @@ public class UserService {
         user.setPhoneNumber(joinDto.getPhoneNumber());
         user.setGender(joinDto.getGender());
         userRepository.save(user);
+
+        inventoryService.grantWelcomeCoupon(user);
     }
 
     @Transactional
