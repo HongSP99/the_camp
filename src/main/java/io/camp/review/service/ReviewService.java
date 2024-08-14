@@ -38,18 +38,17 @@ public class ReviewService {
 
     //리뷰 생성
     public ReviewDto createReview(Long campsiteId, CreateReviewDto createReviewDto, JwtUserDetails jwtUserDetails) {
-        User uesr = jwtUserDetails.getUser();
-
-        if (user == null) {
+        if (jwtUserDetails == null) {
             throw new CustomException(ExceptionCode.USER_NOT_FOUND);
         }
+        User user = jwtUserDetails.getUser();
 
         Campsite campsite = campSiteRepository.findById(campsiteId)
                 .orElseThrow(() -> new RuntimeException("캠핑장을 찾을 수 없습니다."));
 
         Review review = Review.builder()
                 .content(createReviewDto.getContent())
-                .user(uesr)
+                .user(user)
                 .campsite(campsite)
                 .build();
         Review savedReview = reviewRepository.save(review);
@@ -84,10 +83,10 @@ public class ReviewService {
     //리뷰 수정
     @Transactional
     public ReviewDto updateReview(Long reviewId, UpdateReviewDto updateReviewDto, JwtUserDetails jwtUserDetails) {
-        User user = jwtUserDetails.getUser();
-        if (user == null) {
+        if (jwtUserDetails == null) {
             throw new CustomException(ExceptionCode.USER_NOT_FOUND);
         }
+        User user = jwtUserDetails.getUser();
 
         ReviewDto reviewDto = reviewRepository.getCampsiteReview(reviewId);
         if (reviewDto.getUserSeq() != user.getSeq()) {
@@ -102,10 +101,10 @@ public class ReviewService {
     //리뷰 삭제
     @Transactional
     public void deleteReview(Long reviewId, JwtUserDetails jwtUserDetails) {
-        User user = jwtUserDetails.getUser();
-        if (user == null) {
+        if (jwtUserDetails == null) {
             throw new CustomException(ExceptionCode.USER_NOT_FOUND);
         }
+        User user = jwtUserDetails.getUser();
 
         ReviewDto reviewDto = reviewRepository.getCampsiteReview(reviewId);
         if (reviewDto.getUserSeq() != user.getSeq()) {
@@ -117,10 +116,10 @@ public class ReviewService {
     //리뷰 좋아요
     @Transactional
     public LikeReviewDto likeReview(Long reviewId, JwtUserDetails jwtUserDetails) {
-        User user = jwtUserDetails.getUser();
-        if (user == null) {
+        if (jwtUserDetails == null) {
             throw new CustomException(ExceptionCode.USER_NOT_FOUND);
         }
+        User user = jwtUserDetails.getUser();
         likeService.isLike(reviewId, user);
         return reviewRepository.getLikeCount(reviewId);
     }
