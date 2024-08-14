@@ -8,10 +8,13 @@ import io.camp.coupon.repository.CouponRepository;
 import io.camp.inventory.model.Inventory;
 import io.camp.inventory.model.dto.InventoryDto;
 import io.camp.inventory.repository.InventoryRepository;
+import io.camp.payment.service.PaymentService;
 import io.camp.user.model.User;
 import io.camp.user.repository.UserRepository;
 import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +24,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class InventoryService {
 
+    private static final Logger log = LoggerFactory.getLogger(InventoryService.class);
     private final UserRepository userRepository;
 
     private final CouponRepository couponRepository;
@@ -29,18 +33,15 @@ public class InventoryService {
 
     @Transactional
     public InventoryDto insertInventory(InventoryDto inventoryDto){
-        User user  = userRepository.findByEmail(inventoryDto.getUserEmail());
-        Coupon coupon = couponRepository.findById(inventoryDto.getCouponSeq()).orElseThrow();
-
+       User user  = userRepository.findByEmail(inventoryDto.getUserEmail());
+       Coupon coupon = couponRepository.findById(inventoryDto.getCouponSeq()).orElseThrow();
        Inventory inventory = Inventory.builder().user(user)
                 .coupon(coupon)
                 .count(inventoryDto.getCount())
                 .expireDate(inventoryDto.getExpireDate())
                 .build();
-
        Inventory saved = inventoryRepository.save(inventory);
        inventoryDto.setSeq(saved.getSeq());
-
        return inventoryDto;
     }
 
@@ -61,9 +62,7 @@ public class InventoryService {
         Inventory inventory = inventoryRepository.findById(invenSeq)
                 .orElseThrow(() -> new InventoryException(ExceptionCode.INVENTORY_NOT_FOUND));
 
-        inventory.setUse(true);
-
-        if(inventory.getExpireDate().isAfter(LocalDate.now())){
+        if(LocalDate.now().isAfter(inventory.getExpireDate())){
             throw new InventoryException(ExceptionCode.INVENTORY_NOT_USE);
         }
 
@@ -71,6 +70,7 @@ public class InventoryService {
             throw new InventoryException(ExceptionCode.INVENTORY_ALREADY_USE);
         }
 
+        inventory.setUse(true);
         inventoryRepository.save(inventory);
 
         return inventory.toDto();

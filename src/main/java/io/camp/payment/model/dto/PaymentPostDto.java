@@ -20,4 +20,14 @@ public class PaymentPostDto {
     private int children;
     private String campsiteName;
     //받아야할 예약정보
+    
+    //받아야 할 쿠폰정보
+    private int count;
+    private String couponName;
+    private Long couponSeq;
+    private String couponType;
+    private LocalDate expireDate;
+    private Long invenSeq;
+    private boolean use;
+    //받아야 할 쿠폰정보
 }

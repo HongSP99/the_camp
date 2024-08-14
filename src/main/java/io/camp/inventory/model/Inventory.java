@@ -44,6 +44,8 @@ public class Inventory {
      return  InventoryDto.builder().seq(seq)
                 .userEmail(user.getEmail())
                 .couponSeq(coupon.getSeq())
+                .couponName(coupon.getName())
+                .couponType(coupon.getType())
                 .expireDate(expireDate)
                 .count(count)
                 .isUse(isUse)
