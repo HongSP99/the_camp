@@ -1,9 +1,11 @@
 package io.camp.inventory.controller;
 
+import io.camp.common.dto.SingleResponseDto;
 import io.camp.inventory.model.dto.InventoryDto;
 import io.camp.inventory.service.InventoryService;
 import io.camp.user.model.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -42,8 +44,12 @@ public class InventoryController {
        return ResponseEntity.ok(dtos);
     }
 
+    @PatchMapping("/{invenSeq}")
+    public ResponseEntity<SingleResponseDto<InventoryDto>> useCoupon(Long invenSeq){
+        InventoryDto dto = inventoryService.useCoupon(invenSeq);
 
-
-
-
+        return new ResponseEntity<>(
+                new SingleResponseDto<>(dto), HttpStatus.OK
+        );
+    }
 }

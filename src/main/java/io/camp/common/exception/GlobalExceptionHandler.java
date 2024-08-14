@@ -2,6 +2,7 @@ package io.camp.common.exception;
 
 
 import io.camp.common.exception.Campsite.SeasonAlreadyExsistException;
+import io.camp.common.exception.inventory.InventoryException;
 import io.camp.common.exception.payment.PaymentException;
 import io.camp.common.exception.reservation.ReservationException;
 import io.camp.common.exception.review.ReviewNotAuthorException;
@@ -86,6 +87,13 @@ public class GlobalExceptionHandler {
     @ExceptionHandler
     public ResponseEntity handleReservationException(
             ReservationException e) {
+        ErrorResponse response = ErrorResponse.of(e.getExceptionCode());
+        return new ResponseEntity<>(response, HttpStatus.valueOf(e.getExceptionCode().getStatus()));
+    }
+
+    @ExceptionHandler
+    public ResponseEntity handleInventoryException(
+            InventoryException e) {
         ErrorResponse response = ErrorResponse.of(e.getExceptionCode());
         return new ResponseEntity<>(response, HttpStatus.valueOf(e.getExceptionCode().getStatus()));
     }

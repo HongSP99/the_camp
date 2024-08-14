@@ -1,6 +1,8 @@
 package io.camp.inventory.service;
 
 
+import io.camp.common.exception.ExceptionCode;
+import io.camp.common.exception.inventory.InventoryException;
 import io.camp.coupon.model.dto.Coupon;
 import io.camp.coupon.repository.CouponRepository;
 import io.camp.inventory.model.Inventory;
@@ -8,6 +10,7 @@ import io.camp.inventory.model.dto.InventoryDto;
 import io.camp.inventory.repository.InventoryRepository;
 import io.camp.user.model.User;
 import io.camp.user.repository.UserRepository;
+import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,7 +35,7 @@ public class InventoryService {
        Inventory inventory = Inventory.builder().user(user)
                 .coupon(coupon)
                 .count(inventoryDto.getCount())
-                .expireDate(inventoryDto.getExprireDate())
+                .expireDate(inventoryDto.getExpireDate())
                 .build();
 
        Inventory saved = inventoryRepository.save(inventory);
@@ -54,4 +57,34 @@ public class InventoryService {
         return dtos;
     }
 
+    public InventoryDto useCoupon(Long invenSeq){
+        Inventory inventory = inventoryRepository.findById(invenSeq)
+                .orElseThrow(() -> new InventoryException(ExceptionCode.INVENTORY_NOT_FOUND));
+
+        inventory.setUse(true);
+
+        if(inventory.getExpireDate().isAfter(LocalDate.now())){
+            throw new InventoryException(ExceptionCode.INVENTORY_NOT_USE);
+        }
+
+        if(inventory.isUse()){
+            throw new InventoryException(ExceptionCode.INVENTORY_ALREADY_USE);
+        }
+
+        inventoryRepository.save(inventory);
+
+        return inventory.toDto();
+    }
+
+    //신규 가입자 웰컴 쿠폰 제공.
+    public void grantWelcomeCoupon(User user) {
+        Coupon welcomeCoupon = couponRepository.findById(1L).orElseThrow();
+
+        InventoryDto inventoryDto = new InventoryDto();
+        inventoryDto.setUserEmail(user.getEmail());
+        inventoryDto.setCoupon(welcomeCoupon);
+        inventoryDto.setExpireDate(LocalDate.now().plusDays(30));
+
+        insertInventory(inventoryDto);
+    }
 }
