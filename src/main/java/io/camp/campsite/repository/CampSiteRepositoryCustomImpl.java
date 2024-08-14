@@ -1,5 +1,6 @@
 package io.camp.campsite.repository;
 
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import io.camp.campsite.model.entity.*;
 
@@ -39,28 +40,29 @@ public class CampSiteRepositoryCustomImpl implements CampSiteRepositoryCustom{
         return result;
     }
 
-    @Override
-    public Page<Campsite> findCampsitesByTitleWithPaging(String query, Pageable pageable) {
-        List<Campsite> fetch = queryFactory.selectFrom(campsite)
-                .where(campsite.facltNm.contains(query))
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .fetch();
-
-        Long count = queryFactory
-                .select(campsite.count())
-                .from(campsite)
-                .where(campsite.facltNm.contains(query))
-                .fetchOne();
-
-        return new PageImpl<>(fetch,pageable,count);
-    }
 
     @Override
-    public Page<Campsite> findCampsitesByRegionWithPaging(String query, Pageable pageable) {
+    public Page<Campsite> searchWithPaging(String query, Pageable pageable, String type) {
+
+        BooleanBuilder builder = new BooleanBuilder();
+        QCampsite campsite = QCampsite.campsite;
+
+        switch(type){
+            case "title":
+                builder.and(campsite.facltNm.contains(query));
+                break;
+            case "region":
+                builder.and(campsite.doNm.contains(query).or(campsite.sigunguNm.contains(query)
+                        .or(campsite.addr1.contains(query))));
+                break;
+            case "theme":
+                builder.and(campsite.posblFcltyCl.contains(query).or(campsite.sbrsCl.contains(query)));
+                break;
+            default:
+        }
+
         List<Campsite> fetch = queryFactory.selectFrom(campsite)
-                .where(campsite.doNm.contains(query).or(campsite.sigunguNm.contains(query)
-                        .or(campsite.addr1.contains(query))))
+                .where(builder)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -68,28 +70,9 @@ public class CampSiteRepositoryCustomImpl implements CampSiteRepositoryCustom{
         Long count = queryFactory
                 .select(campsite.count())
                 .from(campsite)
-                .where(campsite.doNm.contains(query).or(campsite.sigunguNm.contains(query)
-                        .or(campsite.addr1.contains(query))))
+                .where(builder)
                 .fetchOne();
 
         return new PageImpl<>(fetch,pageable,count);
-    }
-
-
-    public Page<Campsite> findCampsitesByThemeWithPaging(String query,Pageable pageable){
-        List<Campsite> fetch = queryFactory.selectFrom(campsite)
-                .where(campsite.posblFcltyCl.contains(query).or(campsite.sbrsCl.contains(query)))
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .fetch();
-
-        Long count = queryFactory
-                .select(campsite.count())
-                .from(campsite)
-                .where(campsite.posblFcltyCl.contains(query).or(campsite.sbrsCl.contains(query)))
-                .fetchOne();
-
-        return new PageImpl<>(fetch,pageable,count);
-
     }
 }

@@ -1,6 +1,7 @@
 package io.camp.campsite.controller;
 
 
+import io.camp.campsite.model.dto.PagingDto;
 import io.camp.campsite.service.CampSiteService;
 import io.camp.campsite.model.dto.CampSiteDto;
 import lombok.AllArgsConstructor;
@@ -55,30 +56,9 @@ public class CampsiteController {
     }
 
     @GetMapping("/")
-    public Page<CampSiteDto> searchCampsites(
-            @RequestParam(value = "query" , defaultValue = "") String query,
-            @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "size", defaultValue = "9") int size ,
-            @RequestParam(value= "type" , defaultValue = "") String type){
-        Pageable pageable = PageRequest.of(page, size);
-
-        Page<CampSiteDto> result = null;
-        System.out.println(query);
-        System.out.println(type);
-        switch(type){
-            case "title":
-                result = campSiteService.getCampsitesByTitleWithPaging(query,pageable);
-                break;
-            case "region":
-                result = campSiteService.getCampsitesByRegionWithPaging(query,pageable);
-                break;
-            case "theme":
-                result = campSiteService.getCampsitesByThemeWithPaging(query,pageable);
-                break;
-            default:
-                result = campSiteService.getAllPaging(page,6);
-        }
-
+    public Page<CampSiteDto> searchCampsites(PagingDto pagingDto){
+        Pageable pageable = PageRequest.of(pagingDto.getPage(), pagingDto.getSize());
+        Page<CampSiteDto> result = campSiteService.searchCampsitesWithPaging(pagingDto.getQuery(),pageable,pagingDto.getType());
         return result;
     }
 

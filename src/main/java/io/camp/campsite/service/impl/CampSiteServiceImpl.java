@@ -72,21 +72,8 @@ public class CampSiteServiceImpl implements CampSiteService {
        return campsiteDto;
     }
 
-
-    public Page<CampSiteDto> getCampsitesByTitleWithPaging(String query, Pageable pageable){
-       Page<Campsite> campsites = campSiteRepository.findCampsitesByTitleWithPaging(query,pageable);
-       Page<CampSiteDto> campsiteDtos = campsites.map(campsiteMapper::toCampsiteDto);
-       return campsiteDtos;
-    }
-
-    public Page<CampSiteDto> getCampsitesByRegionWithPaging(String query, Pageable pageable){
-        Page<Campsite> campsites = campSiteRepository.findCampsitesByRegionWithPaging(query,pageable);
-        Page<CampSiteDto> campsiteDtos = campsites.map(campsiteMapper::toCampsiteDto);
-        return campsiteDtos;
-    }
-
-    public Page<CampSiteDto> getCampsitesByThemeWithPaging(String query, Pageable pageable){
-        Page<Campsite> campsites = campSiteRepository.findCampsitesByThemeWithPaging(query,pageable);
+    public Page<CampSiteDto> searchCampsitesWithPaging(String query, Pageable pageable,String type){
+        Page<Campsite> campsites = campSiteRepository.searchWithPaging(query,pageable,type);
         Page<CampSiteDto> campSiteDtos = campsites.map(campsiteMapper::toCampsiteDto);
         return campSiteDtos;
     }
