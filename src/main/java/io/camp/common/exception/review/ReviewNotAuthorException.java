@@ -1,13 +1,13 @@
-package io.camp.common.exception.reservation;
+package io.camp.common.exception.review;
 
 import io.camp.common.exception.ExceptionCode;
 import lombok.Getter;
 
-public class ReservationException extends RuntimeException{
+public class ReviewNotAuthorException extends RuntimeException {
     @Getter
     private ExceptionCode exceptionCode;
 
-    public ReservationException(ExceptionCode exceptionCode){
+    public ReviewNotAuthorException(ExceptionCode exceptionCode){
         super(exceptionCode.getMessage());
         this.exceptionCode = exceptionCode;
     }

@@ -4,6 +4,7 @@ package io.camp.common.exception;
 import io.camp.common.exception.Campsite.SeasonAlreadyExsistException;
 import io.camp.common.exception.payment.PaymentException;
 import io.camp.common.exception.reservation.ReservationException;
+import io.camp.common.exception.review.ReviewNotAuthorException;
 import io.camp.common.exception.user.*;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
@@ -111,7 +112,12 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
-
+    //리뷰 작성자 불일치 예외 처리
+    @ExceptionHandler(ReviewNotAuthorException.class)
+    public ResponseEntity<ErrorResponse> handleVerifyCodeNotFoundException(ReviewNotAuthorException e) {
+        ErrorResponse response = ErrorResponse.of(ExceptionCode.REVIEW_NOT_AUTHOR);
+        return new ResponseEntity<>(response, HttpStatus.valueOf(e.getExceptionCode().getStatus()));
+    }
 
 
 
