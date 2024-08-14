@@ -55,7 +55,8 @@ public class ReviewRepositoryCustomImpl implements ReviewRepositoryCustom {
                         review.campsite.facltNm.as("campName"),
                         review.user.email.as("email"),
                         review.user.seq.as("userSeq"),
-                        campsite.seq.as("campsiteSeq")
+                        campsite.seq.as("campsiteSeq"),
+                        campsite.firstImageUrl.as("campsiteUrl")
                 ))
                 .from(campsite)
                 .join(review)
@@ -85,7 +86,8 @@ public class ReviewRepositoryCustomImpl implements ReviewRepositoryCustom {
                         review.campsite.facltNm.as("campName"),
                         review.user.email.as("email"),
                         review.user.seq.as("userSeq"),
-                        campsite.seq.as("campsiteSeq")
+                        campsite.seq.as("campsiteSeq"),
+                        campsite.firstImageUrl.as("campsiteUrl")
                 ))
                 .from(campsite)
                 .join(review)
