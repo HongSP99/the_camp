@@ -196,4 +196,13 @@ public class UserService {
         }
         return userRepository.userGetReservations(user, pageable);
     }
+    @Transactional
+    public void deleteUserAccount(String email) {
+        User user = userRepository.findByEmail(email);
+        if (user == null) {
+            throw new CustomException(ExceptionCode.USER_NOT_FOUND);
+        }
+        userRepository.delete(user);
+    }
+
 }
