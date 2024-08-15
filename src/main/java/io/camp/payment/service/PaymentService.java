@@ -71,6 +71,7 @@ public class PaymentService {
     public int calculationTotalPrice(PaymentPostDto dto){
         Site site = siteService.getSiteBySeq(dto.getSiteSeq());
         Long zoneSeq = site.getZone().getSeq();
+
         ZoneDto zone = zoneService.getZone(zoneSeq);
         Long campsiteSeq = zone.getCampSite();
 

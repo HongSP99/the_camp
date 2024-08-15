@@ -5,6 +5,10 @@ import io.camp.payment.model.dto.PaymentCancelPostDto;
 import io.camp.payment.model.dto.PaymentPostDto;
 import io.camp.payment.service.PaymentService;
 import io.camp.user.jwt.JwtUserDetails;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +25,11 @@ import org.json.JSONObject;
 public class PaymentController {
     private final PaymentService paymentService;
 
+    @Operation(summary = "결제", description = "클라이언트값과 검증값이 일치하는지 체크하여 결제를 진행함")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "결제에 성공하였습니다."),
+            @ApiResponse(responseCode = "400", description = "예약금액과 결제금액이 일치하지 않습니다."),
+    })
     @PostMapping("/payment/complete")
     public ResponseEntity savePayment(@RequestBody PaymentPostDto paymentPostDto,
                                       @AuthenticationPrincipal JwtUserDetails jwtUserDetails) throws IOException {
@@ -62,6 +71,11 @@ public class PaymentController {
         return new ResponseEntity(HttpStatus.CREATED);
     }
 
+    @Operation(summary = "결제 취소", description = "회원이 결제한 캠핑장을 취소할 수 있습니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "결제 취소에 성공하였습니다."),
+            @ApiResponse(responseCode = "400", description = "예약은 하루전부터 취소가 불가능 합니다."),
+    })
     @PostMapping("/payment/cancel")
     public ResponseEntity cancelPayment(@RequestBody PaymentCancelPostDto paymentCancelPostDto,
                                         @AuthenticationPrincipal JwtUserDetails jwtUserDetails) {

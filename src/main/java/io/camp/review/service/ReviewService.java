@@ -2,6 +2,7 @@ package io.camp.review.service;
 
 import io.camp.campsite.model.entity.Campsite;
 import io.camp.campsite.repository.CampSiteRepository;
+import io.camp.common.exception.Campsite.CampsiteNotFoundException;
 import io.camp.common.exception.ExceptionCode;
 import io.camp.common.exception.review.ReviewNotAuthorException;
 import io.camp.common.exception.user.CustomException;
@@ -44,7 +45,7 @@ public class ReviewService {
         User user = jwtUserDetails.getUser();
 
         Campsite campsite = campSiteRepository.findById(campsiteId)
-                .orElseThrow(() -> new RuntimeException("캠핑장을 찾을 수 없습니다."));
+                .orElseThrow(() -> new CampsiteNotFoundException("Campsite not found"));
 
         Review review = Review.builder()
                 .content(createReviewDto.getContent())
