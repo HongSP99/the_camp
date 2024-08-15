@@ -52,7 +52,7 @@ public class QInventory extends EntityPathBase<Inventory> {
 
     public QInventory(Class<? extends Inventory> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.coupon = inits.isInitialized("coupon") ? new io.camp.coupon.model.dto.QCoupon(forProperty("coupon")) : null;
+        this.coupon = inits.isInitialized("coupon") ? new io.camp.coupon.model.dto.QCoupon(forProperty("coupon"), inits.get("coupon")) : null;
         this.user = inits.isInitialized("user") ? new io.camp.user.model.QUser(forProperty("user")) : null;
     }
 
