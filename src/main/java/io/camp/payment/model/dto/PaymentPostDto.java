@@ -22,6 +22,7 @@ public class PaymentPostDto {
     //받아야할 예약정보
     
     //받아야 할 쿠폰정보
+    private boolean paymentIsNotCoupon;
     private int count;
     private String couponName;
     private Long couponSeq;

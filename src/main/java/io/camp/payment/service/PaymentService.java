@@ -113,7 +113,9 @@ public class PaymentService {
         log.info("쿠폰 사용 여부 : " + dto.isUse());
 
         LocalDate today = LocalDate.now();
-        if (!dto.isUse() && !today.isAfter(dto.getExpireDate())) {
+        if (dto.isPaymentIsNotCoupon()) {
+            log.info("결제 쿠폰 미적용");
+        } else if (!dto.isUse() && !today.isAfter(dto.getExpireDate())) {
             log.info("쿠폰이 적용되기 전 값 : " + seasonPrice);
             // 쿠폰이 % 할인 계산일 경우
             //seasonPrice = seasonPrice - (seasonPrice * dto.getCount() / 100);
