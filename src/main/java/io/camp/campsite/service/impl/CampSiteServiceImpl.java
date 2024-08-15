@@ -12,32 +12,59 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 
 @Service
 @Slf4j
 @AllArgsConstructor
 public class CampSiteServiceImpl implements CampSiteService {
+    private final String uri = "http://apis.data.go.kr/B551011/GoCamping/basedList?serviceKey=5mZ%2FcSX69J3%2Bg2%2FSS77LbWusUy4KO6ZdvX5KuQBk0o5rXPFpJ4jP%2Fcu6DD74kPm5U2WKJco%2FVSxn9DFqFGKRTw%3D%3D&MobileOS=ETC&MobileApp=AppTest";
 
     private final CampSiteRepository campSiteRepository;
     private final CampsiteMapper campsiteMapper;
 
     @Override
     @Transactional
-    public void insertCampsiteFromJson(JSONArray campsiteArray) {
-        Gson gson = new Gson();
-        campsiteArray.forEach(item -> {
-            JSONObject object = (JSONObject) item;
+    public JSONArray insertCampsiteFromJson(String pageNumber) throws URISyntaxException, ParseException {
+        RestTemplate restTemplate = new RestTemplate();
+        JSONParser parser = new JSONParser();
 
-            CampSiteDto campSite = gson.fromJson(object.toJSONString(), CampSiteDto.class);
+        restTemplate.getMessageConverters()
+                .add(0, new StringHttpMessageConverter(StandardCharsets.UTF_8));
+
+        ResponseEntity<String> response = restTemplate.getForEntity(new URI(uri + "&pageNo=" + pageNumber + "&numOfRows=10&_type=Json"), String.class);
+
+        JSONObject object = (JSONObject) parser.parse(response.getBody());
+        object = (JSONObject) object.get("response");
+        JSONObject body = (JSONObject) object.get("body");
+        JSONObject items = (JSONObject) body.get("items");
+        JSONArray itemArray = (JSONArray) items.get("item");
+
+
+        Gson gson = new Gson();
+        itemArray.forEach(item -> {
+            JSONObject camp = (JSONObject) item;
+
+            CampSiteDto campSite = gson.fromJson(camp.toJSONString(), CampSiteDto.class);
 
             campSiteRepository.save(campsiteMapper.toCampsiteEntity(campSite));
         });
         log.info("api 데이터가 등록되었습니다.");
+
+        return itemArray;
     }
 
     @Override

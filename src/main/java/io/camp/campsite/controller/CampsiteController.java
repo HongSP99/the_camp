@@ -32,27 +32,15 @@ public class CampsiteController {
 
     private final CampSiteService campSiteService;
 
-    private final String uri = "http://apis.data.go.kr/B551011/GoCamping/basedList?serviceKey=5mZ%2FcSX69J3%2Bg2%2FSS77LbWusUy4KO6ZdvX5KuQBk0o5rXPFpJ4jP%2Fcu6DD74kPm5U2WKJco%2FVSxn9DFqFGKRTw%3D%3D&MobileOS=ETC&MobileApp=AppTest";
+
 
     @GetMapping("/data/{pageNumber}")
     public String getTweetsBlocking(@PathVariable("pageNumber") String pageNumber) throws URISyntaxException, UnsupportedEncodingException, ParseException {
-        RestTemplate restTemplate = new RestTemplate();
-        JSONParser parser = new JSONParser();
 
-        restTemplate.getMessageConverters()
-                .add(0, new StringHttpMessageConverter(StandardCharsets.UTF_8));
 
-        ResponseEntity<String> response = restTemplate.getForEntity(new URI(uri + "&pageNo=" + pageNumber + "&numOfRows=10&_type=Json"), String.class);
 
-        JSONObject object = (JSONObject) parser.parse(response.getBody());
-        object = (JSONObject) object.get("response");
-        JSONObject body = (JSONObject) object.get("body");
-        JSONObject items = (JSONObject) body.get("items");
-        JSONArray itemArray = (JSONArray) items.get("item");
 
-        campSiteService.insertCampsiteFromJson(itemArray);
-
-        return itemArray.toString();
+        return campSiteService.insertCampsiteFromJson(pageNumber).toJSONString();
     }
 
     @GetMapping("/")
