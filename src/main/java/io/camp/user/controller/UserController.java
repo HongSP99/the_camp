@@ -180,6 +180,7 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "회원 탈퇴 성공", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "400", description = "잘못된 요청", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "404", description = "사용자를 찾을 수 없음", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "405", description = "잘못된 메서드 타입", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "500", description = "서버 에러", content = @Content(mediaType = "application/json"))
     })
     @DeleteMapping("/user/delete")
