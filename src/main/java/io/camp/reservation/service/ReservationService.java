@@ -58,6 +58,16 @@ public class ReservationService {
         reservation.setUser(user);
         reservation.setSite(site);
 
+        //기존 예약이 존재하는지 확인하는 과정.
+        ReservationExistenceDto dto = new ReservationExistenceDto();
+        dto.setReservationStartDate(reservation.getReserveStartDate());
+        dto.setReservationEndDate(reservation.getReserveEndDate());
+        dto.setSiteSeq(reservation.getSite().getSeq());
+
+         if(reservationRepository.checkReservationExistence(dto)){
+             throw new ReservationException(ExceptionCode.RESERVATION_ALREADY_EXIST);
+         }
+
         log.info(reservation.toString());
 
         Reservation savedReservation;

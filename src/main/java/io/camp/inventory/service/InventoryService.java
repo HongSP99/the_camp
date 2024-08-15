@@ -62,7 +62,7 @@ public class InventoryService {
         Inventory inventory = inventoryRepository.findById(invenSeq)
                 .orElseThrow(() -> new InventoryException(ExceptionCode.INVENTORY_NOT_FOUND));
 
-        if(LocalDate.now().isAfter(inventory.getExpireDate())){
+        if(inventory.getExpireDate().isBefore(LocalDate.now())){
             throw new InventoryException(ExceptionCode.INVENTORY_NOT_USE);
         }
 

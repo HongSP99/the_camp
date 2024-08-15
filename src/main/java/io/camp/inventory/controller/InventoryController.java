@@ -62,7 +62,7 @@ public class InventoryController {
             @ApiResponse(responseCode = "200", description = "요청에 성공하였습니다.", content = @Content(mediaType = "application/json")),
     })
     @PatchMapping("/{invenSeq}")
-    public ResponseEntity<SingleResponseDto<InventoryDto>> useCoupon(Long invenSeq){
+    public ResponseEntity<SingleResponseDto<InventoryDto>> useCoupon(@PathVariable("invenSeq") Long invenSeq){
         InventoryDto dto = inventoryService.useCoupon(invenSeq);
 
         return new ResponseEntity<>(
