@@ -8,6 +8,7 @@ import io.camp.user.model.UserRole;
 import io.camp.user.repository.RefreshRepository;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
+import io.swagger.v3.oas.annotations.media.Content;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -37,8 +38,12 @@ public class ReissueController {
 
     @Operation(summary = "JWT 토큰 재발급", description = "제공된 리프레시 토큰이 유효한 경우 JWT 접근 토큰과 리프레시 토큰을 재발급합니다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "토큰이 성공적으로 재발급되었습니다."),
-            @ApiResponse(responseCode = "400", description = "유효하지 않거나 만료된 리프레시 토큰입니다."),
+            @ApiResponse(responseCode = "200", description = "토큰이 성공적으로 재발급되었습니다.", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "400", description = "유효하지 않은 리프레시 토큰입니다.", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "401", description = "만료된 리프레시 토큰입니다.", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "404", description = "리프레시 토큰을 찾을 수 가 없음 ", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "405", description = "잘못된 메서드 요청", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "500", description = "서버 에러", content = @Content(mediaType = "application/json"))
     })
     @PostMapping("/reissue")
     public ResponseEntity<?> reissue(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -112,8 +117,12 @@ public class ReissueController {
 
     @Operation(summary = "인증 상태 확인", description = "제공된 리프레시 토큰이 유효하고 만료되지 않았는지 확인합니다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "토큰이 유효합니다."),
-            @ApiResponse(responseCode = "401", description = "유효하지 않거나 만료된 리프레시 토큰입니다."),
+            @ApiResponse(responseCode = "200", description = " 리프레시 토큰이 유효", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "400", description = "유효하지 않은 리프레시 토큰", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "401", description = " 만료된 리프레시 토큰입니다.", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "404", description = " 리프레시 토큰을 찾을 수 가 없음", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "405", description = " 잘못된 메서드 요청", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "500", description = " 서버 에러", content = @Content(mediaType = "application/json"))
     })
     @GetMapping("/auth")
     public ResponseEntity<?> checkAuth(HttpServletRequest request, HttpServletResponse response) throws IOException {
