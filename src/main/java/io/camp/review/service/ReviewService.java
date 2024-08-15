@@ -55,22 +55,17 @@ public class ReviewService {
         return convertToDto(savedReview);
     }
 
-    //전체 리뷰 조회 (좋아요 순)
-    public Page<ReviewDto> getAllReviewLikeCountDesc(int page, int size) {
-        Pageable Pageable = PageRequest.of(page, size, Sort.by("likeCount").descending());
+    //전체 리뷰 조회
+    public Page<ReviewDto> getAllReviewSort(int page, int size, String type) {
+        System.out.println("type : " + type);
+        Pageable Pageable = PageRequest.of(page, size, Sort.by(type).descending());
         return reviewRepository.getAllReviewSort(Pageable);
     }
 
-    //전체 리뷰 조회 (최신 순)
-    public Page<ReviewDto> getAllReviewDesc(int page, int size) {
-        Pageable Pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
-        return reviewRepository.getAllReviewSort(Pageable);
-    }
-
-    //캠핑장 전체 리뷰 조회 (최신 순)
+    //캠핑장 전체 리뷰 조회
     @Transactional(readOnly = true)
-    public Page<ReviewDto> getReview(Long campsiteId, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+    public Page<ReviewDto> getReview(Long campsiteId, int page, int size, String type) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(type).descending());
         Page<ReviewDto> reviews = reviewRepository.getAllCampsiteReviewSort(campsiteId, pageable);
         return reviews;
     }
