@@ -3,12 +3,16 @@ package io.camp.campsite.model.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.camp.campsite.model.dto.SiteDto;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.Getter;
 
 @Entity
 @NoArgsConstructor
 @Getter
+@Builder
+@AllArgsConstructor
 public class Site {
 
     @Id

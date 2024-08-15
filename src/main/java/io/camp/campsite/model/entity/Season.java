@@ -1,10 +1,20 @@
 package io.camp.campsite.model.entity;
 
+import io.camp.campsite.model.dto.SeasonDto;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
 public class Season {
 
     @Id
@@ -12,14 +22,27 @@ public class Season {
     private Long seq;
 
     @Column
-    private LocalDateTime start;
+    private LocalDate start;
 
     @Column
-    private LocalDateTime end;
+    private LocalDate end;
 
     @Column
-    private SeasonType season;
+    private SeasonType type;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     private Campsite campsite;
+
+
+    public SeasonDto toDto(){
+        return SeasonDto.builder()
+                .seq(seq)
+                .start(start)
+                .end(end)
+                .type(type)
+                .campsite(campsite.getSeq()).build();
+    }
+
+
+
 }

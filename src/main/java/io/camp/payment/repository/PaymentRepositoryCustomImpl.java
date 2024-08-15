@@ -14,11 +14,6 @@ public class PaymentRepositoryCustomImpl implements PaymentRepositoryCustom {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<Integer> qTestQueryDsl() {
-        return jpaQueryFactory.select(payment.amountTotal).from(payment).fetch();
-    }
-
-    @Override
     public Payment qFindByPaymentId(String paymentId) {
         return jpaQueryFactory.selectFrom(payment).where(payment.paymentId.eq(paymentId)).fetchOne();
     }

@@ -1,15 +1,22 @@
 package io.camp.user.service;
 
+
+import io.camp.common.exception.ExceptionCode;
+import io.camp.common.exception.user.CustomException;
 import io.camp.user.jwt.JwtUserDetails;
 import io.camp.user.model.User;
 import io.camp.user.model.UserRole;
 import io.camp.user.model.dto.JoinDto;
 import io.camp.user.model.dto.RoleGetDto;
-import io.camp.user.model.dto.UserPaymentGetDto;
+import io.camp.user.model.dto.UserDataGetDto;
+import io.camp.user.model.dto.UserReservationDto;
 import io.camp.user.repository.UserRepository;
 import jakarta.annotation.PostConstruct;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,7 +35,7 @@ public class UserService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
         if (email.equals("anonymousUser")) {
-            throw new RuntimeException("유요한 사용자가 아닙니다.");
+            throw new CustomException(ExceptionCode.USER_INVALID);
         }
         return userRepository.findByEmail(email);
     }
@@ -91,12 +98,22 @@ public class UserService {
         user.setPhoneNumber("000-3333-3333");
         user.setGender("남성");
         userRepository.save(user);
+
+        user = new User();
+        user.setEmail("user@gmail.com");
+        user.setPassword(passwordEncoder.encode("1234"));
+        user.setRole(UserRole.USER);
+        user.setName("이메일용");
+        user.setBirthday("2020-02-02");
+        user.setPhoneNumber("000-4444-4444");
+        user.setGender("남성");
+        userRepository.save(user);
     }
 
     @Transactional
     public void join(JoinDto joinDto) {
         if (userRepository.existsByEmail(joinDto.getEmail())) {
-            throw new RuntimeException("아이디가 중복되었습니다");
+            throw new CustomException(ExceptionCode.EMAIL_ALREADY_EXISTS);
         }
 
         User user = new User();
@@ -114,7 +131,7 @@ public class UserService {
     public void updatePassword(String currentPassword, String newPassword) {
         User user = getVerifiyLoginCurrentUser();
         if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
-            throw new RuntimeException("현재 비밀번호가 일치하지 않습니다.");
+            throw new CustomException(ExceptionCode.INVALID_PASSWORD);
         }
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
@@ -141,25 +158,27 @@ public class UserService {
         return roleGetDto;
     }
 
-    public UserPaymentGetDto getUserPayment(JwtUserDetails jwtUserDetails) {
-        UserPaymentGetDto userPaymentGetDto = new UserPaymentGetDto();
+    public UserDataGetDto getUserData(JwtUserDetails jwtUserDetails) {
+        UserDataGetDto userDataGetDto = new UserDataGetDto();
 
         if (jwtUserDetails == null) {
-            throw  new RuntimeException("사용자 인증 실패");
+            throw  new CustomException(ExceptionCode.USER_NOT_FOUND);
         }
 
         User user = jwtUserDetails.getUser();
-        userPaymentGetDto.setEmail(user.getEmail());
-        userPaymentGetDto.setFullName(user.getName());
-        userPaymentGetDto.setPhoneNumber(user.getPhoneNumber());
 
-        return userPaymentGetDto;
+        userDataGetDto.setSeq(user.getSeq());
+        userDataGetDto.setEmail(user.getEmail());
+        userDataGetDto.setFullName(user.getName());
+        userDataGetDto.setPhoneNumber(user.getPhoneNumber());
+
+        return userDataGetDto;
     }
     @Transactional
     public void resetPassword(String email) throws MessagingException {
         User user = userRepository.findByEmail(email);
         if (user == null) {
-            throw new RuntimeException("등록되지 않은 이메일입니다.");
+            throw new CustomException(ExceptionCode.UNREGISTERED_EMAIL);
         }
 
         String tempPassword = mailService.generateTemporaryPassword();
@@ -167,6 +186,15 @@ public class UserService {
         userRepository.save(user);
 
         mailService.sendTemporaryPassword(email, tempPassword);
+    }
+
+    public Page<UserReservationDto> userReservationList(int page, int size, JwtUserDetails jwtUserDetails) {
+        Pageable pageable = PageRequest.of(page, size);
+        User user = jwtUserDetails.getUser();
+        if (user == null) {
+            throw new CustomException(ExceptionCode.UNREGISTERED_EMAIL);
+        }
+        return userRepository.userGetReservations(user, pageable);
     }
 
 }

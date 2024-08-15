@@ -24,8 +24,6 @@ public class QPayment extends EntityPathBase<Payment> {
 
     public final io.camp.audit.QBaseEntity _super = new io.camp.audit.QBaseEntity(this);
 
-    public final StringPath amount = createString("amount");
-
     public final StringPath amountCancelled = createString("amountCancelled");
 
     public final StringPath amountCancelledTaxFree = createString("amountCancelledTaxFree");
@@ -42,7 +40,7 @@ public class QPayment extends EntityPathBase<Payment> {
 
     public final StringPath amountVat = createString("amountVat");
 
-    public final StringPath channel = createString("channel");
+    public final StringPath campsiteName = createString("campsiteName");
 
     public final StringPath channelId = createString("channelId");
 
@@ -61,8 +59,6 @@ public class QPayment extends EntityPathBase<Payment> {
 
     public final StringPath currency = createString("currency");
 
-    public final StringPath customer = createString("customer");
-
     public final StringPath customerEmail = createString("customerEmail");
 
     public final StringPath customerId = createString("customerId");
@@ -75,15 +71,11 @@ public class QPayment extends EntityPathBase<Payment> {
 
     public final StringPath isCulturalExpense = createString("isCulturalExpense");
 
+    public final BooleanPath isDeleted = createBoolean("isDeleted");
+
     public final StringPath merchantId = createString("merchantId");
 
-    public final StringPath method = createString("method");
-
-    public final StringPath methodEasyPayMethod = createString("methodEasyPayMethod");
-
     public final StringPath methodEasyPayMethodApprovalNumber = createString("methodEasyPayMethodApprovalNumber");
-
-    public final StringPath methodEasyPayMethodCard = createString("methodEasyPayMethodCard");
 
     public final StringPath methodEasyPayMethodCardBin = createString("methodEasyPayMethodCardBin");
 
@@ -100,8 +92,6 @@ public class QPayment extends EntityPathBase<Payment> {
     public final StringPath methodEasyPayMethodCardPublisher = createString("methodEasyPayMethodCardPublisher");
 
     public final StringPath methodEasyPayMethodCardType = createString("methodEasyPayMethodCardType");
-
-    public final StringPath methodEasyPayMethodInstallment = createString("methodEasyPayMethodInstallment");
 
     public final StringPath methodEasyPayMethodInstallmentIsInterestFree = createString("methodEasyPayMethodInstallmentIsInterestFree");
 
@@ -123,8 +113,6 @@ public class QPayment extends EntityPathBase<Payment> {
     public final QPaymentCancellation paymentCancellation;
 
     public final StringPath paymentId = createString("paymentId");
-
-    public final StringPath pgResponse = createString("pgResponse");
 
     public final StringPath pgTxId = createString("pgTxId");
 

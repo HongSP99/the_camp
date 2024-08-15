@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-08-09T20:14:18+0900",
+    date = "2024-08-15T16:45:01+0900",
     comments = "version: 1.5.5.Final, compiler: IncrementalProcessingEnvironment from gradle-language-java-8.8.jar, environment: Java 17.0.10 (Oracle Corporation)"
 )
 @Component
@@ -22,6 +22,7 @@ public class CampsiteMapperImpl implements CampsiteMapper {
 
         CampSiteDto.CampSiteDtoBuilder campSiteDto = CampSiteDto.builder();
 
+        campSiteDto.seq( campsite.getSeq() );
         campSiteDto.contentId( campsite.getContentId() );
         campSiteDto.facltNm( campsite.getFacltNm() );
         campSiteDto.lineIntro( campsite.getLineIntro() );
@@ -80,6 +81,7 @@ public class CampsiteMapperImpl implements CampsiteMapper {
 
         Campsite.CampsiteBuilder campsite = Campsite.builder();
 
+        campsite.seq( campSiteDto.getSeq() );
         campsite.contentId( campSiteDto.getContentId() );
         campsite.facltNm( campSiteDto.getFacltNm() );
         campsite.lineIntro( campSiteDto.getLineIntro() );

@@ -20,17 +20,17 @@ public class QSeason extends EntityPathBase<Season> {
 
     private static final PathInits INITS = PathInits.DIRECT2;
 
-    public static final QSeason season1 = new QSeason("season1");
+    public static final QSeason season = new QSeason("season");
 
     public final QCampsite campsite;
 
-    public final DateTimePath<java.time.LocalDateTime> end = createDateTime("end", java.time.LocalDateTime.class);
-
-    public final EnumPath<SeasonType> season = createEnum("season", SeasonType.class);
+    public final DatePath<java.time.LocalDate> end = createDate("end", java.time.LocalDate.class);
 
     public final NumberPath<Long> seq = createNumber("seq", Long.class);
 
-    public final DateTimePath<java.time.LocalDateTime> start = createDateTime("start", java.time.LocalDateTime.class);
+    public final DatePath<java.time.LocalDate> start = createDate("start", java.time.LocalDate.class);
+
+    public final EnumPath<SeasonType> type = createEnum("type", SeasonType.class);
 
     public QSeason(String variable) {
         this(Season.class, forVariable(variable), INITS);

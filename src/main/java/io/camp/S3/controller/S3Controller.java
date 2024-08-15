@@ -15,19 +15,16 @@ public class S3Controller {
 
     private final S3Service s3Service;
 
-    @PostMapping("/upload")
-    public ResponseEntity<List<String>> uploadFiles(@RequestParam("files") List<MultipartFile> files) {
-        List<String> fileUrls = s3Service.uploadFiles(files);
-        return ResponseEntity.ok(fileUrls);
-    }
-
     @GetMapping("/presigned-urls")
     public ResponseEntity<List<String>> getPresignedUrls(@RequestParam String bucketName, @RequestParam List<String> objectKeys) {
         List<String> presignedUrls = s3Service.generatePresignedUrls(bucketName, objectKeys);
         return ResponseEntity.ok(presignedUrls);
-
-        
     }
 
 
+    @GetMapping("/permanent-urls")
+    public ResponseEntity<List<String>> getPermanentUrls(@RequestBody List<String> objectKeys) {
+        List<String> permanentUrls = s3Service.generatePermanentUrls(objectKeys);
+        return ResponseEntity.ok(permanentUrls);
+    }
 }

@@ -1,5 +1,7 @@
 package io.camp.user.jwt;
 
+import io.camp.common.exception.ExceptionCode;
+import io.camp.common.exception.user.CustomException;
 import io.camp.user.repository.RefreshRepository;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
@@ -55,38 +57,37 @@ public class JwtLogoutFilter extends GenericFilterBean {
 
         System.out.println("Refresh Token: " + refresh);
         if (refresh == null) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return;
+            throw new CustomException(ExceptionCode.REFRESH_TOKEN_NOT_FOUND);
         }
 
         try {
             jwtTokenUtil.isExpired(refresh);
         } catch (ExpiredJwtException e) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return;
+            throw new CustomException(ExceptionCode.REFRESH_TOKEN_EXPIRED);
         }
 
         String category = jwtTokenUtil.getCategory(refresh);
         System.out.println("Token Category: " + category);
         if (!category.equals("refresh")) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return;
+            throw new CustomException(ExceptionCode.INVALID_REFRESH_TOKEN);
         }
 
         Boolean isExist = refreshRepository.existsByRefresh(refresh);
         System.out.println("Token Exists in DB: " + isExist);
         if (!isExist) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return;
+            throw new CustomException(ExceptionCode.BAD_REQUEST);
         }
 
         refreshRepository.deleteByRefresh(refresh);
 
-        Cookie cookie = new Cookie("refresh", null);
-        cookie.setMaxAge(0);
-        cookie.setPath("/");
+        // Create a cookie with the same properties as the one you want to delete
+        Cookie cookie = new Cookie("refresh", "");
+        cookie.setMaxAge(0); // 쿠키 만료 시간 설정
+        cookie.setPath("/"); // 쿠키 경로 설정 (설정한 경로와 일치해야 함)
+        cookie.setHttpOnly(true); // HttpOnly 설정
+        cookie.setSecure(false); // Secure 설정 (HTTPS를 사용하는 경우 true로 설정)
         response.addCookie(cookie);
-        response.setStatus(HttpServletResponse.SC_OK);
     }
+
 
 }

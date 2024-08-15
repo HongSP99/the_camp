@@ -8,10 +8,10 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 @Data
 public class CampSiteDto {
 
+    private long seq;
 
     private int contentId;
 

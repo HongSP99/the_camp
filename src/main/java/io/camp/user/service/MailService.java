@@ -1,5 +1,7 @@
 package io.camp.user.service;
 
+import io.camp.common.exception.ExceptionCode;
+import io.camp.common.exception.user.CustomException;
 import io.camp.user.model.email.AuthCode;
 import io.camp.user.repository.AuthCodeRepository;
 import jakarta.mail.MessagingException;
@@ -47,7 +49,7 @@ public class MailService {
 
             message.setText(body, "UTF-8", "html");
         } catch (MessagingException e) {
-            e.printStackTrace();
+            throw new CustomException(ExceptionCode.BAD_REQUEST);
         }
 
         return message;
@@ -92,7 +94,7 @@ public class MailService {
                 return true;
             }
         }
-        return false;
+        throw new CustomException(ExceptionCode.VERIFY_CODE_NOTFOUND);
     }
 
     @Scheduled(cron = "0 */3 * * * *") // 매 3분마다 실행

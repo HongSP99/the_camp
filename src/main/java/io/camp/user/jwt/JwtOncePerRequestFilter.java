@@ -1,5 +1,7 @@
 package io.camp.user.jwt;
 
+import io.camp.common.exception.ExceptionCode;
+import io.camp.common.exception.user.CustomException;
 import io.camp.user.model.User;
 import io.camp.user.model.UserRole;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -36,13 +38,11 @@ public class JwtOncePerRequestFilter extends OncePerRequestFilter {
         } catch (ExpiredJwtException e) {
             PrintWriter writer = response.getWriter();
             writer.print("Authorization token expired");
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            return;
+            throw new CustomException(ExceptionCode.AUTHORIZATION_TOKEN_EXPIRED);
         } catch (MalformedJwtException e) {
             PrintWriter writer = response.getWriter();
             writer.print("Authorization token unsupported types");
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            return;
+            throw new CustomException(ExceptionCode.UNSUPPORTED_TOKEN_TYPE);
         }
 
         String category = jwtTokenUtil.getCategory(authorizationToken);
@@ -50,8 +50,7 @@ public class JwtOncePerRequestFilter extends OncePerRequestFilter {
         if (!category.equals("Authorization")) {
             PrintWriter writer = response.getWriter();
             writer.print("invalid authorization token");
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            return;
+            throw new CustomException(ExceptionCode.INVALID_AUTHORIZATION_TOKEN);
         }
 
         String email = jwtTokenUtil.getEmail(authorizationToken);

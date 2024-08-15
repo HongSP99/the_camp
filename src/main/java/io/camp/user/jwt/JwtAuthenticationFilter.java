@@ -1,6 +1,9 @@
 package io.camp.user.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.camp.common.exception.ExceptionCode;
+import io.camp.common.exception.user.CustomException;
+
 import io.camp.user.model.RefreshEntity;
 import io.camp.user.model.User;
 import io.camp.user.model.UserRole;
@@ -43,7 +46,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             System.out.println("로그인 성공 : " + jwtUserDetails.getUsername());
             return authenticate;
         } catch (IOException e) {
-            throw new RuntimeException("로그인 실패");
+            throw new CustomException(ExceptionCode.LOGIN_FAILED);
         }
     }
 
@@ -77,7 +80,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException {
-        response.setStatus(401);
+        throw new CustomException(ExceptionCode.UNAUTHORIZED_REQUEST);
     }
 
     private void addRefreshEntity(String username, String refresh, String password, String name, String birthday, String phoneNumber, String gender, Long seq,UserRole role, Long expiredMs ) {

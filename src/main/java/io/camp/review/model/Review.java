@@ -2,11 +2,13 @@ package io.camp.review.model;
 
 import io.camp.audit.BaseEntity;
 import io.camp.campsite.model.entity.Campsite;
+import io.camp.image.model.Image;
 import io.camp.like.model.Like;
 import io.camp.user.model.User;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -25,8 +27,7 @@ public class Review extends BaseEntity {
     @Column(name = "content", nullable = false)
     private String content;
 
-    @Column(name = "like_count", nullable = true)
-    private int likeCount;
+    private boolean isDeleted = false;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -37,6 +38,9 @@ public class Review extends BaseEntity {
 
     @OneToMany(mappedBy = "review")
     private List<Like> likes;
+
+    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Image> images = new ArrayList<>();
 
 
 }

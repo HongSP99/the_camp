@@ -33,7 +33,9 @@ public class QReview extends EntityPathBase<Review> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final NumberPath<Integer> likeCount = createNumber("likeCount", Integer.class);
+    public final ListPath<io.camp.image.model.Image, io.camp.image.model.QImage> images = this.<io.camp.image.model.Image, io.camp.image.model.QImage>createList("images", io.camp.image.model.Image.class, io.camp.image.model.QImage.class, PathInits.DIRECT2);
+
+    public final BooleanPath isDeleted = createBoolean("isDeleted");
 
     public final ListPath<io.camp.like.model.Like, io.camp.like.model.QLike> likes = this.<io.camp.like.model.Like, io.camp.like.model.QLike>createList("likes", io.camp.like.model.Like.class, io.camp.like.model.QLike.class, PathInits.DIRECT2);
 

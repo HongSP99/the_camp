@@ -2,13 +2,12 @@ package io.camp.campsite.service.impl;
 
 import com.google.gson.Gson;
 import io.camp.campsite.mapper.CampsiteMapper;
-import io.camp.campsite.model.dto.CampSiteAllDto;
 import io.camp.campsite.model.dto.CampSiteDto;
 import io.camp.campsite.model.entity.Campsite;
 import io.camp.campsite.model.entity.Zone;
 import io.camp.campsite.repository.CampSiteRepository;
 import io.camp.campsite.service.CampSiteService;
-import io.camp.exception.Campsite.CampsiteNotFoundException;
+import io.camp.common.exception.Campsite.CampsiteNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONArray;
@@ -46,6 +45,8 @@ public class CampSiteServiceImpl implements CampSiteService {
     public CampSiteDto getCampsiteBySeq(long seq) {
         Campsite campsite = campSiteRepository.findById(seq)
                 .orElseThrow(() -> new CampsiteNotFoundException("해당 캠핑장이 존재하지 않습니다."));
+
+        System.out.println(campsite.getSeq());
         return campsiteMapper.toCampsiteDto(campsite);
     }
 
@@ -69,5 +70,24 @@ public class CampSiteServiceImpl implements CampSiteService {
        CampSiteDto campsiteDto = campsiteMapper.toCampsiteDto(campsite);
        campsiteDto.setZones(campsite.getZones().stream().map(Zone::toDto).toList());
        return campsiteDto;
+    }
+
+
+    public Page<CampSiteDto> getCampsitesByTitleWithPaging(String query, Pageable pageable){
+       Page<Campsite> campsites = campSiteRepository.findCampsitesByTitleWithPaging(query,pageable);
+       Page<CampSiteDto> campsiteDtos = campsites.map(campsiteMapper::toCampsiteDto);
+       return campsiteDtos;
+    }
+
+    public Page<CampSiteDto> getCampsitesByRegionWithPaging(String query, Pageable pageable){
+        Page<Campsite> campsites = campSiteRepository.findCampsitesByRegionWithPaging(query,pageable);
+        Page<CampSiteDto> campsiteDtos = campsites.map(campsiteMapper::toCampsiteDto);
+        return campsiteDtos;
+    }
+
+    public Page<CampSiteDto> getCampsitesByThemeWithPaging(String query, Pageable pageable){
+        Page<Campsite> campsites = campSiteRepository.findCampsitesByThemeWithPaging(query,pageable);
+        Page<CampSiteDto> campSiteDtos = campsites.map(campsiteMapper::toCampsiteDto);
+        return campSiteDtos;
     }
 }

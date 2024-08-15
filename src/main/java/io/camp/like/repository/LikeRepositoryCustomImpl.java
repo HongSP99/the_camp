@@ -19,13 +19,12 @@ public class LikeRepositoryCustomImpl implements LikeRepositoryCustom {
 
     @Override
     public Like reviewLikeUser(Long reviewId, User loginUser) {
-        Like res = jpaQueryFactory
-                .selectFrom(like)
-                .join(like.user, user)
-                .join(like.review, review)
-                .where(review.id.eq(reviewId)
-                .and(user.seq.eq(loginUser.getSeq())))
+        return jpaQueryFactory
+                .select(like)
+                .from(review)
+                .leftJoin(like)
+                .on(review.id.eq(like.review.id))
+                .where(like.user.seq.eq(loginUser.getSeq()).and(like.review.id.eq(reviewId)))
                 .fetchOne();
-        return res;
     }
 }

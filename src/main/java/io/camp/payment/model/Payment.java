@@ -1,8 +1,8 @@
 package io.camp.payment.model;
 
 import io.camp.audit.BaseEntity;
-import io.camp.exception.ExceptionCode;
-import io.camp.exception.payment.PaymentException;
+import io.camp.common.exception.ExceptionCode;
+import io.camp.common.exception.payment.PaymentException;
 import io.camp.reservation.model.Reservation;
 import io.camp.user.model.User;
 import jakarta.persistence.*;
@@ -21,7 +21,7 @@ public class Payment extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
     private String paymentId;
-    private String amount;
+    private String campsiteName;
     private int amountTotal;
     private String amountTaxFree;
     private String amountCancelledTaxFree;
@@ -30,22 +30,10 @@ public class Payment extends BaseEntity {
     private String amountDiscount;
     private String amountCancelled;
     private String amountSupply;
-
-    @Column(length = 1000)
-    private String pgResponse;
-
-    @Column(length = 500)
-    private String method;
-
-    @Column(length = 500)
-    private String methodEasyPayMethod;
-
-    private String methodEasyPayMethodInstallment;
     private String methodEasyPayMethodInstallmentMonth;
     private String methodEasyPayMethodInstallmentIsInterestFree;
     private String methodEasyPayMethodType;
     private String methodEasyPayMethodApprovalNumber;
-    private String methodEasyPayMethodCard;
     private String methodEasyPayMethodCardOwnerType;
     private String methodEasyPayMethodCardNumber;
     private String methodEasyPayMethodCardBin;
@@ -57,7 +45,6 @@ public class Payment extends BaseEntity {
     private String methodProvider;
     private String methodType;
     private String pgTxId;
-    private String channel;
     private String channelPgProvider;
     private String channelName;
     private String channelId;
@@ -79,11 +66,11 @@ public class Payment extends BaseEntity {
     private String status;
     private String updatedAt;
     private String orderName;
-    private String customer;
     private String customerPhoneNumber;
     private String customerName;
     private String customerId;
     private String customerEmail;
+    private boolean isDeleted = false;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_seq")
@@ -100,9 +87,6 @@ public class Payment extends BaseEntity {
         switch (paymentType) {
             case paymentId:
                 this.paymentId = input;
-                break;
-            case amount:
-                this.amount = input;
                 break;
             case amountTotal:
                 this.amountTotal = Integer.valueOf(input);
@@ -128,18 +112,6 @@ public class Payment extends BaseEntity {
             case amountSupply:
                 this.amountSupply = input;
                 break;
-            case pgResponse:
-                this.pgResponse = input;
-                break;
-            case method:
-                this.method = input;
-                break;
-            case methodEasyPayMethod:
-                this.methodEasyPayMethod = input;
-                break;
-            case methodEasyPayMethodInstallment:
-                this.methodEasyPayMethodInstallment = input;
-                break;
             case methodEasyPayMethodInstallmentMonth:
                 this.methodEasyPayMethodInstallmentMonth = input;
                 break;
@@ -151,9 +123,6 @@ public class Payment extends BaseEntity {
                 break;
             case methodEasyPayMethodApprovalNumber:
                 this.methodEasyPayMethodApprovalNumber = input;
-                break;
-            case methodEasyPayMethodCard:
-                this.methodEasyPayMethodCard = input;
                 break;
             case methodEasyPayMethodCardOwnerType:
                 this.methodEasyPayMethodCardOwnerType = input;
@@ -187,9 +156,6 @@ public class Payment extends BaseEntity {
                 break;
             case pgTxId:
                 this.pgTxId = input;
-                break;
-            case channel:
-                this.channel = input;
                 break;
             case channelPgProvider:
                 this.channelPgProvider = input;
@@ -254,9 +220,6 @@ public class Payment extends BaseEntity {
             case orderName:
                 this.orderName = input;
                 break;
-            case customer:
-                this.customer = input;
-                break;
             case customerPhoneNumber:
                 this.customerPhoneNumber = input;
                 break;
@@ -269,7 +232,10 @@ public class Payment extends BaseEntity {
             case customerEmail:
                 this.customerEmail = input;
                 break;
+            case pgResponse:
+                break;
             default:
+                System.out.println("에러 발생 : " + paymentType.name());
                 throw new PaymentException(ExceptionCode.PAYMENT_IMPORT_TYPE);
         }
     }

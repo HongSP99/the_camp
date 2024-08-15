@@ -18,13 +18,10 @@ public class Image extends BaseEntity {
     @Column(name = "image_id", updatable = false)
     private Long id;
 
-    @Column(name = "file_name", nullable = false)
-    private String fileName;
-
-    @Column(name = "file_url", nullable = false)
-    private String fileUrl;
+    @Column(name = "url", nullable = false)
+    private String url;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "review_id")
+    @JoinColumn(name = "review_id",  nullable = false)
     private Review review;
 }

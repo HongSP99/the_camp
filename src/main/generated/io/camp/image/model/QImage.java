@@ -27,16 +27,14 @@ public class QImage extends EntityPathBase<Image> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
-    public final StringPath fileName = createString("fileName");
-
-    public final StringPath fileUrl = createString("fileUrl");
-
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> modifiedAt = _super.modifiedAt;
 
     public final io.camp.review.model.QReview review;
+
+    public final StringPath url = createString("url");
 
     public QImage(String variable) {
         this(Image.class, forVariable(variable), INITS);

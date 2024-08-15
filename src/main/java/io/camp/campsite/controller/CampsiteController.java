@@ -56,11 +56,30 @@ public class CampsiteController {
 
     @GetMapping("/searchCampsites")
     public Page<CampSiteDto> searchCampsites(
-            @RequestParam("query") String query,
+            @RequestParam(value = "query" , defaultValue = "") String query,
             @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "size", defaultValue = "9") int size) {
+            @RequestParam(value = "size", defaultValue = "9") int size ,
+            @RequestParam(value= "type" , defaultValue = "") String type){
         Pageable pageable = PageRequest.of(page, size);
-        return campSiteService.searchCampsites(query, pageable);
+
+        Page<CampSiteDto> result = null;
+        System.out.println(query);
+        System.out.println(type);
+        switch(type){
+            case "title":
+                result = campSiteService.getCampsitesByTitleWithPaging(query,pageable);
+                break;
+            case "region":
+                result = campSiteService.getCampsitesByRegionWithPaging(query,pageable);
+                break;
+            case "theme":
+                result = campSiteService.getCampsitesByThemeWithPaging(query,pageable);
+                break;
+            default:
+                result = campSiteService.getAllPaging(page,6);
+        }
+
+        return result;
     }
 
     @GetMapping
@@ -70,7 +89,9 @@ public class CampsiteController {
 
     @GetMapping("/{id}")
     public CampSiteDto getCampsiteById(@PathVariable("id") int id){
-        return campSiteService.getCampsiteBySeq(id);
+        CampSiteDto campSiteDto = campSiteService.getCampsiteBySeq(id);
+        System.out.println(campSiteDto);
+        return campSiteDto;
     }
 
 
