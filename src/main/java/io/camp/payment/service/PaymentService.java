@@ -25,6 +25,7 @@ import io.camp.payment.model.dto.PaymentPostDto;
 import io.camp.payment.repository.PaymentCancellationRepository;
 import io.camp.payment.repository.PaymentRepository;
 import io.camp.reservation.model.Reservation;
+import io.camp.reservation.model.dto.ReservationExistenceDto;
 import io.camp.reservation.model.dto.ReservationPostDto;
 import io.camp.reservation.repository.ReservationRepository;
 import io.camp.reservation.service.ReservationService;
@@ -55,7 +56,6 @@ public class PaymentService {
     private final SeasonService seasonService;
     private final SiteService siteService;
     private final InventoryService inventoryService;
-    private final CouponService couponService;
 
     private static ReservationPostDto getReservationPostDto(PaymentPostDto paymentPostDto, int reservationTotalPrice) {
         ReservationPostDto reservationPostDto = new ReservationPostDto();
@@ -77,6 +77,18 @@ public class PaymentService {
 
         log.info("zoneSeq = {}", zoneSeq);
         log.info("campsiteSeq = {}", campsiteSeq);
+
+        ReservationExistenceDto reservationExistenceDto = new ReservationExistenceDto();
+        reservationExistenceDto.setSiteSeq(site.getSeq());
+        reservationExistenceDto.setReservationStartDate(dto.getReserveStartDate());
+        reservationExistenceDto.setReservationEndDate(dto.getReserveEndDate());
+        boolean isReservation = reservationRepository.checkReservationExistence(reservationExistenceDto);
+        if (isReservation) {
+            log.info("이미 결제된 예약입니다.");
+            throw new PaymentException(ExceptionCode.PAYMENT_ALREADY_RESERVATION);
+        } else {
+            log.info("새로운 결제된 예약입니다.");
+        }
 
         SeasonType seasonType =
                 seasonService.getSeasonTypeByDateRange(dto.getReserveStartDate(),

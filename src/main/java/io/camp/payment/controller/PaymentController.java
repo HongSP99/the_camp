@@ -58,7 +58,7 @@ public class PaymentController {
             conn.setDoOutput(true);
 
             JSONObject requestBody = new JSONObject();
-            requestBody.put("reason", "결제금액이 불일치합니다.");
+            requestBody.put("reason", "결제 오류");
 
             try(OutputStream os = conn.getOutputStream()) {
                 byte[] input = requestBody.toString().getBytes("utf-8");
@@ -66,7 +66,7 @@ public class PaymentController {
             }
 
             BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(HttpStatus.CONFLICT);
         }
         return new ResponseEntity(HttpStatus.CREATED);
     }
