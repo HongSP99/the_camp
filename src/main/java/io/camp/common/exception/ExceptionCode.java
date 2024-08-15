@@ -10,6 +10,7 @@ public enum ExceptionCode {
     RESERVATION_ALREADY_EXIST(400, "이미 예약이 있습니다."),
 
     //payment
+    PAYMENT_ALREADY_RESERVATION(409, "이미 결제된 예약입니다."),
     PAYMENT_NOT_EQUAL_CANCEL(400, "결제 테이블 금액 결제 취소 금액이 일치하지 않습니다."),
     PAYMENT_NOT_EQUAL_RESERVATION(400, "결제 테이블 금액 결제 취소 금액이 일치하지 않습니다."),
     PAYMENT_IMPORT_TYPE(404, "결제 API가 재대로 호출되지 않았습니다."),

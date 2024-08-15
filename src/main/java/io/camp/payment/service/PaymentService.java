@@ -25,6 +25,7 @@ import io.camp.payment.model.dto.PaymentPostDto;
 import io.camp.payment.repository.PaymentCancellationRepository;
 import io.camp.payment.repository.PaymentRepository;
 import io.camp.reservation.model.Reservation;
+import io.camp.reservation.model.dto.ReservationExistenceDto;
 import io.camp.reservation.model.dto.ReservationPostDto;
 import io.camp.reservation.repository.ReservationRepository;
 import io.camp.reservation.service.ReservationService;
@@ -55,7 +56,6 @@ public class PaymentService {
     private final SeasonService seasonService;
     private final SiteService siteService;
     private final InventoryService inventoryService;
-    private final CouponService couponService;
 
     private static ReservationPostDto getReservationPostDto(PaymentPostDto paymentPostDto, int reservationTotalPrice) {
         ReservationPostDto reservationPostDto = new ReservationPostDto();
@@ -77,6 +77,18 @@ public class PaymentService {
 
         log.info("zoneSeq = {}", zoneSeq);
         log.info("campsiteSeq = {}", campsiteSeq);
+
+        ReservationExistenceDto reservationExistenceDto = new ReservationExistenceDto();
+        reservationExistenceDto.setSiteSeq(site.getSeq());
+        reservationExistenceDto.setReservationStartDate(dto.getReserveStartDate());
+        reservationExistenceDto.setReservationEndDate(dto.getReserveEndDate());
+        boolean isReservation = reservationRepository.checkReservationExistence(reservationExistenceDto);
+        if (isReservation) {
+            log.info("이미 결제된 예약입니다.");
+            throw new PaymentException(ExceptionCode.PAYMENT_ALREADY_RESERVATION);
+        } else {
+            log.info("새로운 결제된 예약입니다.");
+        }
 
         SeasonType seasonType =
                 seasonService.getSeasonTypeByDateRange(dto.getReserveStartDate(),
@@ -113,7 +125,9 @@ public class PaymentService {
         log.info("쿠폰 사용 여부 : " + dto.isUse());
 
         LocalDate today = LocalDate.now();
-        if (!dto.isUse() && !today.isAfter(dto.getExpireDate())) {
+        if (dto.isPaymentIsNotCoupon()) {
+            log.info("결제 쿠폰 미적용");
+        } else if (!dto.isUse() && !today.isAfter(dto.getExpireDate())) {
             log.info("쿠폰이 적용되기 전 값 : " + seasonPrice);
             // 쿠폰이 % 할인 계산일 경우
             //seasonPrice = seasonPrice - (seasonPrice * dto.getCount() / 100);
