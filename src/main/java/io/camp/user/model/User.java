@@ -2,6 +2,7 @@ package io.camp.user.model;
 
 
 import io.camp.audit.BaseEntity;
+import io.camp.coupon.model.dto.Coupon;
 import io.camp.payment.model.Payment;
 import io.camp.reservation.model.Reservation;
 import jakarta.persistence.*;
@@ -9,6 +10,7 @@ import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -42,4 +44,7 @@ public class User extends BaseEntity {
 
     @OneToMany(mappedBy = "user")
     List<Payment> payments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user")
+    private Set<Coupon> coupons;
 }

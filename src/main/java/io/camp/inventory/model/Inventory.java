@@ -7,7 +7,6 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
@@ -40,16 +39,16 @@ public class Inventory {
     @Builder.Default
     private boolean isUse = false;
 
-    public InventoryDto toDto(){
-     return  InventoryDto.builder().seq(seq)
+    public InventoryDto toDto() {
+        return InventoryDto.builder()
+                .seq(seq)
                 .userEmail(user.getEmail())
                 .couponSeq(coupon.getSeq())
                 .couponName(coupon.getName())
-                .couponType(coupon.getType())
+                .couponType(coupon.getType().name())
                 .expireDate(expireDate)
                 .count(count)
                 .isUse(isUse)
                 .build();
     }
-
 }

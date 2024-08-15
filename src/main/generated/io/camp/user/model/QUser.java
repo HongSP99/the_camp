@@ -24,6 +24,8 @@ public class QUser extends EntityPathBase<User> {
 
     public final StringPath birthday = createString("birthday");
 
+    public final SetPath<io.camp.coupon.model.dto.Coupon, io.camp.coupon.model.dto.QCoupon> coupons = this.<io.camp.coupon.model.dto.Coupon, io.camp.coupon.model.dto.QCoupon>createSet("coupons", io.camp.coupon.model.dto.Coupon.class, io.camp.coupon.model.dto.QCoupon.class, PathInits.DIRECT2);
+
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
