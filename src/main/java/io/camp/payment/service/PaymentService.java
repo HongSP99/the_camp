@@ -131,10 +131,10 @@ public class PaymentService {
         } else if (!dto.isUse() && !today.isAfter(dto.getExpireDate())) {
             log.info("쿠폰이 적용되기 전 값 : " + seasonPrice);
             // 쿠폰이 % 할인 계산일 경우
-            //seasonPrice = seasonPrice - (seasonPrice * dto.getCount() / 100);
+            seasonPrice = seasonPrice - (seasonPrice * dto.getCount() / 100);
 
             // 쿠폰이 금액 할인일 경우
-            seasonPrice = seasonPrice - dto.getCount();
+            //seasonPrice = seasonPrice - dto.getCount();
 
             log.info("쿠폰이 적용된 값 : " + seasonPrice);
             InventoryDto inventoryDto = inventoryService.useCoupon(dto.getInvenSeq());
