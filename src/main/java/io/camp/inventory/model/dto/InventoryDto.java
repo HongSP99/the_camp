@@ -30,8 +30,6 @@ public class InventoryDto {
 
     private boolean isUse;
 
-    private boolean is
-
     public void setCoupon(Coupon coupon){
         this.couponSeq = coupon.getSeq();
         this.couponName = coupon.getName();

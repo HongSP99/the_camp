@@ -45,7 +45,7 @@ public class InventoryController {
     }
 
     @PatchMapping("/{invenSeq}")
-    public ResponseEntity<SingleResponseDto<InventoryDto>> useCoupon(Long invenSeq){
+    public ResponseEntity<SingleResponseDto<InventoryDto>> useCoupon(@PathVariable("invenSeq") Long invenSeq){
         InventoryDto dto = inventoryService.useCoupon(invenSeq);
 
         return new ResponseEntity<>(

@@ -61,15 +61,15 @@ public class InventoryService {
         Inventory inventory = inventoryRepository.findById(invenSeq)
                 .orElseThrow(() -> new InventoryException(ExceptionCode.INVENTORY_NOT_FOUND));
 
-        inventory.setUse(true);
-
-        if(inventory.getExpireDate().isAfter(LocalDate.now())){
+        if(inventory.getExpireDate().isBefore(LocalDate.now())){
             throw new InventoryException(ExceptionCode.INVENTORY_NOT_USE);
         }
 
         if(inventory.isUse()){
             throw new InventoryException(ExceptionCode.INVENTORY_ALREADY_USE);
         }
+
+        inventory.setUse(true);
 
         inventoryRepository.save(inventory);
 
