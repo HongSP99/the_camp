@@ -173,4 +173,23 @@ public class UserController {
                                                                         @RequestParam(value = "size", defaultValue = "6") int size) {
         return ResponseEntity.ok(userService.userReservationList(page, size, jwtUserDetails));
     }
+
+
+    @Operation(summary = "회원 탈퇴", description = "현재 사용자의 계정을 삭제합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "회원 탈퇴 성공", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "404", description = "사용자를 찾을 수 없음", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "500", description = "서버 에러", content = @Content(mediaType = "application/json"))
+    })
+    @DeleteMapping("/user/delete")
+    public ResponseEntity<?> deleteUserAccount(@AuthenticationPrincipal JwtUserDetails jwtUserDetails) {
+        User user = jwtUserDetails.getUser();
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        userService.deleteUserAccount(user.getEmail());
+        return ResponseEntity.ok().build();
+    }
+
 }
