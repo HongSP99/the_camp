@@ -1,5 +1,10 @@
 package io.camp.campsite.service.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.google.gson.Gson;
 import io.camp.campsite.mapper.CampsiteMapper;
 import io.camp.campsite.model.dto.CampSiteDto;
@@ -38,33 +43,38 @@ public class CampSiteServiceImpl implements CampSiteService {
 
     @Override
     @Transactional
-    public JSONArray insertCampsiteFromJson(String pageNumber) throws URISyntaxException, ParseException {
+    public String insertCampsiteFromJson(String pageNumber) throws URISyntaxException, JsonProcessingException {
         RestTemplate restTemplate = new RestTemplate();
-        JSONParser parser = new JSONParser();
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
         restTemplate.getMessageConverters()
                 .add(0, new StringHttpMessageConverter(StandardCharsets.UTF_8));
 
         ResponseEntity<String> response = restTemplate.getForEntity(new URI(uri + "&pageNo=" + pageNumber + "&numOfRows=10&_type=Json"), String.class);
 
-        JSONObject object = (JSONObject) parser.parse(response.getBody());
-        object = (JSONObject) object.get("response");
-        JSONObject body = (JSONObject) object.get("body");
-        JSONObject items = (JSONObject) body.get("items");
-        JSONArray itemArray = (JSONArray) items.get("item");
+        JsonNode rootNode = objectMapper.readTree(response.getBody());
+        JsonNode responseNode = rootNode.path("response");
+        JsonNode bodyNode = responseNode.path("body");
+        JsonNode itemsNode = bodyNode.path("items");
+        ArrayNode itemArray = (ArrayNode) itemsNode.path("item");
 
 
         Gson gson = new Gson();
         itemArray.forEach(item -> {
-            JSONObject camp = (JSONObject) item;
-
-            CampSiteDto campSite = gson.fromJson(camp.toJSONString(), CampSiteDto.class);
+            CampSiteDto campSite = null;
+            try {
+                campSite = objectMapper.treeToValue(item, CampSiteDto.class);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
 
             campSiteRepository.save(campsiteMapper.toCampsiteEntity(campSite));
         });
         log.info("api 데이터가 등록되었습니다.");
 
-        return itemArray;
+        return itemArray.toString();
     }
 
     @Override

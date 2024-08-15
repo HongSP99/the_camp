@@ -1,6 +1,7 @@
 package io.camp.campsite.controller;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.camp.campsite.model.dto.PagingDto;
 import io.camp.campsite.service.CampSiteService;
 import io.camp.campsite.model.dto.CampSiteDto;
@@ -35,12 +36,9 @@ public class CampsiteController {
 
 
     @GetMapping("/data/{pageNumber}")
-    public String getTweetsBlocking(@PathVariable("pageNumber") String pageNumber) throws URISyntaxException, UnsupportedEncodingException, ParseException {
+    public String getTweetsBlocking(@PathVariable("pageNumber") String pageNumber) throws URISyntaxException, UnsupportedEncodingException, ParseException, JsonProcessingException {
 
-
-
-
-        return campSiteService.insertCampsiteFromJson(pageNumber).toJSONString();
+        return campSiteService.insertCampsiteFromJson(pageNumber);
     }
 
     @GetMapping("/")
