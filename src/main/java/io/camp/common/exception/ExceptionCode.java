@@ -7,6 +7,7 @@ public enum ExceptionCode {
     RESERVATION_NOT_FOUND(404, "예약을 찾을 수 없습니다."),
 
     RESERVATION_CANNOT_BE_CANCELLED(400, "하루 전에는 예약을 취소 할 수 없습니다."),
+    RESERVATION_ALREADY_EXIST(400, "이미 예약이 있습니다."),
 
     //payment
     PAYMENT_NOT_EQUAL_CANCEL(400, "결제 테이블 금액 결제 취소 금액이 일치하지 않습니다."),
