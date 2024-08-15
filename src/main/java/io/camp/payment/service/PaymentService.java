@@ -56,6 +56,7 @@ public class PaymentService {
     private final SeasonService seasonService;
     private final SiteService siteService;
     private final InventoryService inventoryService;
+    private final CouponService couponService;
 
     private static ReservationPostDto getReservationPostDto(PaymentPostDto paymentPostDto, int reservationTotalPrice) {
         ReservationPostDto reservationPostDto = new ReservationPostDto();
@@ -137,6 +138,7 @@ public class PaymentService {
 
             log.info("쿠폰이 적용된 값 : " + seasonPrice);
             InventoryDto inventoryDto = inventoryService.useCoupon(dto.getInvenSeq());
+            couponService.deleteCoupon(dto.getCouponSeq());
         } else {
             throw new InventoryException(ExceptionCode.INVENTORY_ALREADY_USE);
         }
