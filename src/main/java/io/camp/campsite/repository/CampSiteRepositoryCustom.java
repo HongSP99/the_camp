@@ -10,7 +10,5 @@ public interface CampSiteRepositoryCustom {
 
     Campsite findCampsiteWithAllInfo(long id);
 
-    Page<Campsite> findCampsitesByTitleWithPaging(String query, Pageable pageable);
-    Page<Campsite> findCampsitesByRegionWithPaging(String query, Pageable pageable);
-    Page<Campsite> findCampsitesByThemeWithPaging(String query,Pageable pageable);
+    Page<Campsite> searchWithPaging(String query, Pageable pageable , String type);
 }

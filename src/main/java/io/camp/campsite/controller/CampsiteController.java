@@ -1,6 +1,8 @@
 package io.camp.campsite.controller;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import io.camp.campsite.model.dto.PagingDto;
 import io.camp.campsite.service.CampSiteService;
 import io.camp.campsite.model.dto.CampSiteDto;
 import lombok.AllArgsConstructor;
@@ -31,54 +33,18 @@ public class CampsiteController {
 
     private final CampSiteService campSiteService;
 
-    private final String uri = "http://apis.data.go.kr/B551011/GoCamping/basedList?serviceKey=5mZ%2FcSX69J3%2Bg2%2FSS77LbWusUy4KO6ZdvX5KuQBk0o5rXPFpJ4jP%2Fcu6DD74kPm5U2WKJco%2FVSxn9DFqFGKRTw%3D%3D&MobileOS=ETC&MobileApp=AppTest";
+
 
     @GetMapping("/data/{pageNumber}")
-    public String getTweetsBlocking(@PathVariable("pageNumber") String pageNumber) throws URISyntaxException, UnsupportedEncodingException, ParseException {
-        RestTemplate restTemplate = new RestTemplate();
-        JSONParser parser = new JSONParser();
+    public String getTweetsBlocking(@PathVariable("pageNumber") String pageNumber) throws URISyntaxException, UnsupportedEncodingException, ParseException, JsonProcessingException {
 
-        restTemplate.getMessageConverters()
-                .add(0, new StringHttpMessageConverter(StandardCharsets.UTF_8));
-
-        ResponseEntity<String> response = restTemplate.getForEntity(new URI(uri + "&pageNo=" + pageNumber + "&numOfRows=10&_type=Json"), String.class);
-
-        JSONObject object = (JSONObject) parser.parse(response.getBody());
-        object = (JSONObject) object.get("response");
-        JSONObject body = (JSONObject) object.get("body");
-        JSONObject items = (JSONObject) body.get("items");
-        JSONArray itemArray = (JSONArray) items.get("item");
-
-        campSiteService.insertCampsiteFromJson(itemArray);
-
-        return itemArray.toString();
+        return campSiteService.insertCampsiteFromJson(pageNumber);
     }
 
     @GetMapping("/")
-    public Page<CampSiteDto> searchCampsites(
-            @RequestParam(value = "query" , defaultValue = "") String query,
-            @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "size", defaultValue = "9") int size ,
-            @RequestParam(value= "type" , defaultValue = "") String type){
-        Pageable pageable = PageRequest.of(page, size);
-
-        Page<CampSiteDto> result = null;
-        System.out.println(query);
-        System.out.println(type);
-        switch(type){
-            case "title":
-                result = campSiteService.getCampsitesByTitleWithPaging(query,pageable);
-                break;
-            case "region":
-                result = campSiteService.getCampsitesByRegionWithPaging(query,pageable);
-                break;
-            case "theme":
-                result = campSiteService.getCampsitesByThemeWithPaging(query,pageable);
-                break;
-            default:
-                result = campSiteService.getAllPaging(page,6);
-        }
-
+    public Page<CampSiteDto> searchCampsites(PagingDto pagingDto){
+        Pageable pageable = PageRequest.of(pagingDto.getPage(), pagingDto.getSize());
+        Page<CampSiteDto> result = campSiteService.searchCampsitesWithPaging(pagingDto.getQuery(),pageable,pagingDto.getType());
         return result;
     }
 
