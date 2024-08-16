@@ -14,6 +14,7 @@ public class UserReservationDto {
     private String campsiteName;
     private String paymentId;
     private Long invenSeq;
+    private Long siteSeq;
     private Long reservationId;
     private int totalPrice;
     private int adults;
@@ -22,10 +23,11 @@ public class UserReservationDto {
     private LocalDate reserveStartDate;
     private LocalDate reserveEndDate;
 
-    public UserReservationDto(String campsiteName, String paymentId, Long invenSeq, Long reservationId, Integer totalPrice, Integer adults, Integer children, LocalDateTime createdAt, LocalDate reserveStartDate, LocalDate reserveEndDate) {
+    public UserReservationDto(String campsiteName, String paymentId, Long invenSeq, Long siteSeq, Long reservationId, Integer totalPrice, Integer adults, Integer children, LocalDateTime createdAt, LocalDate reserveStartDate, LocalDate reserveEndDate) {
         this.campsiteName = campsiteName;
         this.paymentId = paymentId;
         this.invenSeq = invenSeq;
+        this.siteSeq = siteSeq;
         this.reservationId = reservationId;
         this.totalPrice = totalPrice;
         this.adults = adults;

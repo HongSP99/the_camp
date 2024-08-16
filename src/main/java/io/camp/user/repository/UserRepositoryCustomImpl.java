@@ -33,6 +33,7 @@ public class UserRepositoryCustomImpl implements UserRepositoryCustom {
                         payment.campsiteName.as("campsiteName"),
                         payment.paymentId.as("paymentId"),
                         payment.invenSeq.as("invenSeq"),
+                        reservation.site.seq.as("siteSeq"),
                         reservation.id.as("reservationId"),
                         reservation.totalPrice.as("totalPrice"),
                         reservation.adults.as("adults"),
