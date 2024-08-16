@@ -21,6 +21,7 @@ public class Payment extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
     private String paymentId;
+    private Long invenSeq;
     private String campsiteName;
     private int amountTotal;
     private String amountTaxFree;

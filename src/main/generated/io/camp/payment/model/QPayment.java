@@ -69,6 +69,8 @@ public class QPayment extends EntityPathBase<Payment> {
 
     public final StringPath id = createString("id");
 
+    public final NumberPath<Long> invenSeq = createNumber("invenSeq", Long.class);
+
     public final StringPath isCulturalExpense = createString("isCulturalExpense");
 
     public final BooleanPath isDeleted = createBoolean("isDeleted");
