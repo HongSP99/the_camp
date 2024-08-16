@@ -23,8 +23,8 @@ public class CouponController {
 
     @GetMapping
     public ResponseEntity<MultiResponseDto<Coupon>> getAllCoupons(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Coupon> couponPage = couponService.getAllCoupons(pageable);
 
