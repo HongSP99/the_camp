@@ -1,5 +1,7 @@
 package io.camp.coupon.controller;
 
+import io.camp.common.dto.MultiResponseDto;
+import io.camp.common.dto.SingleResponseDto;
 import io.camp.coupon.model.dto.Coupon;
 import io.camp.coupon.service.CouponService;
 import org.springframework.data.domain.Page;
@@ -20,30 +22,33 @@ public class CouponController {
     }
 
     @GetMapping
-    public Page<Coupon> getAllCoupons(
+    public ResponseEntity<MultiResponseDto<Coupon>> getAllCoupons(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return couponService.getAllCoupons(pageable);
+        Page<Coupon> couponPage = couponService.getAllCoupons(pageable);
+
+        MultiResponseDto<Coupon> response = new MultiResponseDto<>(couponPage.getContent(), couponPage);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Coupon> getCouponById(@PathVariable("id") Long id) {
+    public ResponseEntity<SingleResponseDto<Coupon>> getCouponById(@PathVariable("id") Long id) {
         return couponService.getCouponById(id)
-                .map(ResponseEntity::ok)
+                .map(coupon -> ResponseEntity.ok(new SingleResponseDto<>(coupon)))
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public ResponseEntity<Coupon> createCoupon(@RequestBody Coupon coupon) {
+    public ResponseEntity<SingleResponseDto<Coupon>> createCoupon(@RequestBody Coupon coupon) {
         Coupon createdCoupon = couponService.createCoupon(coupon);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdCoupon);
+        return ResponseEntity.status(HttpStatus.CREATED).body(new SingleResponseDto<>(createdCoupon));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Coupon> updateCoupon(@PathVariable("id") Long id, @RequestBody Coupon couponDetails) {
+    public ResponseEntity<SingleResponseDto<Coupon>> updateCoupon(@PathVariable("id") Long id, @RequestBody Coupon couponDetails) {
         return couponService.updateCoupon(id, couponDetails)
-                .map(ResponseEntity::ok)
+                .map(coupon -> ResponseEntity.ok(new SingleResponseDto<>(coupon)))
                 .orElse(ResponseEntity.notFound().build());
     }
 
