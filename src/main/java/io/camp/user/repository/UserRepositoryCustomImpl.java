@@ -32,6 +32,7 @@ public class UserRepositoryCustomImpl implements UserRepositoryCustom {
                 .select(Projections.constructor(UserReservationDto.class,
                         payment.campsiteName.as("campsiteName"),
                         payment.paymentId.as("paymentId"),
+                        payment.invenSeq.as("invenSeq"),
                         reservation.id.as("reservationId"),
                         reservation.totalPrice.as("totalPrice"),
                         reservation.adults.as("adults"),

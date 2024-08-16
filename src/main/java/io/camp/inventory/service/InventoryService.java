@@ -76,6 +76,18 @@ public class InventoryService {
         return inventory.toDto();
     }
 
+    public InventoryDto rollbackCoupon(Long invenSeq) {
+        Inventory inventory = inventoryRepository.findById(invenSeq)
+                .orElseThrow(() -> new InventoryException(ExceptionCode.INVENTORY_NOT_FOUND));
+        inventory.setUse(false);
+        inventoryRepository.save(inventory);
+        return inventory.toDto();
+    }
+
+    public Inventory findbyInvenSeq(Long invenSeq){
+        return inventoryRepository.findById(invenSeq).orElse(null);
+    }
+
     //신규 가입자 웰컴 쿠폰 제공.
     public void grantWelcomeCoupon(User user) {
         Coupon welcomeCoupon = couponRepository.findById(1L).orElse(null);
