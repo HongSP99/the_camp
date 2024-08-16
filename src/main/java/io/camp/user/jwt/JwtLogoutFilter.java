@@ -24,7 +24,6 @@ public class JwtLogoutFilter extends GenericFilterBean {
         this.refreshRepository = refreshRepository;
     }
 
-
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         doFilter((HttpServletRequest) request, (HttpServletResponse) response, chain);
@@ -45,6 +44,7 @@ public class JwtLogoutFilter extends GenericFilterBean {
             return;
         }
 
+        // Refresh 토큰 추출
         String refresh = null;
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
@@ -80,14 +80,18 @@ public class JwtLogoutFilter extends GenericFilterBean {
 
         refreshRepository.deleteByRefresh(refresh);
 
-        // Create a cookie with the same properties as the one you want to delete
-        Cookie cookie = new Cookie("refresh", "");
-        cookie.setMaxAge(0); // 쿠키 만료 시간 설정
-        cookie.setPath("/"); // 쿠키 경로 설정 (설정한 경로와 일치해야 함)
-        cookie.setHttpOnly(true); // HttpOnly 설정
-        cookie.setSecure(false); // Secure 설정 (HTTPS를 사용하는 경우 true로 설정)
-        response.addCookie(cookie);
+        // 모든 쿠키 삭제
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                cookie.setValue("");
+                cookie.setMaxAge(0);
+                cookie.setPath("/"); // 모든 경로에서 쿠키가 유효하도록 설정
+                cookie.setHttpOnly(true);
+                cookie.setSecure(false); // HTTPS 사용 시 true로 설정
+                response.addCookie(cookie);
+            }
+        }
+
+
     }
-
-
 }

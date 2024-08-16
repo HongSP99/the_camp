@@ -1,14 +1,10 @@
 package io.camp.campsite.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.google.gson.annotations.Expose;
-import io.camp.reservation.model.Reservation;
 import io.camp.review.model.Review;
 import jakarta.persistence.*;
 import lombok.*;
 
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity

@@ -1,5 +1,10 @@
 package io.camp.campsite.service.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.google.gson.Gson;
 import io.camp.campsite.mapper.CampsiteMapper;
 import io.camp.campsite.model.dto.CampSiteDto;
@@ -12,32 +17,64 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 
 @Service
 @Slf4j
 @AllArgsConstructor
 public class CampSiteServiceImpl implements CampSiteService {
+    private final String uri = "http://apis.data.go.kr/B551011/GoCamping/basedList?serviceKey=5mZ%2FcSX69J3%2Bg2%2FSS77LbWusUy4KO6ZdvX5KuQBk0o5rXPFpJ4jP%2Fcu6DD74kPm5U2WKJco%2FVSxn9DFqFGKRTw%3D%3D&MobileOS=ETC&MobileApp=AppTest";
 
     private final CampSiteRepository campSiteRepository;
     private final CampsiteMapper campsiteMapper;
 
     @Override
     @Transactional
-    public void insertCampsiteFromJson(JSONArray campsiteArray) {
-        Gson gson = new Gson();
-        campsiteArray.forEach(item -> {
-            JSONObject object = (JSONObject) item;
+    public String insertCampsiteFromJson(String pageNumber) throws URISyntaxException, JsonProcessingException {
+        RestTemplate restTemplate = new RestTemplate();
+        ObjectMapper objectMapper = new ObjectMapper();
 
-            CampSiteDto campSite = gson.fromJson(object.toJSONString(), CampSiteDto.class);
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+        restTemplate.getMessageConverters()
+                .add(0, new StringHttpMessageConverter(StandardCharsets.UTF_8));
+
+        ResponseEntity<String> response = restTemplate.getForEntity(new URI(uri + "&pageNo=" + pageNumber + "&numOfRows=10&_type=Json"), String.class);
+
+        JsonNode rootNode = objectMapper.readTree(response.getBody());
+        JsonNode responseNode = rootNode.path("response");
+        JsonNode bodyNode = responseNode.path("body");
+        JsonNode itemsNode = bodyNode.path("items");
+        ArrayNode itemArray = (ArrayNode) itemsNode.path("item");
+
+
+        Gson gson = new Gson();
+        itemArray.forEach(item -> {
+            CampSiteDto campSite = null;
+            try {
+                campSite = objectMapper.treeToValue(item, CampSiteDto.class);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
 
             campSiteRepository.save(campsiteMapper.toCampsiteEntity(campSite));
         });
         log.info("api 데이터가 등록되었습니다.");
+
+        return itemArray.toString();
     }
 
     @Override
@@ -72,21 +109,8 @@ public class CampSiteServiceImpl implements CampSiteService {
        return campsiteDto;
     }
 
-
-    public Page<CampSiteDto> getCampsitesByTitleWithPaging(String query, Pageable pageable){
-       Page<Campsite> campsites = campSiteRepository.findCampsitesByTitleWithPaging(query,pageable);
-       Page<CampSiteDto> campsiteDtos = campsites.map(campsiteMapper::toCampsiteDto);
-       return campsiteDtos;
-    }
-
-    public Page<CampSiteDto> getCampsitesByRegionWithPaging(String query, Pageable pageable){
-        Page<Campsite> campsites = campSiteRepository.findCampsitesByRegionWithPaging(query,pageable);
-        Page<CampSiteDto> campsiteDtos = campsites.map(campsiteMapper::toCampsiteDto);
-        return campsiteDtos;
-    }
-
-    public Page<CampSiteDto> getCampsitesByThemeWithPaging(String query, Pageable pageable){
-        Page<Campsite> campsites = campSiteRepository.findCampsitesByThemeWithPaging(query,pageable);
+    public Page<CampSiteDto> searchCampsitesWithPaging(String query, Pageable pageable,String type){
+        Page<Campsite> campsites = campSiteRepository.searchWithPaging(query,pageable,type);
         Page<CampSiteDto> campSiteDtos = campsites.map(campsiteMapper::toCampsiteDto);
         return campSiteDtos;
     }

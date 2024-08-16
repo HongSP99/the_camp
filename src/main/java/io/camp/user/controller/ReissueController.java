@@ -1,10 +1,14 @@
 package io.camp.user.controller;
 
+import io.camp.common.exception.ExceptionCode;
+import io.camp.common.exception.user.CustomException;
 import io.camp.user.jwt.JwtTokenUtil;
 import io.camp.user.model.RefreshEntity;
 import io.camp.user.model.UserRole;
 import io.camp.user.repository.RefreshRepository;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.swagger.v3.oas.annotations.media.Content;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -16,6 +20,9 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Date;
 
 @RestController
@@ -31,11 +38,15 @@ public class ReissueController {
 
     @Operation(summary = "JWT 토큰 재발급", description = "제공된 리프레시 토큰이 유효한 경우 JWT 접근 토큰과 리프레시 토큰을 재발급합니다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "토큰이 성공적으로 재발급되었습니다."),
-            @ApiResponse(responseCode = "400", description = "유효하지 않거나 만료된 리프레시 토큰입니다."),
+            @ApiResponse(responseCode = "200", description = "토큰이 성공적으로 재발급되었습니다.", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "400", description = "유효하지 않은 리프레시 토큰입니다.", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "401", description = "만료된 리프레시 토큰입니다.", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "404", description = "리프레시 토큰을 찾을 수 가 없음 ", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "405", description = "잘못된 메서드 요청", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "500", description = "서버 에러", content = @Content(mediaType = "application/json"))
     })
     @PostMapping("/reissue")
-    public ResponseEntity<?> reissue(HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<?> reissue(HttpServletRequest request, HttpServletResponse response) throws IOException {
         // 리프레시 토큰 가져오기
         String refresh = null;
         Cookie[] cookies = request.getCookies();
@@ -46,29 +57,42 @@ public class ReissueController {
         }
 
         if (refresh == null) {
-            return new ResponseEntity<>("리프레시 토큰이 없습니다", HttpStatus.BAD_REQUEST);
+            PrintWriter writer = response.getWriter();
+            writer.print("리프레시 토큰을 찾을 수 없습니다.");
+            throw new CustomException(ExceptionCode.REFRESH_TOKEN_NOT_FOUND);
         }
 
         // 만료 여부 확인
         try {
             jwtTokenUtil.isExpired(refresh);
-        } catch (ExpiredJwtException e) {
-            return new ResponseEntity<>("리프레시 토큰이 만료되었습니다", HttpStatus.BAD_REQUEST);
+        }catch (ExpiredJwtException e) {
+            PrintWriter writer = response.getWriter();
+            writer.print("리프레시 토큰이 만료되었습니다.");
+            throw new CustomException(ExceptionCode.REFRESH_TOKEN_EXPIRED);
+        } catch (MalformedJwtException e) {
+            PrintWriter writer = response.getWriter();
+            writer.print("지원하는 토큰 타입이 아닙니다.");
+            throw new CustomException(ExceptionCode.UNSUPPORTED_TOKEN_TYPE);
         }
 
-        // 토큰 카테고리 확인
+
+
+
         String category = jwtTokenUtil.getCategory(refresh);
         if (!category.equals("refresh")) {
-            return new ResponseEntity<>("유효하지 않은 리프레시 토큰입니다", HttpStatus.BAD_REQUEST);
+            PrintWriter writer = response.getWriter();
+            writer.print("유효하지 않은 리프레쉬 토큰입니다.");
+            throw new CustomException(ExceptionCode.REFRESH_TOKEN_NOT_FOUND);
         }
 
         Boolean isExist = refreshRepository.existsByRefresh(refresh);
         if (!isExist) {
-            return new ResponseEntity<>("유효하지 않은 리프레시 토큰입니다", HttpStatus.BAD_REQUEST);
+            PrintWriter writer = response.getWriter();
+            writer.print("리프레쉬 토큰을 찾을수 없습니다.");
+            throw new CustomException(ExceptionCode.REFRESH_TOKEN_NOT_FOUND);
         }
 
         String email = jwtTokenUtil.getEmail(refresh);
-        String password = jwtTokenUtil.getPassword(refresh);
         UserRole role = jwtTokenUtil.getRole(refresh);
         String name = jwtTokenUtil.getName(refresh);
         String birthday = jwtTokenUtil.getBirthDay(refresh);
@@ -77,11 +101,11 @@ public class ReissueController {
         Long seq = jwtTokenUtil.getSeq(refresh);
 
         // 새 JWT 생성
-        String newAuthorization = jwtTokenUtil.createToken("Authorization", email, password, role.getKey(), name, birthday, phoneNumber, gender, seq, 600000L);
-        String newRefresh = jwtTokenUtil.createToken("refresh", email, password, role.getKey(), name, birthday, phoneNumber, gender, seq, 86400000L);
+        String newAuthorization = jwtTokenUtil.createToken("Authorization", email,  role.getKey(), name, birthday, phoneNumber, gender, seq, 600000L);
+        String newRefresh = jwtTokenUtil.createToken("refresh", email,  role.getKey(), name, birthday, phoneNumber, gender, seq, 86400000L);
 
         refreshRepository.deleteByRefresh(refresh);
-        addRefreshEntity(email, newRefresh, name, password, birthday, phoneNumber, gender, seq, 86400000L);
+        addRefreshEntity(email, newRefresh, name,  birthday, phoneNumber, gender, seq, 86400000L);
 
         // 응답 설정
         response.setHeader("Authorization", newAuthorization);
@@ -89,14 +113,21 @@ public class ReissueController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+
+
     @Operation(summary = "인증 상태 확인", description = "제공된 리프레시 토큰이 유효하고 만료되지 않았는지 확인합니다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "토큰이 유효합니다."),
-            @ApiResponse(responseCode = "401", description = "유효하지 않거나 만료된 리프레시 토큰입니다."),
+            @ApiResponse(responseCode = "200", description = " 리프레시 토큰이 유효", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "400", description = "유효하지 않은 리프레시 토큰", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "401", description = " 만료된 리프레시 토큰입니다.", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "404", description = " 리프레시 토큰을 찾을 수 가 없음", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "405", description = " 잘못된 메서드 요청", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "500", description = " 서버 에러", content = @Content(mediaType = "application/json"))
     })
-    @GetMapping("/api/auth")
-    public ResponseEntity<?> checkAuth(HttpServletRequest request) {
+    @GetMapping("/auth")
+    public ResponseEntity<?> checkAuth(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String refresh = null;
+
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
@@ -107,23 +138,38 @@ public class ReissueController {
         }
 
         if (refresh == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("리프레시 토큰이 없습니다.");
+            PrintWriter writer = response.getWriter();
+            writer.print("리프레시 토큰을 찾을 수 없습니다.");
+            throw new CustomException(ExceptionCode.REFRESH_TOKEN_NOT_FOUND);
         }
 
         try {
             jwtTokenUtil.isExpired(refresh);
-        } catch (ExpiredJwtException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("리프레시 토큰이 만료되었습니다.");
+        }catch (ExpiredJwtException e) {
+            PrintWriter writer = response.getWriter();
+            writer.print("리프레시 토큰이 만료되었습니다.");
+            throw new CustomException(ExceptionCode.REFRESH_TOKEN_EXPIRED);
+        } catch (MalformedJwtException e) {
+            PrintWriter writer = response.getWriter();
+            writer.print("지원하는 토큰 타입이 아닙니다.");
+            throw new CustomException(ExceptionCode.UNSUPPORTED_TOKEN_TYPE);
         }
+
+
+
 
         String category = jwtTokenUtil.getCategory(refresh);
         if (!category.equals("refresh")) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("유효하지 않은 리프레시 토큰입니다.");
+            PrintWriter writer = response.getWriter();
+            writer.print("유효하지 않은 리프레쉬 토큰입니다.");
+            throw new CustomException(ExceptionCode.REFRESH_TOKEN_NOT_FOUND);
         }
 
         Boolean isExist = refreshRepository.existsByRefresh(refresh);
         if (!isExist) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("유효하지 않은 리프레시 토큰입니다.");
+            PrintWriter writer = response.getWriter();
+            writer.print("리프레쉬 토큰을 찾을수 없습니다.");
+            throw new CustomException(ExceptionCode.REFRESH_TOKEN_NOT_FOUND);
         }
 
         return ResponseEntity.ok().body("인증되었습니다.");
@@ -136,13 +182,12 @@ public class ReissueController {
         return cookie;
     }
 
-    private void addRefreshEntity(String username, String refresh, String password, String name, String birthday, String phoneNumber, String gender, Long seq, Long expiredMs) {
+    private void addRefreshEntity(String username, String refresh,  String name, String birthday, String phoneNumber, String gender, Long seq, Long expiredMs) {
         Date date = new Date(System.currentTimeMillis() + expiredMs);
 
         RefreshEntity refreshEntity = new RefreshEntity();
         refreshEntity.setUsername(username);
         refreshEntity.setRefresh(refresh);
-        refreshEntity.setPassword(password);
         refreshEntity.setName(name);
         refreshEntity.setBirthday(birthday);
         refreshEntity.setPhoneNumber(phoneNumber);

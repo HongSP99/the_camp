@@ -1,8 +1,14 @@
 package io.camp.campsite.controller;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import io.camp.campsite.model.dto.PagingDto;
 import io.camp.campsite.service.CampSiteService;
 import io.camp.campsite.model.dto.CampSiteDto;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.AllArgsConstructor;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -31,62 +37,42 @@ public class CampsiteController {
 
     private final CampSiteService campSiteService;
 
-    private final String uri = "http://apis.data.go.kr/B551011/GoCamping/basedList?serviceKey=5mZ%2FcSX69J3%2Bg2%2FSS77LbWusUy4KO6ZdvX5KuQBk0o5rXPFpJ4jP%2Fcu6DD74kPm5U2WKJco%2FVSxn9DFqFGKRTw%3D%3D&MobileOS=ETC&MobileApp=AppTest";
 
+    @Operation(summary = "캠핑장 정보 api로 가져오기", description = "캠핑장 정보를 api로 불러와서 db에 저장")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "요청에 성공하였습니다.", content = @Content(mediaType = "application/json")),
+    })
     @GetMapping("/data/{pageNumber}")
-    public String getTweetsBlocking(@PathVariable("pageNumber") String pageNumber) throws URISyntaxException, UnsupportedEncodingException, ParseException {
-        RestTemplate restTemplate = new RestTemplate();
-        JSONParser parser = new JSONParser();
+    public String getTweetsBlocking(@PathVariable("pageNumber") String pageNumber) throws URISyntaxException, UnsupportedEncodingException, ParseException, JsonProcessingException {
 
-        restTemplate.getMessageConverters()
-                .add(0, new StringHttpMessageConverter(StandardCharsets.UTF_8));
-
-        ResponseEntity<String> response = restTemplate.getForEntity(new URI(uri + "&pageNo=" + pageNumber + "&numOfRows=10&_type=Json"), String.class);
-
-        JSONObject object = (JSONObject) parser.parse(response.getBody());
-        object = (JSONObject) object.get("response");
-        JSONObject body = (JSONObject) object.get("body");
-        JSONObject items = (JSONObject) body.get("items");
-        JSONArray itemArray = (JSONArray) items.get("item");
-
-        campSiteService.insertCampsiteFromJson(itemArray);
-
-        return itemArray.toString();
+        return campSiteService.insertCampsiteFromJson(pageNumber);
     }
 
-    @GetMapping("/searchCampsites")
-    public Page<CampSiteDto> searchCampsites(
-            @RequestParam(value = "query" , defaultValue = "") String query,
-            @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "size", defaultValue = "9") int size ,
-            @RequestParam(value= "type" , defaultValue = "") String type){
-        Pageable pageable = PageRequest.of(page, size);
 
-        Page<CampSiteDto> result = null;
-        System.out.println(query);
-        System.out.println(type);
-        switch(type){
-            case "title":
-                result = campSiteService.getCampsitesByTitleWithPaging(query,pageable);
-                break;
-            case "region":
-                result = campSiteService.getCampsitesByRegionWithPaging(query,pageable);
-                break;
-            case "theme":
-                result = campSiteService.getCampsitesByThemeWithPaging(query,pageable);
-                break;
-            default:
-                result = campSiteService.getAllPaging(page,6);
-        }
-
+    @Operation(summary = "캠핑장 쿼리문과 타입으로 검색", description = "캠핑장 정보를 검색 해서 페이징 정보와 함께 리턴")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "요청에 성공하였습니다.", content = @Content(mediaType = "application/json")),
+    })
+    @GetMapping("/")
+    public Page<CampSiteDto> searchCampsites(PagingDto pagingDto){
+        Pageable pageable = PageRequest.of(pagingDto.getPage(), pagingDto.getSize());
+        Page<CampSiteDto> result = campSiteService.searchCampsitesWithPaging(pagingDto.getQuery(),pageable,pagingDto.getType());
         return result;
     }
 
+    @Operation(summary = "모든 캠핑장 검색", description = "모든 캠핑장 정보를 검색 해서 페이징 정보와 함께 리턴")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "요청에 성공하였습니다.", content = @Content(mediaType = "application/json")),
+    })
     @GetMapping
     public Page<CampSiteDto> getCampsitesWithPaging(@RequestParam(name = "page" ,defaultValue = "0") int page , @RequestParam(name = "size" , defaultValue = "6") int size){
         return campSiteService.getAllPaging(page,size);
     }
 
+    @Operation(summary = "캠핑장 id로 검색", description = "캠핑장 정보를 id로 검색")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "요청에 성공하였습니다.", content = @Content(mediaType = "application/json")),
+    })
     @GetMapping("/{id}")
     public CampSiteDto getCampsiteById(@PathVariable("id") int id){
         CampSiteDto campSiteDto = campSiteService.getCampsiteBySeq(id);
@@ -95,6 +81,10 @@ public class CampsiteController {
     }
 
 
+    @Operation(summary = "캠핑장 id로 검색 (존 과 구역 정보 포함)", description = "캠핑장 정보를 id로 검색 존과 구역 정보 포함")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "요청에 성공하였습니다.", content = @Content(mediaType = "application/json")),
+    })
     @GetMapping("/zone/site/{id}")
     public ResponseEntity<CampSiteDto> getCampsiteWithAll(@PathVariable("id") long id){
 

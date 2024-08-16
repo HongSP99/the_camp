@@ -54,7 +54,6 @@ public class JwtOncePerRequestFilter extends OncePerRequestFilter {
         }
 
         String email = jwtTokenUtil.getEmail(authorizationToken);
-        String password = jwtTokenUtil.getPassword(authorizationToken);
         UserRole role = jwtTokenUtil.getRole(authorizationToken);
         String birthday = jwtTokenUtil.getBirthDay(authorizationToken);
         String phoneNumber = jwtTokenUtil.getPhoneNumber(authorizationToken);
@@ -65,7 +64,6 @@ public class JwtOncePerRequestFilter extends OncePerRequestFilter {
 
         User user = new User();
         user.setEmail(email);
-        user.setPassword(password);
         user.setRole(role);
         user.setBirthday(birthday);
         user.setPhoneNumber(phoneNumber);

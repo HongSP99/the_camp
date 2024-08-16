@@ -1,13 +1,12 @@
-package io.camp.common.exception;
+/* package io.camp.common.exception;
 
 
 import io.camp.common.exception.Campsite.SeasonAlreadyExsistException;
+import io.camp.common.exception.inventory.InventoryException;
 import io.camp.common.exception.payment.PaymentException;
 import io.camp.common.exception.reservation.ReservationException;
-import io.camp.common.exception.user.AuthorizationException;
-import io.camp.common.exception.user.MailSendFailedException;
-import io.camp.common.exception.user.UserAnonymousException;
-import io.camp.common.exception.user.VerifyCodeNotFoundException;
+import io.camp.common.exception.review.ReviewNotAuthorException;
+import io.camp.common.exception.user.*;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -57,6 +56,11 @@ public class GlobalExceptionHandler {
 
         return response;
     }
+    @ExceptionHandler(CustomException.class)
+    public ResponseEntity<ErrorResponse> handleCustomException(CustomException ex) {
+        ErrorResponse response = ErrorResponse.of(ex.getExceptionCode());
+        return new ResponseEntity<>(response, HttpStatus.valueOf(ex.getExceptionCode().getStatus()));
+    }
 
     //JSON 형식에 오류가 있을 경우
     @ExceptionHandler
@@ -86,6 +90,47 @@ public class GlobalExceptionHandler {
         ErrorResponse response = ErrorResponse.of(e.getExceptionCode());
         return new ResponseEntity<>(response, HttpStatus.valueOf(e.getExceptionCode().getStatus()));
     }
+
+    @ExceptionHandler
+    public ResponseEntity handleInventoryException(
+            InventoryException e) {
+        ErrorResponse response = ErrorResponse.of(e.getExceptionCode());
+        return new ResponseEntity<>(response, HttpStatus.valueOf(e.getExceptionCode().getStatus()));
+    }
+
+
+    // 인증 관련 예외 처리
+    @ExceptionHandler(AuthorizationException.class)
+    public ResponseEntity<ErrorResponse> handleAuthorizationException(AuthorizationException e) {
+        ErrorResponse response = ErrorResponse.of(e.getExceptionCode());
+        return new ResponseEntity<>(response, HttpStatus.valueOf(e.getExceptionCode().getStatus()));
+    }
+
+    // 메일 전송 실패 예외 처리
+    @ExceptionHandler(MailSendFailedException.class)
+    public ResponseEntity<ErrorResponse> handleMailSendFailedException(MailSendFailedException e) {
+        ErrorResponse response = ErrorResponse.of(ExceptionCode.MAIL_SEND_FAILED);
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    // 인증 코드 검증 실패 예외 처리
+    @ExceptionHandler(VerifyCodeNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleVerifyCodeNotFoundException(VerifyCodeNotFoundException e) {
+        ErrorResponse response = ErrorResponse.of(ExceptionCode.VERIFY_CODE_NOTFOUND);
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
+    //리뷰 작성자 불일치 예외 처리
+    @ExceptionHandler(ReviewNotAuthorException.class)
+    public ResponseEntity<ErrorResponse> handleVerifyCodeNotFoundException(ReviewNotAuthorException e) {
+        ErrorResponse response = ErrorResponse.of(ExceptionCode.REVIEW_NOT_AUTHOR);
+        return new ResponseEntity<>(response, HttpStatus.valueOf(e.getExceptionCode().getStatus()));
+    }
+
+
+
+
+
 
 
     // 인증 관련 예외 처리
@@ -117,6 +162,7 @@ public class GlobalExceptionHandler {
 
 
     //위에 명시된 예외 외의 모든 예외 처리
+    //위에 명시된 예외 외의 모든 예외 처리
     @ExceptionHandler
     public ResponseEntity handlePaymentException(
             PaymentException e) {
@@ -132,4 +178,4 @@ public class GlobalExceptionHandler {
 
     }
 
-}
+} */

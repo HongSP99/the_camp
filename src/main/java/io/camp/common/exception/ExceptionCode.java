@@ -7,13 +7,18 @@ public enum ExceptionCode {
     RESERVATION_NOT_FOUND(404, "예약을 찾을 수 없습니다."),
 
     RESERVATION_CANNOT_BE_CANCELLED(400, "하루 전에는 예약을 취소 할 수 없습니다."),
+    RESERVATION_ALREADY_EXIST(400, "이미 예약이 있습니다."),
 
     //payment
+    PAYMENT_ALREADY_RESERVATION(409, "이미 결제된 예약입니다."),
     PAYMENT_NOT_EQUAL_CANCEL(400, "결제 테이블 금액 결제 취소 금액이 일치하지 않습니다."),
     PAYMENT_NOT_EQUAL_RESERVATION(400, "결제 테이블 금액 결제 취소 금액이 일치하지 않습니다."),
     PAYMENT_IMPORT_TYPE(404, "결제 API가 재대로 호출되지 않았습니다."),
 
-
+    //inventory
+    INVENTORY_NOT_FOUND(404, "해당 쿠폰을 찾을 수 없습니다."),
+    INVENTORY_NOT_USE(400, "쿠폰이 만료되었습니다."),
+    INVENTORY_ALREADY_USE(400, "이미 쿠폰을 사용하셨습니다."),
 
     //공통 부분
     BAD_REQUEST(400, "Invalid request."),
@@ -58,7 +63,11 @@ public enum ExceptionCode {
     EMAIL_ALREADY_EXISTS(409, "이미 존재하는 이메일입니다."),
     INVALID_PASSWORD(400, "잘못된 비밀번호입니다."),
     UNREGISTERED_EMAIL(404, "등록되지 않은 이메일입니다."),
-    USER_INVALID(400,"유효한 사용자가 아닙니다.");
+    USER_INVALID(400,"유효한 사용자가 아닙니다."),
+
+
+    //리뷰
+    REVIEW_NOT_AUTHOR(400, "작성자가 아닙니다");
 
 
     @Getter

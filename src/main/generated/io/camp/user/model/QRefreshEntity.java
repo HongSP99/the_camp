@@ -27,8 +27,6 @@ public class QRefreshEntity extends EntityPathBase<RefreshEntity> {
 
     public final StringPath name = createString("name");
 
-    public final StringPath password = createString("password");
-
     public final StringPath phoneNumber = createString("phoneNumber");
 
     public final StringPath refresh = createString("refresh");
