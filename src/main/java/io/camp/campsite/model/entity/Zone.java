@@ -45,6 +45,9 @@ public class Zone {
     @Column
     private int bestPeakSeasonPrice;
 
+    @Column(name = "max_night")
+    private int maxNight;
+
     @ManyToOne
     private Campsite campsite;
 
@@ -64,6 +67,7 @@ public class Zone {
                 .offSeasonPrice(offSeasonPrice)
                 .peakSeasonPrice(peakSeasonPrice)
                 .bestPeakSeasonPrice(bestPeakSeasonPrice)
+                .maxNight(maxNight)
                 .sites(siteDtos).build();
     }
 }

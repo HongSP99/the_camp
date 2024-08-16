@@ -101,6 +101,7 @@ public class MailService {
     }
 
     @Scheduled(cron = "0 */3 * * * *") // 매 3분마다 실행
+    @Transactional
     public void deleteExpiredAuthCodes() {
         LocalDateTime now = LocalDateTime.now();
         authCodeRepository.deleteByExpiresAtBefore(now);
