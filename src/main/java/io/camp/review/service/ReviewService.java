@@ -73,8 +73,6 @@ public class ReviewService {
             return convertToDto(savedReview);
     }
 
-    //캠핑장 상세 리뷰 목록 조회
-
     //캠핑장 전체 리뷰 조회(최신순), 이미지 있음
     @Transactional(readOnly = true)
     public Page<ReviewDto> getReview(Long campsiteId, int page, int size, String type) {
@@ -94,9 +92,17 @@ public class ReviewService {
     }
 
     public Page<ReviewDto> getAllReviewSort(int page, int size, String type) {
-        System.out.println("type : " + type);
-        Pageable Pageable = PageRequest.of(page, size, Sort.by(type).descending());
-        return reviewRepository.getAllReviewSort(Pageable);
+        Pageable pageable = PageRequest.of(page, size, Sort.by(type).descending());
+        Page<ReviewDto> reviewPage = reviewRepository.getAllReviewSort(pageable);
+        List<ReviewDto> reviewDtosWithImages = reviewPage.getContent().stream().map(reviewDto -> {
+            List<Image> images = imageRepository.findByReviewId(reviewDto.getId());
+            List<ImageDTO> imageDTOs = images.stream()
+                    .map(this::convertToImageDto)
+                    .collect(Collectors.toList());
+            reviewDto.setImages(imageDTOs);
+            return reviewDto;
+        }).collect(Collectors.toList());
+        return new PageImpl<>(reviewDtosWithImages, pageable, reviewPage.getTotalElements());
     }
 
     //리뷰 수정
