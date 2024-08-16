@@ -63,11 +63,11 @@ public class MailController {
 
     @Operation(summary = "임시 비밀번호 설정", description = "해당 이메일의 임시 비밀번호를 만들어 제공함")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "임시 비밀번호 전송 완료", content = @Content(mediaType = "application/x-www-form-urlencoded")),
-            @ApiResponse(responseCode = "400", description = "잘못된 요청", content = @Content(mediaType = "application/x-www-form-urlencoded")),
-            @ApiResponse(responseCode = "404", description = "등록되지 않은 이메일", content = @Content(mediaType = "application/x-www-form-urlencoded")),
-            @ApiResponse(responseCode = "405", description = "잘못된 메서드 타입", content = @Content(mediaType = "application/x-www-form-urlencoded")),
-            @ApiResponse(responseCode = "500", description = "임시 비밀번호 전송 실패", content = @Content(mediaType = "application/x-www-form-urlencoded"))
+            @ApiResponse(responseCode = "200", description = "임시 비밀번호 전송 완료", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "404", description = "등록되지 않은 이메일", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "405", description = "잘못된 메서드 타입", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "500", description = "임시 비밀번호 전송 실패", content = @Content(mediaType = "application/json"))
     })
     @Parameters({
             @Parameter(name = "email", description = "임시 비밀번호를 전송할 이메일 주소", required = true)
