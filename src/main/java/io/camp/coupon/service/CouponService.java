@@ -2,10 +2,14 @@ package io.camp.coupon.service;
 
 import io.camp.coupon.model.dto.Coupon;
 import io.camp.coupon.repository.CouponRepository;
+import io.camp.user.model.User;
+import io.camp.user.repository.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -13,9 +17,11 @@ import java.util.Optional;
 public class CouponService {
 
     private final CouponRepository couponRepository;
+    private final UserRepository userRepository;
 
-    public CouponService(CouponRepository couponRepository) {
+    public CouponService(CouponRepository couponRepository, UserRepository userRepository) {
         this.couponRepository = couponRepository;
+        this.userRepository = userRepository;
     }
 
     public Page<Coupon> getAllCoupons(Pageable pageable) {
@@ -26,12 +32,14 @@ public class CouponService {
         return couponRepository.findById(id);
     }
 
+    @Transactional
     public Coupon createCoupon(Coupon coupon) {
-        coupon.setCreateDate(LocalDateTime.now());
+        coupon.setCreateDate(LocalDate.now());
         coupon.setDeleted(false);
         return couponRepository.save(coupon);
     }
 
+    @Transactional
     public Optional<Coupon> updateCoupon(Long id, Coupon couponDetails) {
         return couponRepository.findById(id).map(coupon -> {
             coupon.setName(couponDetails.getName());
@@ -42,6 +50,7 @@ public class CouponService {
         });
     }
 
+    @Transactional
     public boolean deleteCoupon(Long id) {
         return couponRepository.findById(id).map(coupon -> {
             coupon.setDeleted(true);

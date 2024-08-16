@@ -7,6 +7,7 @@ import com.querydsl.core.types.dsl.*;
 import com.querydsl.core.types.PathMetadata;
 import javax.annotation.processing.Generated;
 import com.querydsl.core.types.Path;
+import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
@@ -17,13 +18,15 @@ public class QCoupon extends EntityPathBase<Coupon> {
 
     private static final long serialVersionUID = 1075857213L;
 
+    private static final PathInits INITS = PathInits.DIRECT2;
+
     public static final QCoupon coupon = new QCoupon("coupon");
 
-    public final DateTimePath<java.time.LocalDateTime> createDate = createDateTime("createDate", java.time.LocalDateTime.class);
+    public final DatePath<java.time.LocalDate> createDate = createDate("createDate", java.time.LocalDate.class);
 
     public final NumberPath<Integer> discountRate = createNumber("discountRate", Integer.class);
 
-    public final DateTimePath<java.time.LocalDateTime> expireDate = createDateTime("expireDate", java.time.LocalDateTime.class);
+    public final DatePath<java.time.LocalDate> expireDate = createDate("expireDate", java.time.LocalDate.class);
 
     public final BooleanPath isDeleted = createBoolean("isDeleted");
 
@@ -31,18 +34,29 @@ public class QCoupon extends EntityPathBase<Coupon> {
 
     public final NumberPath<Long> seq = createNumber("seq", Long.class);
 
-    public final StringPath type = createString("type");
+    public final EnumPath<CouponType> type = createEnum("type", CouponType.class);
+
+    public final io.camp.user.model.QUser user;
 
     public QCoupon(String variable) {
-        super(Coupon.class, forVariable(variable));
+        this(Coupon.class, forVariable(variable), INITS);
     }
 
     public QCoupon(Path<? extends Coupon> path) {
-        super(path.getType(), path.getMetadata());
+        this(path.getType(), path.getMetadata(), PathInits.getFor(path.getMetadata(), INITS));
     }
 
     public QCoupon(PathMetadata metadata) {
-        super(Coupon.class, metadata);
+        this(metadata, PathInits.getFor(metadata, INITS));
+    }
+
+    public QCoupon(PathMetadata metadata, PathInits inits) {
+        this(Coupon.class, metadata, inits);
+    }
+
+    public QCoupon(Class<? extends Coupon> type, PathMetadata metadata, PathInits inits) {
+        super(type, metadata, inits);
+        this.user = inits.isInitialized("user") ? new io.camp.user.model.QUser(forProperty("user")) : null;
     }
 
 }

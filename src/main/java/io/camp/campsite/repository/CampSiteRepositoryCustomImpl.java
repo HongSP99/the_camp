@@ -4,8 +4,7 @@ import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import io.camp.campsite.model.entity.*;
 
-
-
+import static io.camp.campsite.model.entity.QCampsite.campsite;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;

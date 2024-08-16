@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
-
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -31,11 +30,10 @@ public class InventoryDto {
 
     private boolean isUse;
 
-
-    public void setCoupon(Coupon coupon){
+    public void setCoupon(Coupon coupon) {
         this.couponSeq = coupon.getSeq();
         this.couponName = coupon.getName();
-        this.couponType = coupon.getType();
+        this.couponType = coupon.getType().name();
         this.count = coupon.getDiscountRate();
     }
 }

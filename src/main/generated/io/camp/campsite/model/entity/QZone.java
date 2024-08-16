@@ -32,6 +32,8 @@ public class QZone extends EntityPathBase<Zone> {
 
     public final StringPath intro = createString("intro");
 
+    public final NumberPath<Integer> maxNight = createNumber("maxNight", Integer.class);
+
     public final NumberPath<Integer> offSeasonPrice = createNumber("offSeasonPrice", Integer.class);
 
     public final NumberPath<Integer> peakSeasonPrice = createNumber("peakSeasonPrice", Integer.class);

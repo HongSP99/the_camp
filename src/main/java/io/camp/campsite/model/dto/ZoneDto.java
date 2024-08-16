@@ -41,6 +41,8 @@ public class ZoneDto {
 
     private String campSiteName;
 
+    private int maxNight;
+
     private List<SiteDto> sites;
 
 
@@ -58,6 +60,7 @@ public class ZoneDto {
                 .offSeasonPrice(offSeasonPrice)
                 .peakSeasonPrice(peakSeasonPrice)
                 .bestPeakSeasonPrice(bestPeakSeasonPrice)
+                .maxNight(maxNight)
                 .build();
     }
 
@@ -70,6 +73,7 @@ public class ZoneDto {
         dto.setCheckout(zone.getCheckout());
         dto.setOffSeasonPrice(zone.getOffSeasonPrice());
         dto.setPeakSeasonPrice(zone.getPeakSeasonPrice());
+        dto.setMaxNight(zone.getMaxNight());
         dto.setBestPeakSeasonPrice(zone.getBestPeakSeasonPrice());
         dto.setCampSiteImg(zone.getCampsite().getFirstImageUrl());
         dto.setCampSiteName(zone.getCampsite().getFacltNm());

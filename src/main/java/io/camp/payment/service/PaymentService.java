@@ -14,7 +14,9 @@ import io.camp.common.exception.inventory.InventoryException;
 import io.camp.common.exception.payment.PaymentException;
 import io.camp.common.exception.reservation.ReservationException;
 import io.camp.coupon.model.dto.Coupon;
+import io.camp.coupon.repository.CouponRepository;
 import io.camp.coupon.service.CouponService;
+import io.camp.inventory.model.Inventory;
 import io.camp.inventory.model.dto.InventoryDto;
 import io.camp.inventory.service.InventoryService;
 import io.camp.payment.model.Payment;
@@ -41,6 +43,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -50,7 +53,6 @@ import java.util.Optional;
 public class PaymentService {
     private final PaymentRepository paymentRepository;
     private final PaymentCancellationRepository paymentCancellationRepository;
-    private final ReservationRepository reservationRepository;
     private final ReservationService reservationService;
     private final ZoneService zoneService;
     private final SeasonService seasonService;
@@ -69,7 +71,7 @@ public class PaymentService {
         return reservationPostDto;
     }
 
-    public int calculationTotalPrice(PaymentPostDto dto){
+    public int calculationTotalPrice(PaymentPostDto dto, String customerEmail){
         Site site = siteService.getSiteBySeq(dto.getSiteSeq());
         Long zoneSeq = site.getZone().getSeq();
 
@@ -83,7 +85,7 @@ public class PaymentService {
         reservationExistenceDto.setSiteSeq(site.getSeq());
         reservationExistenceDto.setReservationStartDate(dto.getReserveStartDate());
         reservationExistenceDto.setReservationEndDate(dto.getReserveEndDate());
-        boolean isReservation = reservationRepository.checkReservationExistence(reservationExistenceDto);
+        boolean isReservation = reservationService.checkReservationExistence(reservationExistenceDto);
         if (isReservation) {
             log.info("이미 결제된 예약입니다.");
             throw new PaymentException(ExceptionCode.PAYMENT_ALREADY_RESERVATION);
@@ -124,21 +126,30 @@ public class PaymentService {
         log.info("쿠폰 만료 날짜 : " + dto.getExpireDate());
         log.info("인벤토리 seq : " + dto.getInvenSeq());
         log.info("쿠폰 사용 여부 : " + dto.isUse());
+        log.info("결제 쿠폰 사용 여부 : " + dto.isPaymentIsNotCoupon());
+
+
+        Coupon coupon = null;
+        Inventory inventory = null;
+
+        if (!dto.isPaymentIsNotCoupon()) {
+            coupon = couponService.getCouponById(dto.getCouponSeq()).orElse(null);
+            inventory = inventoryService.findbyInvenSeq(dto.getInvenSeq());
+        }
 
         LocalDate today = LocalDate.now();
         if (dto.isPaymentIsNotCoupon()) {
             log.info("결제 쿠폰 미적용");
-        } else if (!dto.isUse() && !today.isAfter(dto.getExpireDate())) {
+        } else if (coupon != null && inventory != null && !inventory.isUse() && !today.isAfter(coupon.getExpireDate())) {
             log.info("쿠폰이 적용되기 전 값 : " + seasonPrice);
             // 쿠폰이 % 할인 계산일 경우
-            //seasonPrice = seasonPrice - (seasonPrice * dto.getCount() / 100);
+            seasonPrice = seasonPrice - (seasonPrice * coupon.getDiscountRate() / 100);
 
             // 쿠폰이 금액 할인일 경우
-            seasonPrice = seasonPrice - dto.getCount();
+            //seasonPrice = seasonPrice - dto.getCount();
 
             log.info("쿠폰이 적용된 값 : " + seasonPrice);
             InventoryDto inventoryDto = inventoryService.useCoupon(dto.getInvenSeq());
-            couponService.deleteCoupon(dto.getCouponSeq());
         } else {
             throw new InventoryException(ExceptionCode.INVENTORY_ALREADY_USE);
         }
@@ -150,9 +161,10 @@ public class PaymentService {
         Payment payment = new Payment();
         payment.setPaymentId(paymentPostDto.getPaymentId());
         payment.setCampsiteName(paymentPostDto.getCampsiteName());
+        payment.setInvenSeq(paymentPostDto.getInvenSeq());
         jsonToPayment(json, "", payment);
 
-        int reservationTotalPrice = calculationTotalPrice(paymentPostDto);
+        int reservationTotalPrice = calculationTotalPrice(paymentPostDto, payment.getCustomerEmail());
         log.info("reservationTotalPrice (계산 값) : {}", reservationTotalPrice);
         log.info("paymentAmountTotal (클라이언트 값) : {}", payment.getAmountTotal());
         log.info("캠핑장 명 : {}", payment.getCampsiteName());
@@ -174,12 +186,13 @@ public class PaymentService {
     }
 
     public void beforePaymentCancelCheck(PaymentCancelPostDto paymentCancelPostDto) {
-        LocalDate now = LocalDate.now();
-        LocalDate ReservationStartDate = paymentCancelPostDto.getReserveStartDate();
+        log.info("paymentCancelPostDto.getInvenSeq " + paymentCancelPostDto.getInvenSeq());
+        log.info("paymentCancelPostDto.getReservationId " + paymentCancelPostDto.getReservationId());
 
-        long DayUntilReservationStart = ChronoUnit.DAYS.between(now, ReservationStartDate);
+        LocalDate now = LocalDate.now().plusDays(1);
+        LocalDate reservationStartDate = paymentCancelPostDto.getReserveStartDate();
 
-        if (DayUntilReservationStart <= 1) {
+        if (now.isEqual(reservationStartDate) || now.isAfter(reservationStartDate)) {
             log.info("예약은 하루 전에는 예약을 취소 할 수 없습니다.");
             throw new ReservationException(ExceptionCode.RESERVATION_CANNOT_BE_CANCELLED);
         }
@@ -190,6 +203,11 @@ public class PaymentService {
         PaymentCancellation paymentCancellation = jsonToPaymentCancellation(json, paymentCancelPostDto);
 
         Payment payment = paymentRepository.qFindByPaymentId(paymentCancellation.getPaymentId());
+
+        log.info("paymentCancelPostDto.getInvenSeq() : " + paymentCancelPostDto.getInvenSeq());
+        if (paymentCancelPostDto.getInvenSeq() != null) {
+            inventoryService.rollbackCoupon(paymentCancelPostDto.getInvenSeq());
+        }
         payment.setDeleted(true);
         paymentRepository.save(payment);
 
@@ -198,7 +216,6 @@ public class PaymentService {
         if (payment.getAmountTotal() != paymentCancellation.getTotalAmount()) {
             throw new PaymentException(ExceptionCode.PAYMENT_NOT_EQUAL_CANCEL);
         }
-
         paymentCancellation.setPayment(payment);
         paymentCancellationRepository.save(paymentCancellation);
     }

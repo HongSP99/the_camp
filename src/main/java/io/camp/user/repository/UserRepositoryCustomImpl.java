@@ -3,7 +3,11 @@ package io.camp.user.repository;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import io.camp.payment.model.QPayment;
+import io.camp.reservation.model.QReservation;
 import io.camp.reservation.model.ReservationState;
+import io.camp.review.model.dto.ReviewDto;
+import io.camp.user.model.QUser;
 import io.camp.user.model.User;
 import io.camp.user.model.dto.UserReservationDto;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +32,7 @@ public class UserRepositoryCustomImpl implements UserRepositoryCustom {
                 .select(Projections.constructor(UserReservationDto.class,
                         payment.campsiteName.as("campsiteName"),
                         payment.paymentId.as("paymentId"),
+                        payment.invenSeq.as("invenSeq"),
                         reservation.id.as("reservationId"),
                         reservation.totalPrice.as("totalPrice"),
                         reservation.adults.as("adults"),

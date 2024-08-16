@@ -1,5 +1,6 @@
 package io.camp.like.service;
 
+import io.camp.common.exception.ExceptionCode;
 import io.camp.common.exception.review.ReviewNotFoundException;
 import io.camp.common.exception.user.CustomException;
 import io.camp.common.exception.user.UserNotFoundException;
@@ -8,6 +9,7 @@ import io.camp.like.model.dto.LikeRequestDTO;
 import io.camp.like.repository.LikeRepository;
 import io.camp.review.model.Review;
 import io.camp.review.repository.ReviewRepository;
+import io.camp.user.jwt.JwtUserDetails;
 import io.camp.user.model.User;
 import io.camp.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

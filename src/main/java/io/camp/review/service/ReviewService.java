@@ -6,7 +6,10 @@ import io.camp.common.exception.Campsite.CampsiteNotFoundException;
 import io.camp.common.exception.ExceptionCode;
 import io.camp.common.exception.review.ReviewNotAuthorException;
 import io.camp.common.exception.user.CustomException;
+import io.camp.like.service.LikeService;
+import io.camp.review.model.Review;
 import io.camp.review.model.dto.CreateReviewDto;
+import io.camp.review.model.dto.LikeReviewDto;
 import io.camp.review.model.dto.ReviewDto;
 import io.camp.review.model.dto.UpdateReviewDto;
 import io.camp.review.repository.ReviewRepository;
@@ -22,6 +25,11 @@ import io.camp.user.model.User;
 import io.camp.user.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.OptimisticLockingFailureException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.*;
 
 import org.springframework.stereotype.Service;
@@ -102,13 +110,6 @@ public class ReviewService {
         ReviewDto reviewDto = reviewRepository.getCampsiteReview(reviewId);
         if (reviewDto.getUserSeq() != user.getSeq()) {
             throw new ReviewNotAuthorException(ExceptionCode.REVIEW_NOT_AUTHOR);
-        }
-        reviewDto.setContent(updateReviewDto.getContent());
-        reviewRepository.updateReview(reviewId, updateReviewDto.getContent());
-
-        reviewDto = reviewRepository.getCampsiteReview(reviewId);
-        if (reviewDto.getUserSeq() != user.getSeq()) {
-            throw new RuntimeException("작성자가 아닙니다.");
         }
         reviewDto.setContent(updateReviewDto.getContent());
         reviewRepository.updateReview(reviewId, updateReviewDto.getContent());

@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.AllArgsConstructor;
+import org.apache.coyote.Response;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -19,6 +20,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.web.bind.annotation.*;
@@ -54,10 +56,10 @@ public class CampsiteController {
             @ApiResponse(responseCode = "200", description = "요청에 성공하였습니다.", content = @Content(mediaType = "application/json")),
     })
     @GetMapping("/")
-    public Page<CampSiteDto> searchCampsites(PagingDto pagingDto){
+    public ResponseEntity<Page<CampSiteDto>> searchCampsites(PagingDto pagingDto){
         Pageable pageable = PageRequest.of(pagingDto.getPage(), pagingDto.getSize());
         Page<CampSiteDto> result = campSiteService.searchCampsitesWithPaging(pagingDto.getQuery(),pageable,pagingDto.getType());
-        return result;
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @Operation(summary = "모든 캠핑장 검색", description = "모든 캠핑장 정보를 검색 해서 페이징 정보와 함께 리턴")
@@ -65,8 +67,9 @@ public class CampsiteController {
             @ApiResponse(responseCode = "200", description = "요청에 성공하였습니다.", content = @Content(mediaType = "application/json")),
     })
     @GetMapping
-    public Page<CampSiteDto> getCampsitesWithPaging(@RequestParam(name = "page" ,defaultValue = "0") int page , @RequestParam(name = "size" , defaultValue = "6") int size){
-        return campSiteService.getAllPaging(page,size);
+    public ResponseEntity<Page<CampSiteDto>> getCampsitesWithPaging(@RequestParam(name = "page" ,defaultValue = "0") int page , @RequestParam(name = "size" , defaultValue = "6") int size){
+        Page<CampSiteDto> dtos = campSiteService.getAllPaging(page,size);
+        return new ResponseEntity<>(dtos,HttpStatus.OK);
     }
 
     @Operation(summary = "캠핑장 id로 검색", description = "캠핑장 정보를 id로 검색")
@@ -74,10 +77,9 @@ public class CampsiteController {
             @ApiResponse(responseCode = "200", description = "요청에 성공하였습니다.", content = @Content(mediaType = "application/json")),
     })
     @GetMapping("/{id}")
-    public CampSiteDto getCampsiteById(@PathVariable("id") int id){
+    public ResponseEntity<CampSiteDto> getCampsiteById(@PathVariable("id") int id){
         CampSiteDto campSiteDto = campSiteService.getCampsiteBySeq(id);
-        System.out.println(campSiteDto);
-        return campSiteDto;
+        return new ResponseEntity<>(campSiteDto,HttpStatus.OK);
     }
 
 

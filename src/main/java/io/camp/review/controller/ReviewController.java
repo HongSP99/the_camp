@@ -1,6 +1,7 @@
 package io.camp.review.controller;
 
 import io.camp.review.model.dto.CreateReviewDto;
+import io.camp.review.model.dto.LikeReviewDto;
 import io.camp.review.model.dto.ReviewDto;
 import io.camp.review.model.dto.UpdateReviewDto;
 import io.camp.review.service.ReviewService;
@@ -20,7 +21,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-
+@Slf4j
 @RestController
 @RequestMapping("/reviews")
 @RequiredArgsConstructor

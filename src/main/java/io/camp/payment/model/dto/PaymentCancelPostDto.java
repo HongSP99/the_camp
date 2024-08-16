@@ -11,5 +11,6 @@ public class PaymentCancelPostDto {
     private String paymentId;
     private Long reservationId;
     private LocalDate reserveStartDate;
+    private Long invenSeq;
     private String reason = "예약 취소";
 }

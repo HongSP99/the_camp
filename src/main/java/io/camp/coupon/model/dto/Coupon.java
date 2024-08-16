@@ -1,9 +1,11 @@
 package io.camp.coupon.model.dto;
 
+import io.camp.user.model.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -17,15 +19,22 @@ public class Coupon {
     private Long seq;
 
     private String name;
-    private String type;
+
+    @Enumerated(EnumType.STRING)
+    private CouponType type;
+
     private int discountRate;
 
     @Column(name = "create_date")
-    private LocalDateTime createDate;
+    private LocalDate createDate;
 
     @Column(name = "expire_date")
-    private LocalDateTime expireDate;
+    private LocalDate expireDate;
 
     @Column(name = "is_deleted")
     private boolean isDeleted;
+
+    @ManyToOne
+    @JoinColumn(name = "user_seq")
+    private User user;
 }
