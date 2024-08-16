@@ -126,9 +126,16 @@ public class PaymentService {
         log.info("쿠폰 만료 날짜 : " + dto.getExpireDate());
         log.info("인벤토리 seq : " + dto.getInvenSeq());
         log.info("쿠폰 사용 여부 : " + dto.isUse());
+        log.info("결제 쿠폰 사용 여부 : " + dto.isPaymentIsNotCoupon());
 
-        Coupon coupon = couponService.getCouponById(dto.getCouponSeq()).orElse(null);
-        Inventory inventory = inventoryService.findbyInvenSeq(dto.getInvenSeq());
+
+        Coupon coupon = null;
+        Inventory inventory = null;
+
+        if (!dto.isPaymentIsNotCoupon()) {
+            coupon = couponService.getCouponById(dto.getCouponSeq()).orElse(null);
+            inventory = inventoryService.findbyInvenSeq(dto.getInvenSeq());
+        }
 
         LocalDate today = LocalDate.now();
         if (dto.isPaymentIsNotCoupon()) {
@@ -181,14 +188,11 @@ public class PaymentService {
     public void beforePaymentCancelCheck(PaymentCancelPostDto paymentCancelPostDto) {
         log.info("paymentCancelPostDto.getInvenSeq " + paymentCancelPostDto.getInvenSeq());
         log.info("paymentCancelPostDto.getReservationId " + paymentCancelPostDto.getReservationId());
-        log.info("paymentCancelPostDto.getReserveStartDate " + paymentCancelPostDto.getReserveStartDate());
 
-        LocalDate now = LocalDate.now();
-        LocalDate ReservationStartDate = paymentCancelPostDto.getReserveStartDate();
+        LocalDate now = LocalDate.now().plusDays(1);
+        LocalDate reservationStartDate = paymentCancelPostDto.getReserveStartDate();
 
-        long DayUntilReservationStart = ChronoUnit.DAYS.between(now, ReservationStartDate);
-
-        if (DayUntilReservationStart <= 1) {
+        if (now.isEqual(reservationStartDate) || now.isAfter(reservationStartDate)) {
             log.info("예약은 하루 전에는 예약을 취소 할 수 없습니다.");
             throw new ReservationException(ExceptionCode.RESERVATION_CANNOT_BE_CANCELLED);
         }
@@ -199,7 +203,11 @@ public class PaymentService {
         PaymentCancellation paymentCancellation = jsonToPaymentCancellation(json, paymentCancelPostDto);
 
         Payment payment = paymentRepository.qFindByPaymentId(paymentCancellation.getPaymentId());
-        inventoryService.rollbackCoupon(paymentCancelPostDto.getInvenSeq());
+
+        log.info("paymentCancelPostDto.getInvenSeq() : " + paymentCancelPostDto.getInvenSeq());
+        if (paymentCancelPostDto.getInvenSeq() != null) {
+            inventoryService.rollbackCoupon(paymentCancelPostDto.getInvenSeq());
+        }
         payment.setDeleted(true);
         paymentRepository.save(payment);
 
@@ -208,7 +216,6 @@ public class PaymentService {
         if (payment.getAmountTotal() != paymentCancellation.getTotalAmount()) {
             throw new PaymentException(ExceptionCode.PAYMENT_NOT_EQUAL_CANCEL);
         }
-
         paymentCancellation.setPayment(payment);
         paymentCancellationRepository.save(paymentCancellation);
     }
