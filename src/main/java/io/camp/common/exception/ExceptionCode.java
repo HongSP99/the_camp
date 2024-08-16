@@ -20,6 +20,9 @@ public enum ExceptionCode {
     INVENTORY_NOT_USE(400, "쿠폰이 만료되었습니다."),
     INVENTORY_ALREADY_USE(400, "이미 쿠폰을 사용하셨습니다."),
 
+    //site
+    SITE_NOT_FOUND(404, "해당 사이트를 찾을 수 없습니다."),
+
     //공통 부분
     BAD_REQUEST(400, "Invalid request."),
 

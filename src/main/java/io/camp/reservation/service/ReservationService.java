@@ -7,8 +7,10 @@ import io.camp.campsite.repository.SiteRepository;
 import io.camp.campsite.repository.ZoneRepository;
 import io.camp.campsite.service.SeasonService;
 import io.camp.campsite.service.ZoneService;
+import io.camp.common.exception.ErrorResponse;
 import io.camp.common.exception.ExceptionCode;
 import io.camp.common.exception.reservation.ReservationException;
+import io.camp.common.exception.site.SiteException;
 import io.camp.reservation.mapper.ReservationMapper;
 import io.camp.reservation.model.Reservation;
 import io.camp.reservation.model.ReservationState;
@@ -49,7 +51,7 @@ public class ReservationService {
         User user = authService.getVerifiyLoginCurrentUser();
         log.info("유저 찾기 성공");
         Site site = siteRepository.findById(requestDto.getSiteSeq())
-                .orElseThrow(() -> new IllegalArgumentException("캠핑장을 찾을 수 없습니다."));
+                .orElseThrow(() -> new SiteException(ExceptionCode.SITE_NOT_FOUND));
         log.info("campsite 찾기 성공");
         log.info(requestDto.toString());
 
@@ -125,7 +127,7 @@ public class ReservationService {
         User user = authService.getVerifiyLoginCurrentUser();
         log.info("유저 찾기 성공");
         Site site = siteRepository.findById(requestDto.getSiteSeq())
-                .orElseThrow(() -> new IllegalArgumentException("캠핑장을 찾을 수 없습니다."));
+                .orElseThrow(() -> new SiteException(ExceptionCode.SITE_NOT_FOUND));
         log.info("campsite 찾기 성공");
         log.info(requestDto.toString());
         Reservation reservation = mapper.reservationPostDtoToReservation(requestDto);
